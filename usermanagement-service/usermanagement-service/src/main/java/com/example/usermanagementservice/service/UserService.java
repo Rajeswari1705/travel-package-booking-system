@@ -1,5 +1,6 @@
 //All the business logic like Registering, getting, updating, deleting a user
 package com.example.usermanagementservice.service;
+import com.example.usermanagementservice.dto.UserRoleCountResponse;
 //this interface defines what functions are available
 import com.example.usermanagementservice.model.User;
 import java.util.List;
@@ -13,5 +14,6 @@ public interface UserService {
 	User getUserById(Long id); //View profile
 	User updateUserProfile(Long id, User updatedUser);//Update profile like user management in their profile for editing profiles
 	
-	
+	//get user count and count by roles as well
+	UserRoleCountResponse getUserRoleCounts();
 }

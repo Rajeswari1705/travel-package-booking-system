@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.exception.AdminRegistrationNotAllowedException;
 import com.example.usermanagementservice.exception.EmailAlreadyExistsException;
 import com.example.usermanagementservice.exception.PhoneNumberAlreadyExistsException;
@@ -99,6 +100,18 @@ public class UserServiceImpl implements UserService {
 		//save changes
 		
 		return userRepository.save(existingUser);
+	}
+	
+	//to get number of users, agents and customers
+	@Override
+	public UserRoleCountResponse getUserRoleCounts() {
+		long total = userRepository.count()-1;
+		long agents = userRepository.countByRole("AGENT");
+		long customers = userRepository.countByRole("CUSTOMER");
+		
+		logger.info("Fetched user role counts: total={}, agents={}, customers={}", total, agents, customers);
+		
+		return new UserRoleCountResponse(total, agents, customers);
 	}
 
 }

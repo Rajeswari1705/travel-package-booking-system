@@ -15,4 +15,9 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	//to find user by email
 	Optional<User> findByEmail(String email);
 	Optional<User> findByContactNumber(String contactNumber);
+	
+	//Total users
+	long count();
+	//Count by role(Agent, customer)
+	long countByRole(String role);
 }

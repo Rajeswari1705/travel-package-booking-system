@@ -1,6 +1,7 @@
 package com.example.usermanagementservice.controller;
  
 
+import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.exception.RoleChangeNotAllowedException;
 import com.example.usermanagementservice.model.User;
 import com.example.usermanagementservice.service.UserService;
@@ -88,7 +89,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
  
-    // Update user profile - only the user themselves can update
+    // Update user profile - only admin
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUserProfile(@PathVariable Long id, @RequestBody User updatedUser, HttpServletRequest request) {
         
@@ -115,8 +116,21 @@ public class UserController {
         return ResponseEntity.ok("User deleted.");
     }
     
+    //get total count of users, agents, customers
+    @GetMapping("/counts")
+    public ResponseEntity<?> getUserRoleCounts(HttpServletRequest request) {
+        String role = extractRoleFromHeader(request);
+        if (!"ADMIN".equalsIgnoreCase(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                                 .body(Collections.singletonMap("message", "Only admins can view user counts."));
+        }
+     
+        UserRoleCountResponse response = userService.getUserRoleCounts();
+        return ResponseEntity.ok(response);
+    }
     
-    // myprofile endpoint for user(only)
+    
+    // myprofile endpoint for users(only)
     //get their profile details
     @GetMapping("/myprofile")
     public ResponseEntity<?> getMyProfile() {
@@ -150,5 +164,7 @@ public class UserController {
      
         return ResponseEntity.ok(Collections.singletonMap("message", "Your profile has been deleted."));
     }
+    
+    
      
 }
