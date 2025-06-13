@@ -34,6 +34,19 @@ public class GatewayRoutesConfig {
 					    .path("agent-responses-service")
 					    
 					    .uri("lb://ratings-and-review-service")) // send to service named "ratings-and-review-service"
+				
+				// Routes for Travel Insurance Service
+				.route("TravelInsurance", route -> route
+						.path("/api/insurance/**")
+			    
+						.uri("lb://TravelInsuranceService")) // send to service named "TravelInsuranceService"
+				
+				// Routes for Travel Insurance Service
+				.route("TravelAsssistance", route -> route
+						.path("/api/assistance/**")
+			    
+						.uri("lb://TravelInsuranceService")) // send to service named "TravelInsuranceService"
+				
 
 				.build(); // Only one build() at the end
 

@@ -1,8 +1,10 @@
 package com.example.travelinsuranceservice;
- 
+
 // Import required Spring Boot classes
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
  
 /**
  * Main entry point for the Spring Boot Travel Insurance & Assistance module.
@@ -19,6 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *   - @ComponentScan: scans this package and all sub-packages for Spring components
  */
 @SpringBootApplication
+@EnableDiscoveryClient //Enables Eureka client functionality
 public class TravelInsuranceApplication {
  
     /**
