@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.client.UserClient;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.TravelPackage;
 import com.example.repository.TravelPackageRepository;
@@ -14,9 +15,12 @@ public class TravelPackageService {
 
     private static final Logger logger = LoggerFactory.getLogger(TravelPackageService.class);
     private final TravelPackageRepository repository;
+    
+    private final UserClient userClient;
 
-    public TravelPackageService(TravelPackageRepository repository) {
+    public TravelPackageService(TravelPackageRepository repository,UserClient userClient) {
         this.repository = repository;
+        this.userClient = userClient;
     }
 
     // Get all packages
@@ -38,6 +42,13 @@ public class TravelPackageService {
     // Create package
     public TravelPackage createPackage(TravelPackage travelPackage) {
         logger.info("Creating new travel package: {}", travelPackage.getTitle());
+        
+        try {
+        	userClient.getUserById(travelPackage.getAgentId());
+        }catch (Exception e) {
+        	logger.error("Agent ID {} not found in User Management Service", travelPackage.getAgentId());
+        	throw new IllegalArgumentException("Agrnt with ID"+ travelPackage.getAgentId() + " not found");
+        }
         return repository.save(travelPackage);
     }
 

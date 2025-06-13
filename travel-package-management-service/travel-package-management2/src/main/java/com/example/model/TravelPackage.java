@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
- 
+
+import java.time.LocalDate;
 import java.util.List;
  
 @Entity
@@ -20,6 +21,9 @@ public class TravelPackage {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long packageId;
+	
+	@NotNull(message="Agent ID is required")
+	private Long agentId;
  
     @NotBlank(message = "Title is mandatory")
     private String title;
@@ -32,7 +36,16 @@ public class TravelPackage {
  
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
     private double price;
+    
+    @Min(value=1, message="MAX capacity should be atleast 1")
+    private int maxCapacity;
  
+    @NotNull(message="Trip start date is required")
+    private LocalDate tripStartDate;
+    
+    @NotNull(message="Trip end date is required")
+    private LocalDate tripEndDate;
+    
     @NotNull(message = "Highlights cannot be null")
     private List<@NotBlank(message = "Highlight item cannot be blank") String> highlights;
  
