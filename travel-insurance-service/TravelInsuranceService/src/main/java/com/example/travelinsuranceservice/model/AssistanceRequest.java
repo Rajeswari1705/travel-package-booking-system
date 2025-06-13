@@ -1,68 +1,43 @@
- package com.example.travelinsuranceservice.model;
+package com.example.travelinsuranceservice.model;
  
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+ 
 import java.time.LocalDateTime;
  
+/**
+ * Entity class mapped to 'assistance_request' table.
+ * Auto-generates request timestamp and has fixed resolution time.
+ */
 @Entity
+@Data
+@NoArgsConstructor
 public class AssistanceRequest {
  
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer requestId;
+    private Integer requestId; // Auto-generated primary key
  
-    private Integer userId;
-    private String issueDescription;
-    private String status;
-    private String resolutionTime;
-    private LocalDateTime requestTimestamp;
+    @NotNull(message = "User ID cannot be null")
+    private Integer userId; // Provided by external module
  
-    // Getters and Setters
-    public Integer getRequestId() {
-        return requestId;
-    }
+    @NotNull(message = "Issue description cannot be empty")
+    private String issueDescription; // Reason for assistance (e.g. Lost passport)
  
-    public void setRequestId(Integer requestId) {
-        this.requestId = requestId;
-    }
+    private String status = "Pending"; // Default status at creation
  
-    public Integer getUserId() {
-        return userId;
-    }
+    private String resolutionTime = "24 hours"; // Always fixed
  
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+    private LocalDateTime requestTimestamp; // Date + time of request
  
-    public String getIssueDescription() {
-        return issueDescription;
-    }
- 
-    public void setIssueDescription(String issueDescription) {
-        this.issueDescription = issueDescription;
-    }
- 
-    public String getStatus() {
-        return status;
-    }
- 
-    public void setStatus(String status) {
-        this.status = status;
-    }
- 
-    public String getResolutionTime() {
-        return resolutionTime;
-    }
- 
-    public void setResolutionTime(String resolutionTime) {
-        this.resolutionTime = resolutionTime;
-    }
- 
-    public LocalDateTime getRequestTimestamp() {
-        return requestTimestamp;
-    }
- 
-    public void setRequestTimestamp(LocalDateTime requestTimestamp) {
-        this.requestTimestamp = requestTimestamp;
+    /**
+     * Automatically sets the timestamp before insertion.
+     */
+    @PrePersist
+    public void setRequestTimestamp() {
+        this.requestTimestamp = LocalDateTime.now();
     }
 }
  
