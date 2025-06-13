@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/packages")
+@RequestMapping("/api/packages")
 public class TravelPackageController {
 
     private final TravelPackageService service;
