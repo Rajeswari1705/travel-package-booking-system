@@ -23,8 +23,20 @@ public class GatewayRoutesConfig {
 						.path("/api/packages/**")
 			    
 						.uri("lb://travel-package-management")) // send to service named "travel-package-management"
-				
-				.build(); // finish setting up all routes
+
+				// Route to reviews-service
+				.route("reviews-service", route -> route
+					    .path("/api/reviews/**")
+					    
+					    .uri("lb://ratings-and-review-service"))  // send to service named "ratings-and-review-service"
+				// Route to user-service
+				.route("agent-responses-service", route -> route
+					    .path("agent-responses-service")
+					    
+					    .uri("lb://ratings-and-review-service")) // send to service named "ratings-and-review-service"
+
+				.build(); // Only one build() at the end
+
 						
 	}
 
