@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.usermanagementservice.dto.PackageDTO;
 import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.exception.AdminRegistrationNotAllowedException;
 import com.example.usermanagementservice.exception.EmailAlreadyExistsException;
 import com.example.usermanagementservice.exception.PhoneNumberAlreadyExistsException;
 import com.example.usermanagementservice.exception.UserNotFoundException;
+import com.example.usermanagementservice.feign.TravelPackageClient;
 
 import java.util.List;
 //this class implements the logic defined in Userservice
@@ -21,6 +23,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired 
+	private TravelPackageClient travelPackageClient;
 	
 	//Register a new user
 	@Override
@@ -113,5 +118,13 @@ public class UserServiceImpl implements UserService {
 		
 		return new UserRoleCountResponse(total, agents, customers);
 	}
+	
+	//to get all the created packages of an agent
+	@Override
+	public List<PackageDTO> getPackagesOfAgent(Long agentId) {
+		logger.info("Fetching packages for agent ID: {}", agentId);
+		return travelPackageClient.getPackagesByAgentId(agentId);
+	}
+	
 
 }
