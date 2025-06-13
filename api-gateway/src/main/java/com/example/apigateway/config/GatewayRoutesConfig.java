@@ -31,7 +31,7 @@ public class GatewayRoutesConfig {
 					    .uri("lb://ratings-and-reviews-service"))  // send to service named "ratings-and-review-service"
 				// Route to user-service
 				.route("agent-responses-service", route -> route
-					    .path("agent-responses-service")
+					    .path("/api/agent-responses")
 					    
 					    .uri("lb://ratings-and-reviews-service")) // send to service named "ratings-and-review-service"
 				
