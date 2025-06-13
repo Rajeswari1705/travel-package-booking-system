@@ -28,12 +28,12 @@ public class GatewayRoutesConfig {
 				.route("reviews-service", route -> route
 					    .path("/api/reviews/**")
 					    
-					    .uri("lb://ratings-and-review-service"))  // send to service named "ratings-and-review-service"
+					    .uri("lb://ratings-and-reviews-service"))  // send to service named "ratings-and-review-service"
 				// Route to user-service
 				.route("agent-responses-service", route -> route
 					    .path("agent-responses-service")
 					    
-					    .uri("lb://ratings-and-review-service")) // send to service named "ratings-and-review-service"
+					    .uri("lb://ratings-and-reviews-service")) // send to service named "ratings-and-review-service"
 				
 				// Routes for Travel Insurance Service
 				.route("TravelInsurance", route -> route
