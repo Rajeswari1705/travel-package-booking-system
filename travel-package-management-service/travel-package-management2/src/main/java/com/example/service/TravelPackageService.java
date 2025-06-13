@@ -38,6 +38,21 @@ public class TravelPackageService {
                     return new ResourceNotFoundException("Package not found with ID: " + id);
                 });
     }
+    
+    public List<TravelPackage> getPackageByAgentId(Long agentId){
+    	logger.info("Fetching packages for agent ID: {} ", agentId);
+    	
+    	List<TravelPackage> packages = repository.findByAgentId(agentId);
+    	
+    	if(packages.isEmpty()) {
+    		logger.warn("No packages found for agent ID: {}", agentId);
+    		throw new ResourceNotFoundException("No packages found for agent ID: "+agentId);
+    	}
+    	
+    	return packages;
+    }
+    
+    
 
     // Create package
     public TravelPackage createPackage(TravelPackage travelPackage) {

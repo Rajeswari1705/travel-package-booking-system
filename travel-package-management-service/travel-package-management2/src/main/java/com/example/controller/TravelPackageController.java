@@ -30,6 +30,11 @@ public class TravelPackageController {
         TravelPackage travelPackage = service.getPackageById(id);
         return ResponseEntity.ok(new ApiResponse(true, "Package found", travelPackage));
     }
+    
+    public ResponseEntity<ApiResponse> getByAgentId(@PathVariable Long agentId){
+    	List<TravelPackage> packages = service.getPackageByAgentId(agentId);
+    	return ResponseEntity.ok(new ApiResponse(true, "Package by agent retrieve", packages));
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse> create(@Valid @RequestBody TravelPackage travelPackage) {
