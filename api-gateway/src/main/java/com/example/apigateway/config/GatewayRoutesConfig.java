@@ -24,16 +24,17 @@ public class GatewayRoutesConfig {
 			    
 						.uri("lb://travel-package-management")) // send to service named "travel-package-management"
 
-				// Route to reviews-service
-				.route("reviews-service", route -> route
-					    .path("/api/reviews/**")
-					    
-					    .uri("lb://ratings-and-reviews-service"))  // send to service named "ratings-and-review-service"
-				// Route to user-service
-				.route("agent-responses-service", route -> route
-					    .path("/api/agent-responses")
-					    
-					    .uri("lb://ratings-and-reviews-service")) // send to service named "ratings-and-review-service"
+				
+				
+				// Route to reviews-service (Aligned with ReviewController)
+                .route("reviews-service", route -> route
+                        .path("/api/reviews/**")
+                        .uri("lb://ratings-and-reviews-service")) // Corrected service name to match ReviewController
+
+                // Route to agent-responses-service (Aligned with AgentResponseController)
+                .route("agent-responses-service", route -> route
+                        .path("/api/agent-responses/**") // Added `/**` for broader endpoint handling
+                        .uri("lb://ratings-and-reviews-service")) // Ensured service name matches ReviewController
 				
 				// Routes for Travel Insurance Service
 				.route("TravelInsurance", route -> route
@@ -41,7 +42,7 @@ public class GatewayRoutesConfig {
 			    
 						.uri("lb://TravelInsuranceService")) // send to service named "TravelInsuranceService"
 				
-				// Routes for Travel Insurance Service
+				// Routes for Travel Assistance Service
 				.route("TravelAsssistance", route -> route
 						.path("/api/assistance/**")
 			    
