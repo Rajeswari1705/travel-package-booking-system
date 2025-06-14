@@ -11,6 +11,7 @@ import java.util.List;
 public interface TravelPackageClient {
 	//Endpoint expected to exist in the travel package service
 	
-	@GetMapping("")
+	@GetMapping("/api/packages/agent/{agentId}")
 	List<PackageDTO> getPackagesByAgentId(@PathVariable("agentId") Long agentId);
 }
+
