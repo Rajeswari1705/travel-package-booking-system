@@ -4,6 +4,8 @@ import com.example.usermanagementservice.dto.UserRoleCountResponse;
 //this interface defines what functions are available
 import com.example.usermanagementservice.model.User;
 import com.example.usermanagementservice.dto.PackageDTO;
+import com.example.usermanagementservice.dto.UserDTO;
+
 import java.util.List;
 
 public interface UserService {
@@ -20,4 +22,5 @@ public interface UserService {
 	
 	//get all packages created by clients
 	List<PackageDTO> getPackagesOfAgent(Long agentId);
+	UserDTO convertToDTO(User user);
 }

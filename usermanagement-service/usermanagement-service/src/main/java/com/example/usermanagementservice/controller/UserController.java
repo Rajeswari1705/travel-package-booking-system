@@ -1,6 +1,7 @@
 package com.example.usermanagementservice.controller;
  
 
+import com.example.usermanagementservice.dto.PackageDTO;
 import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.exception.RoleChangeNotAllowedException;
 import com.example.usermanagementservice.model.User;
@@ -165,6 +166,11 @@ public class UserController {
         return ResponseEntity.ok(Collections.singletonMap("message", "Your profile has been deleted."));
     }
     
-    
+    //To fetch all the packages under a travel agent
+    @GetMapping("/users/{id}/packages")
+    public ResponseEntity<?> getPackagesOfAgent(@PathVariable Long id){
+    	List<PackageDTO> packages = userService.getPackagesOfAgent(id);
+    	return ResponseEntity.ok(packages);
+    }
      
 }

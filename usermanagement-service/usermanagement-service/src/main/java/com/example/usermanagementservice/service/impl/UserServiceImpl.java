@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.usermanagementservice.dto.PackageDTO;
+import com.example.usermanagementservice.dto.UserDTO;
 import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.exception.AdminRegistrationNotAllowedException;
 import com.example.usermanagementservice.exception.EmailAlreadyExistsException;
@@ -125,6 +126,12 @@ public class UserServiceImpl implements UserService {
 		logger.info("Fetching packages for agent ID: {}", agentId);
 		return travelPackageClient.getPackagesByAgentId(agentId);
 	}
+	
+	//convert user to userDTO for the user data transfer to other services
+	public UserDTO convertToDTO(User user) {
+	    return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getRole());
+	}
+	
 	
 
 }
