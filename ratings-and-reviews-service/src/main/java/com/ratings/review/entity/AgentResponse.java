@@ -15,12 +15,12 @@ public class AgentResponse {
 
     @ManyToOne
     @JoinColumn(name = "review_id", nullable = false)
-    private Review review; // Links response to the review
+    private Review review; // Links response to the review   
 
 
-@Column(name = "agent_id", nullable = false)
+    @Column(name = "agent_id", nullable = false)
 
-private Long agentId; 
+    private Long agentId; 
 
  // Ensures only package owner responds
 
@@ -37,8 +37,8 @@ private Long agentId;
     public Review getReview() { return review; }
     public void setReview(Review review) { this.review = review; }
 
-    public Long getagentId() { return agentId; }
-    public void setagentId(Long agentId) { this.agentId = agentId; }
+    public Long getAgentId() { return agentId; }
+    public void setAgentId(Long agentId) { this.agentId = agentId; }
 
     public String getResponseMessage() { return responseMessage; }
     public void setResponseMessage(String responseMessage) { 

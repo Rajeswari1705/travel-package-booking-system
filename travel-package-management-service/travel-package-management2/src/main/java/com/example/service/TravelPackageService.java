@@ -58,11 +58,11 @@ public class TravelPackageService {
     public TravelPackage createPackage(TravelPackage travelPackage) {
         logger.info("Creating new travel package: {}", travelPackage.getTitle());
         
-        try {
-        	userClient.getUserById(travelPackage.getAgentId());
-        }catch (Exception e) {
-        	logger.error("Agent ID {} not found in User Management Service", travelPackage.getAgentId());
-        	throw new IllegalArgumentException("Agrnt with ID"+ travelPackage.getAgentId() + " not found");
+       try {
+       	userClient.getUserById(travelPackage.getAgentId());
+       }catch (Exception e) {
+       	logger.error("Agent ID {} not found in User Management Service", travelPackage.getAgentId());
+       	throw new IllegalArgumentException("Agent with ID"+ travelPackage.getAgentId() + " not found");
         }
         return repository.save(travelPackage);
     }
