@@ -36,7 +36,9 @@ public class AgentResponseService {
                     return new ResourceNotFoundException("Review not found.");
                 });
 
-        Long packageAgentId = review.getTravelPackage().getTravelAgent().getAgentId();
+        Long packageId = review.getpackageId(); // Assuming Review has packageId
+        Long agentId = getAgentIdFromPackage(packageId);
+
 
         //Authorization check: Only package owner can respond
         if (!packageAgentId.equals(agentId)) {

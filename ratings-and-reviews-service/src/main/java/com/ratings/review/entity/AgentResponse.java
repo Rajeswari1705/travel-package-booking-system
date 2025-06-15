@@ -17,9 +17,11 @@ public class AgentResponse {
     @JoinColumn(name = "review_id", nullable = false)
     private Review review; // Links response to the review
 
-    @ManyToOne
-    @JoinColumn(name = "agent_id", referencedColumnName = "agent_id", nullable = false) //  Ensures correct mapping
-    private TravelAgent travelAgent;
+
+@Column(name = "agent_id", nullable = false)
+
+private Long agentId; 
+
  // Ensures only package owner responds
 
     @Column(nullable = false, length = 500)
@@ -35,8 +37,8 @@ public class AgentResponse {
     public Review getReview() { return review; }
     public void setReview(Review review) { this.review = review; }
 
-    public TravelAgent getTravelAgent() { return travelAgent; }
-    public void setTravelAgent(TravelAgent travelAgent) { this.travelAgent = travelAgent; }
+    public Long getagentId() { return agentId; }
+    public void setagentId(Long agentId) { this.agentId = agentId; }
 
     public String getResponseMessage() { return responseMessage; }
     public void setResponseMessage(String responseMessage) { 

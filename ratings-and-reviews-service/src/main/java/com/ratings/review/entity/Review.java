@@ -14,9 +14,10 @@ public class Review {
     private Long reviewId;
     private Long userId;
 
-    @ManyToOne
-    @JoinColumn(name = "package_id", nullable = false)
-    private TravelPackage travelPackage;
+
+    @Column(name = "package_id", nullable = false)
+    private Long packageId;
+
 
 
     @Column(nullable = false)
@@ -35,12 +36,8 @@ public class Review {
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
 
-    public TravelPackage getTravelPackage() { return travelPackage; }
-    public void setTravelPackage(TravelPackage travelPackage) { this.travelPackage = travelPackage; }
-
-    public Long getPackageId() { 
-        return (travelPackage != null) ? travelPackage.getPackageId() : null;
-    }
+    public Long getpackageId() { return packageId; }
+    public void setpackageId(Long packageId) { this.packageId = packageId; }
 
     public int getRating() { return rating; }
     public void setRating(int rating) { this.rating = rating; }

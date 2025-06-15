@@ -24,6 +24,7 @@ public class GatewayRoutesConfig {
 			    
 						.uri("lb://travel-package-management")) // send to service named "travel-package-management"
 
+
 				
 				
 				// Route to reviews-service (Aligned with ReviewController)
@@ -48,6 +49,18 @@ public class GatewayRoutesConfig {
 			    
 						.uri("lb://TravelInsuranceService")) // send to service named "TravelInsuranceService"
 				
+
+				// Route to reviews-service
+				.route("reviews-service", route -> route
+					    .path("/api/reviews/**")
+					    
+					    .uri("lb://Ratings_and_Review_Module-2_final"))  // send to service named "ratings-and-review-service"
+				// Route to user-service
+				.route("agent-responses-service", route -> route
+					    .path("agent-responses-service")
+					    
+					    .uri("lb://Ratings_and_Review_Module-2_final")) // send to service named "ratings-and-review-service"
+
 
 				.build(); // Only one build() at the end
 

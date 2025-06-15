@@ -41,7 +41,7 @@ public class AgentResponseController {
         AgentResponse savedResponse = agentResponseService.respondToReview(agentId, reviewId, responseMessage);
 
         //Extract packageId and review comment for response
-        Long packageId = savedResponse.getReview().getTravelPackage().getPackageId();
+        Long packageId = savedResponse.getReview().getpackageId();
         String reviewMessage = savedResponse.getReview().getComment();
 
         //Create response with required fields
