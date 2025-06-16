@@ -171,11 +171,26 @@ public class UserController {
     
 	// Internal endpoint for microservices (e.g., Travel Package Service)
 	@GetMapping("/internal/{id}")
-	public ResponseEntity<UserDTO> getUserForInternalUse(@PathVariable Long id) {
-		User user = userService.getUserById(id); // No security check
+	public ResponseEntity<?> getUserForInternalUse(@PathVariable Long id) {
+		User user = userService.getUserById(id); // No security check, get user from DB
+		
+		// ✅ Check if user exists
+	    if (user == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(Collections.singletonMap("message", "User not found with ID: " + id));
+	    }
+	 
+	    // ✅ Check if user is an AGENT
+	    if (!"AGENT".equalsIgnoreCase(user.getRole())) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+	                .body(Collections.singletonMap("message", "User with ID " + id + " is not an AGENT"));
+	    }
+		
 		UserDTO userDTO = userService.convertToDTO(user);
 		return ResponseEntity.ok(userDTO);
 	}
+	
+	
     
     //To fetch all the packages under a travel agent
     @GetMapping("/users/{id}/packages")
