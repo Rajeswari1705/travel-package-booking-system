@@ -22,7 +22,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())  // Disable CSRF protection for APIs (stateless)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/users/register").permitAll() // Allow login/register
+                .requestMatchers("/api/auth/**", "/api/users/register", "/api/users/internal/{id}").permitAll() // Allow login/register/internalid for feign client
                 .anyRequest().authenticated() // All other endpoints need JWT
             )
             .sessionManagement(session -> session
