@@ -38,6 +38,7 @@ public class TravelPackage {
     private double price;
     
     @Min(value=1, message="MAX capacity should be atleast 1")
+    @Column(name="max_capacity", nullable=false)
     private int maxCapacity;
  
     @NotNull(message="Trip start date is required")
