@@ -8,10 +8,10 @@ import com.example.dto.UserDTO;
 
 
 
-@FeignClient(name="usermanagement-service", contextId="userClient")
+@FeignClient(name="USERMANAGEMENT-SERVICE")
 public interface UserClient {
 	
 	@GetMapping("/api/users/internal/{id}")
-	UserDTO getUserById(@PathVariable("id") Long userid);
+	UserDTO getUserById(@PathVariable("id") Long id);
 
 }

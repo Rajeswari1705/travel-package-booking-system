@@ -7,6 +7,7 @@ import com.example.model.TravelPackage;
 import com.example.repository.TravelPackageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class TravelPackageService {
     private static final Logger logger = LoggerFactory.getLogger(TravelPackageService.class);
     private final TravelPackageRepository repository;
     
+    @Autowired
     private final UserClient userClient;
 
     public TravelPackageService(TravelPackageRepository repository,UserClient userClient) {
@@ -74,6 +76,7 @@ public class TravelPackageService {
     			throw new IllegalArgumentException("User is not authorized to create travel packages.");
     			
     		}
+    		System.out.println("Agent fetched: "+ user.getName() + "Role" + user.getRole());
     		
     	}catch(Exception e) {
     			logger.error("Feign call failed for agentId {}: {}", agentId, e.getMessage());
