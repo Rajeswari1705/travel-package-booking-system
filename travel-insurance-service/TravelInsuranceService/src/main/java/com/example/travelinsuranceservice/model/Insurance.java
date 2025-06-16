@@ -6,43 +6,38 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
  
 /**
- * Entity class mapped to 'insurance' table.
- * Uses Lombok to generate getters/setters and constructors.
- * Uses @PrePersist to auto-fill fields based on selected CoverageType.
+ * Represents an insurance record for a user's travel booking.
+ * bookingId is set later after booking is created.
  */
 @Entity
-@Data // Lombok annotation to generate getters, setters, toString, equals, and hashCode
-@NoArgsConstructor // Generates a no-args constructor
+@Data
+@NoArgsConstructor
 public class Insurance {
  
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer insuranceId; // Auto-generated primary key
+    private Integer insuranceId;
  
     @NotNull(message = "User ID cannot be null")
-    private Integer userId; // Received from external User module
+    private Integer userId;
  
-    @NotNull(message = "Booking ID cannot be null")
-    private Integer bookingId; // Received from Booking module
+    // Optional field, set later
+    private Integer bookingId;
  
-    private String coverageDetails; // Auto-filled from enum
+    private String coverageDetails;
  
-    private String provider = "Secure Travel Insurance Co."; // Fixed insurance provider
+    private String provider = "Secure Travel Insurance Co.";
  
-    private String status = "Active"; // Default status
+    private String status = "Active";
  
-    private Double price; // Auto-filled based on coverage type
+    private Double price;
  
-    private Double claimableAmount; // Auto-filled from coverage type
+    private Double claimableAmount;
  
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Coverage Type is required")
-    private CoverageType coverageType; // User selects during booking
+    private CoverageType coverageType;
  
-    /**
-     * Sets values for price, claimable amount, and details from selected coverage type.
-     * This method is automatically called before the entity is inserted.
-     */
     @PrePersist
     public void setValuesFromCoverageType() {
         if (coverageType != null) {

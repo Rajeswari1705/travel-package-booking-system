@@ -12,60 +12,82 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
  
 /**
- * REST Controller that handles Insurance-related endpoints.
- * Routes: /api/insurance → create, fetch, update insurance policies.
+ * REST Controller to expose API endpoints related to Travel Insurance.
+ * Includes endpoints for creation, status update, booking ID attachment, and retrieval.
  */
 @RestController
 @RequestMapping("/api/insurance")
 public class InsuranceController {
  
-    // Logger to track controller actions
+    // Logger to capture request-level info
     private static final Logger logger = LoggerFactory.getLogger(InsuranceController.class);
  
-    // Inject the service to handle business logic
+    // Injecting the InsuranceService bean to call business logic
     @Autowired
     private InsuranceService service;
  
     /**
-     * POST endpoint to create a new insurance entry.
-     * The coverage type determines the price, provider, and claimable amount.
+     * POST /api/insurance
+     * Creates a new insurance policy for a user.
+     * bookingId is not required at this stage and can be null.
      *
-     * @param insurance request body with insurance data
-     * @return created insurance object with 201 CREATED
+     * @param insurance JSON body containing userId and coverageType
+     * @return Created insurance record
      */
     @PostMapping
     public ResponseEntity<Insurance> addInsurance(@Valid @RequestBody Insurance insurance) {
         logger.info("Creating insurance for userId: {}", insurance.getUserId());
-        return new ResponseEntity<>(service.createInsurance(insurance), HttpStatus.CREATED);
+        Insurance created = service.createInsurance(insurance);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
  
     /**
-     * GET endpoint to fetch all insurance policies for a specific user.
+     * GET /api/insurance/{userId}
+     * Fetches all insurance records linked to a particular user.
      *
-     * @param userId path variable representing user ID
-     * @return list of insurance objects
+     * @param userId ID of the user
+     * @return List of insurance records
      */
     @GetMapping("/{userId}")
     public ResponseEntity<List<Insurance>> getByUser(@PathVariable Integer userId) {
-        logger.info("Fetching insurances for userId: {}", userId);
-        return ResponseEntity.ok(service.getUserInsurance(userId));
+        logger.info("Fetching insurance for userId: {}", userId);
+        List<Insurance> insurances = service.getUserInsurance(userId);
+        return ResponseEntity.ok(insurances);
     }
  
     /**
-     * PUT endpoint to update insurance status (e.g., Approved, Cancelled).
+     * PUT /api/insurance/{insuranceId}/status?status=CANCELLED
+     * Updates the status of a specific insurance record.
      *
-     * @param insuranceId insurance ID to update
-     * @param status new status value (via query param)
-     * @return updated insurance object or 404 if not found
+     * @param insuranceId ID of the insurance to be updated
+     * @param status New status (e.g., "APPROVED", "CANCELLED")
+     * @return Updated insurance record
      */
     @PutMapping("/{insuranceId}/status")
     public ResponseEntity<Insurance> updateStatus(
             @PathVariable Integer insuranceId,
             @RequestParam String status) {
-        logger.info("Updating insurance ID {} to status: {}", insuranceId, status);
+        logger.info("Updating insurance status for ID {} to {}", insuranceId, status);
         Insurance updated = service.updateInsuranceStatus(insuranceId, status);
         return ResponseEntity.ok(updated);
     }
+ 
+    /**
+     * PUT /api/insurance/{insuranceId}/booking?bookingId=123
+     * Attaches a bookingId to the insurance after the booking is confirmed.
+     * This is typically called by the Booking module after booking creation.
+     *
+     * @param insuranceId ID of the insurance to update
+     * @param bookingId ID of the associated booking
+     * @return Updated insurance record with bookingId set
+     */
+    @PutMapping("/{insuranceId}/booking")
+    public ResponseEntity<Insurance> attachBookingId(
+            @PathVariable Integer insuranceId,
+            @RequestParam Integer bookingId) {
+        logger.info("Attaching bookingId {} to insuranceId {}", bookingId, insuranceId);
+        Insurance updated = service.updateBookingId(insuranceId, bookingId);
+        return ResponseEntity.ok(updated);
+    }
 }
-
  

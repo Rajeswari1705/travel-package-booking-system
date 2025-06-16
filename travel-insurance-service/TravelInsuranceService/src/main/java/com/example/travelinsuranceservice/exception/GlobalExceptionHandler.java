@@ -7,49 +7,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
  
 /**
- * Global exception handler to manage all exceptions in a uniform way.
- * Handles validation errors, resource not found, and general exceptions.
+ * Handles all exceptions across the application in a unified format.
  */
-@RestControllerAdvice // Tells Spring this class handles exceptions across the entire app
+@RestControllerAdvice
 public class GlobalExceptionHandler {
  
-    /**
-     * Handles ResourceNotFoundException (custom).
-     *
-     * @param ex custom exception
-     * @return map with error message and 404 NOT FOUND
-     */
+    // Handles custom not-found exceptions
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleNotFound(ResourceNotFoundException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage()); // Message comes from exception thrown in service
+        error.put("error", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
  
-    /**
-     * Handles @Valid validation errors (like missing fields or null values).
-     *
-     * @param ex Spring’s built-in validation error object
-     * @return map of all field errors and messages
-     */
+    // Handles input validation failures (e.g. null fields, missing @Valid values)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors()
-            .forEach(e -> errors.put(e.getField(), e.getDefaultMessage())); // Collect all field validation errors
+                .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
  
-    /**
-     * Handles any other unexpected or unhandled exception.
-     *
-     * @param ex the uncaught exception
-     * @return generic message with 500 INTERNAL SERVER ERROR
-     */
+    // Handles invalid user/booking ID validation via Feign clients
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidInput(InvalidInputException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+ 
+    // Handles any other unexpected exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneral(Exception ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", "Unexpected error occurred: " + ex.getMessage());
+        error.put("error", "Unexpected error: " + ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -4,6 +4,7 @@ package com.example.travelinsuranceservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
  
 /**
@@ -20,6 +21,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  *   - @EnableAutoConfiguration: tells Spring Boot to auto-configure beans based on dependencies
  *   - @ComponentScan: scans this package and all sub-packages for Spring components
  */
+@EnableFeignClients(basePackages="com.example.travelinsuranceservice.client")
 @SpringBootApplication
 @EnableDiscoveryClient //Enables Eureka client functionality
 public class TravelInsuranceApplication {
