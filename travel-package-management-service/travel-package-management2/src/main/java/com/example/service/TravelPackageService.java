@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.client.UserClient;
+import com.example.dto.UserDTO;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.TravelPackage;
 import com.example.repository.TravelPackageRepository;
@@ -56,16 +57,46 @@ public class TravelPackageService {
 
     // Create package
     public TravelPackage createPackage(TravelPackage travelPackage) {
-        logger.info("Creating new travel package: {}", travelPackage.getTitle());
-        
-       try {
-       	userClient.getUserById(travelPackage.getAgentId());
-       }catch (Exception e) {
-       	logger.error("Agent ID {} not found in User Management Service", travelPackage.getAgentId());
-       	throw new IllegalArgumentException("Agent with ID"+ travelPackage.getAgentId() + " not found");
-        }
-        return repository.save(travelPackage);
-    }
+    	
+    	Long agentId = travelPackage.getAgentId();
+    	logger.info("Validating agent ID: {}", agentId);
+    	
+    	try {
+    		UserDTO user = userClient.getUserById(agentId);
+    		logger.info("User fetched from User Service: {}", user);
+    		
+    		if(user == null) {
+    			throw new ResourceNotFoundException("User not found for ID: "+agentId);
+    		}
+    		
+    		if(!"AGENT".equalsIgnoreCase(user.getRole())) {
+    			logger.warn("User with ID {} is not an agent. Role: {}", agentId, user.getRole());
+    			throw new IllegalArgumentException("User is not authorized to create travel packages.");
+    			
+    		}
+    		
+    	}catch(Exception e) {
+    			logger.error("Feign call failed for agentId {}: {}", agentId, e.getMessage());
+    			throw new ResourceNotFoundException("Agent with ID "+ agentId+" not found or invalid.");
+    			
+    		}
+    		return repository.save(travelPackage);
+    	}
+    	
+    	
+    	
+    	
+    	
+//        logger.info("Creating new travel package: {}", travelPackage.getTitle());
+//        
+//       try {
+//       	userClient.getUserById(travelPackage.getAgentId());
+//       }catch (Exception e) {
+//       	logger.error("Agent ID {} not found in User Management Service", travelPackage.getAgentId());
+//       	throw new IllegalArgumentException("Agent with ID"+ travelPackage.getAgentId() + " not found");
+//        }
+//        return repository.save(travelPackage);
+    
 
     // Update package
     public TravelPackage updatePackage(Long id, TravelPackage updatedPackage) {
