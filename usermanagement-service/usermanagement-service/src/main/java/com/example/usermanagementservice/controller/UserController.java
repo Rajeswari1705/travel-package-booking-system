@@ -2,6 +2,7 @@ package com.example.usermanagementservice.controller;
  
 
 import com.example.usermanagementservice.dto.PackageDTO;
+import com.example.usermanagementservice.dto.UserDTO;
 import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.exception.RoleChangeNotAllowedException;
 import com.example.usermanagementservice.model.User;
@@ -165,6 +166,16 @@ public class UserController {
      
         return ResponseEntity.ok(Collections.singletonMap("message", "Your profile has been deleted."));
     }
+    
+    /*---------------------------------*/
+    
+	// Internal endpoint for microservices (e.g., Travel Package Service)
+	@GetMapping("/internal/{id}")
+	public ResponseEntity<UserDTO> getUserForInternalUse(@PathVariable Long id) {
+		User user = userService.getUserById(id); // No security check
+		UserDTO userDTO = userService.convertToDTO(user);
+		return ResponseEntity.ok(userDTO);
+	}
     
     //To fetch all the packages under a travel agent
     @GetMapping("/users/{id}/packages")
