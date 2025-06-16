@@ -198,5 +198,7 @@ public class UserController {
     	List<PackageDTO> packages = userService.getPackagesOfAgent(id);
     	return ResponseEntity.ok(packages);
     }
+    
+    
      
 }
