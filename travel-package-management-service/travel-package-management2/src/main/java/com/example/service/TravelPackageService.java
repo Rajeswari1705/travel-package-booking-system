@@ -151,6 +151,15 @@ public class TravelPackageService {
      
     return repository.save(existing);
     }
+    //SEARCHING A PACKAGE
+    public List<TravelPackage> searchByTitle(String title) {
+        return repository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<TravelPackage> searchByPrice(double maxPrice) {
+        return repository.findByPriceLessThanEqual(maxPrice);
+    }
+
 
     // Delete package
     public void deletePackage(Long id) {

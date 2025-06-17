@@ -25,6 +25,20 @@ public class TravelPackageController {
         List<TravelPackage> packages = service.getAllPackages();
         return ResponseEntity.ok(new ApiResponse(true, "All packages retrieved ", packages));
     }
+    
+    @GetMapping("/search/by-title")
+    public ResponseEntity<ApiResponse> getByTitle(@RequestParam String title) {
+        List<TravelPackage> packages = service.searchByTitle(title);
+        return ResponseEntity.ok(new ApiResponse(true, "Packages found", packages));
+    }
+
+    @GetMapping("/search/by-price")
+    public ResponseEntity<ApiResponse> getByPrice(@RequestParam double maxPrice) {
+        List<TravelPackage> packages = service.searchByPrice(maxPrice);
+        return ResponseEntity.ok(new ApiResponse(true, "Packages under price", packages));
+    }
+
+    
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {

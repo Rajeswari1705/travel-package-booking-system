@@ -42,12 +42,21 @@ public class GatewayRoutesConfig {
 					    .path("/api/reviews/**")
 					    
 					    .uri("lb://RatingsAndReview"))  // send to service named "ratings-and-review-service"
-				// Route to user-service
+				// Route to review-service
 				.route("agent-responses-service", route -> route
-					    .path("agent-responses-service")
+					    .path("/api/agent-responses/**")
 					    
 					    .uri("lb://RatingsAndReview")) // send to service named "ratings-and-review-service"
-
+				// Route to Booking and Payment Module
+				.route("booking-service", route -> route
+					    .path("/api/bookings/**")
+					    
+					    .uri("lb://TravelBooking_PaymentModule"))  // send to service named "TravelBooking_PaymentModule"
+				// Route to payment end points
+				.route("payment-service", route -> route
+					    .path("/api/payments/**")
+					    
+					    .uri("lb://TravelBooking_PaymentModule")) // send to service named "TravelBooking_PaymentModule"
 
 				.build(); // Only one build() at the end
 

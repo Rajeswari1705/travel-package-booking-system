@@ -3,7 +3,6 @@ package com.booking.controller;
 import com.booking.DTO.PaymentResponseDTO;
 import com.booking.entity.Payment;
 import com.booking.service.PaymentService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -12,15 +11,10 @@ import java.util.List;
 @RequestMapping("/api/payments")
 public class PaymentController {
 
-    @Autowired
-    private PaymentService paymentService;
+    @Autowired private PaymentService paymentService;
 
-    @PostMapping
-    public PaymentResponseDTO process(@RequestBody Payment payment) {
-        // Save the payment using the service
+    @PostMapping public PaymentResponseDTO process(@RequestBody Payment payment) {
         Payment savedPayment = paymentService.processPayment(payment);
-
-        // Build the response DTO from the saved entity
         PaymentResponseDTO response = new PaymentResponseDTO();
         response.setPaymentId(savedPayment.getPaymentId());
         response.setUserId(savedPayment.getUserId());
@@ -32,13 +26,6 @@ public class PaymentController {
         return response;
     }
 
-    @GetMapping
-    public List<Payment> getAll() {
-        return paymentService.getAllPayments();
-    }
-
-    @GetMapping("/{id}")
-    public Payment getById(@PathVariable Long id) {
-        return paymentService.getPaymentById(id);
-    }
+    @GetMapping public List<Payment> getAll() { return paymentService.getAllPayments(); }
+    @GetMapping("/{id}") public Payment getById(@PathVariable Long id) { return paymentService.getPaymentById(id); }
 }

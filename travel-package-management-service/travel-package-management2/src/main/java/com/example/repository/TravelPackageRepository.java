@@ -10,5 +10,7 @@ import com.example.model.TravelPackage;
  */
 public interface TravelPackageRepository extends JpaRepository<TravelPackage, Long> {
 	List<TravelPackage> findByAgentId(Long agentId);
-	
+	List<TravelPackage> findByTitleContainingIgnoreCase(String title);
+	List<TravelPackage> findByPriceLessThanEqual(double price);
+
 }
