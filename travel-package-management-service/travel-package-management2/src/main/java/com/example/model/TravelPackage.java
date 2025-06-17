@@ -20,6 +20,7 @@ public class TravelPackage {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="package_id")
     private Long packageId;
 	
 	@NotNull(message="Agent ID is required")
@@ -47,22 +48,30 @@ public class TravelPackage {
     @NotNull(message="Trip end date is required")
     private LocalDate tripEndDate;
     
+    
+    @ElementCollection
+    @CollectionTable(name="travel_package_highlights", joinColumns= @JoinColumn(name="travel_package_package_id"))
+    @Column(name="highlight")
     @NotNull(message = "Highlights cannot be null")
     private List<@NotBlank(message = "Highlight item cannot be blank") String> highlights;
  
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name="travel_package_id")
     @NotNull(message = "Flights must not be null")
     private List<@Valid Flight> flights;
  
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name="travel_package_id")
     @NotNull(message = "Hotels must not be null")
     private List<@Valid Hotel> hotels;
  
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name="travel_package_id")
     @NotNull(message = "Sightseeing must not be null")
     private List<@Valid Sightseeing> sightseeing;
  
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+    @JoinColumn(name="travel_package_id")
     @NotNull(message = "Itinerary must not be null")
     private List<@Valid Itinerary> itinerary;
  

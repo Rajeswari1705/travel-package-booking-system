@@ -103,26 +103,41 @@ public class TravelPackageService {
 
     // Update package
     public TravelPackage updatePackage(Long id, TravelPackage updatedPackage) {
-        logger.info("Updating travel package with ID: {}", id);
-        return repository.findById(id)
-                .map(existing -> {
-                    existing.setTitle(updatedPackage.getTitle());
-                    existing.setDescription(updatedPackage.getDescription());
-                    existing.setDuration(updatedPackage.getDuration());
-                    existing.setPrice(updatedPackage.getPrice());
-                    existing.setHighlights(updatedPackage.getHighlights());
-                    existing.setFlights(updatedPackage.getFlights());
-                    existing.setHotels(updatedPackage.getHotels());
-                    existing.setSightseeing(updatedPackage.getSightseeing());
-                    existing.setItinerary(updatedPackage.getItinerary());
-                    existing.setOffer(updatedPackage.getOffer());
-                    logger.info("Package updated successfully with ID: {}", id);
-                    return repository.save(existing);
-                })
-                .orElseThrow(() -> {
-                    logger.warn("Package not found for update with ID: {}", id);
-                    return new ResourceNotFoundException("Package not found with ID: " + id);
-                });
+        TravelPackage existing = repository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Package not found with ID: " + id));
+     
+        existing.setTitle(updatedPackage.getTitle());
+        existing.setDescription(updatedPackage.getDescription());
+        existing.setDuration(updatedPackage.getDuration());
+        existing.setPrice(updatedPackage.getPrice());
+        existing.setMaxCapacity(updatedPackage.getMaxCapacity());
+        existing.setTripStartDate(updatedPackage.getTripStartDate());
+        existing.setTripEndDate(updatedPackage.getTripEndDate());
+        existing.setHighlights(updatedPackage.getHighlights());
+        existing.setOffer(updatedPackage.getOffer());
+     
+        // ✅ Safely update child lists — DO NOT use setFlights()
+        if (updatedPackage.getFlights() != null) {
+            existing.getFlights().clear();
+            existing.getFlights().addAll(updatedPackage.getFlights());
+        }
+     
+        if (updatedPackage.getHotels() != null) {
+            existing.getHotels().clear();
+            existing.getHotels().addAll(updatedPackage.getHotels());
+        }
+     
+        if (updatedPackage.getSightseeing() != null) {
+            existing.getSightseeing().clear();
+            existing.getSightseeing().addAll(updatedPackage.getSightseeing());
+        }
+     
+        if (updatedPackage.getItinerary() != null) {
+            existing.getItinerary().clear();
+            existing.getItinerary().addAll(updatedPackage.getItinerary());
+        }
+     
+    return repository.save(existing);
     }
 
     // Delete package
