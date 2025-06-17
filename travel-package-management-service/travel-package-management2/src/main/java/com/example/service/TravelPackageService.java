@@ -1,8 +1,19 @@
 package com.example.service;
 
 import com.example.client.UserClient;
+import com.example.dto.FlightDTO;
+import com.example.dto.HotelDTO;
+import com.example.dto.ItineraryDTO;
+import com.example.dto.OfferDTO;
+import com.example.dto.SightseeingDTO;
+import com.example.dto.TravelPackageDTO;
 import com.example.dto.UserDTO;
 import com.example.exception.ResourceNotFoundException;
+import com.example.model.Flight;
+import com.example.model.Hotel;
+import com.example.model.Itinerary;
+import com.example.model.Offer;
+import com.example.model.Sightseeing;
 import com.example.model.TravelPackage;
 import com.example.repository.TravelPackageRepository;
 import org.slf4j.Logger;
@@ -10,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -150,6 +162,86 @@ public class TravelPackageService {
         repository.deleteById(id);
         logger.info("Package deleted successfully with ID: {}", id);
     }
+    
+    
+    //DTO 
+    public TravelPackageDTO convertToDTO(TravelPackage pkg) {
+        TravelPackageDTO dto = new TravelPackageDTO();
+     
+        // Basic Fields
+        dto.setPackageId(pkg.getPackageId());
+        dto.setAgentId(pkg.getAgentId());
+        dto.setTitle(pkg.getTitle());
+        dto.setDescription(pkg.getDescription());
+        dto.setDuration(pkg.getDuration());
+        dto.setPrice(pkg.getPrice());
+        dto.setMaxCapacity(pkg.getMaxCapacity());
+        dto.setTripStartDate(pkg.getTripStartDate());
+        dto.setTripEndDate(pkg.getTripEndDate());
+        dto.setHighlights(pkg.getHighlights());
+     
+        // Flights
+        List<FlightDTO> flightDTOs = new ArrayList<>();
+        for (Flight f : pkg.getFlights()) {
+            FlightDTO fd = new FlightDTO();
+            fd.setAirline(f.getAirline());
+            fd.setFromCity(f.getFromCity());
+            fd.setToCity(f.getToCity());
+            fd.setDepartureTime(f.getDepartureTime());
+            fd.setArrivalTime(f.getArrivalTime());
+            flightDTOs.add(fd);
+        }
+        dto.setFlights(flightDTOs);
+     
+        // Hotels
+        List<HotelDTO> hotelDTOs = new ArrayList<>();
+        for (Hotel h : pkg.getHotels()) {
+            HotelDTO hd = new HotelDTO();
+            hd.setName(h.getName());
+            hd.setCity(h.getCity());
+            hd.setRating(h.getRating());
+            hd.setNights(h.getNights());
+            hd.setCostPerNight(h.getCostPerNight());
+            hotelDTOs.add(hd);
+        }
+        dto.setHotels(hotelDTOs);
+     
+        // Sightseeing
+        List<SightseeingDTO> sightseeingDTOs = new ArrayList<>();
+        for (Sightseeing s : pkg.getSightseeing()) {
+            SightseeingDTO sd = new SightseeingDTO();
+            sd.setLocation(s.getLocation());
+            sd.setDescription(s.getDescription());
+            sightseeingDTOs.add(sd);
+        }
+        dto.setSightseeing(sightseeingDTOs);
+     
+        // Itinerary
+        List<ItineraryDTO> itineraryDTOs = new ArrayList<>();
+        for (Itinerary i : pkg.getItinerary()) {
+            ItineraryDTO id = new ItineraryDTO();
+            id.setDayNumber(i.getDayNumber());
+            id.setActivityTitle(i.getActivityTitle());
+            id.setActivityDescription(i.getActivityDescription());
+            itineraryDTOs.add(id);
+        }
+        dto.setItinerary(itineraryDTOs);
+     
+        // Offer
+        Offer offer = pkg.getOffer();
+        if (offer != null) {
+            OfferDTO od = new OfferDTO();
+            od.setCouponCode(offer.getCouponCode());
+            od.setDescription(offer.getDescription());
+            od.setDiscountPercentage(offer.getDiscountPercentage());
+            od.setActive(offer.isActive());
+            dto.setOffer(od);
+        }
+     
+        return dto;
+    }
+     
+     
 }
 
  

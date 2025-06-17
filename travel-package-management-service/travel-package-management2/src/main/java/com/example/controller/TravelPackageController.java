@@ -6,6 +6,7 @@ import com.example.service.TravelPackageService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.dto.*;
 
 import java.util.List;
 
@@ -52,5 +53,14 @@ public class TravelPackageController {
     public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
         service.deletePackage(id);
         return ResponseEntity.ok(new ApiResponse(true, "Package deleted successfully", null));
+    }
+    
+    //for DTO implementation
+    
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<?> getPackageWithAllDetails(@PathVariable Long id){
+    	TravelPackage pkg = service.getPackageById(id);
+    	TravelPackageDTO dto = service.convertToDTO(pkg);
+    	return ResponseEntity.ok(new ApiResponse(true, "Package with full details", dto));
     }
 }
