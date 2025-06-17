@@ -6,4 +6,5 @@ import lombok.Data;
 public class TravelPackageDTO {
     private Long packageId;
     private Long agentId;
+    private String title; 
 }

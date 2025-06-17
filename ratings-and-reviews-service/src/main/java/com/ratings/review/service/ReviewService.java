@@ -65,4 +65,15 @@ public class ReviewService {
                 .filter(review -> review.getPackageId().equals(packageId))
                 .toList();
     }
+    /**
+     * finding average rating for a package
+     */
+    public double getAverageRatingForPackage(Long packageId) {
+        List<Review> reviews = getReviewsByPackage(packageId);
+        return reviews.stream()
+                      .mapToInt(Review::getRating)
+                      .average()
+                      .orElse(0.0);
+    }
+
 }

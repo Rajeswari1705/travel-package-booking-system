@@ -60,6 +60,16 @@ public class ReviewController {
         logger.info("Fetching reviews for package ID {}", packageId);
         return reviewService.getReviewsByPackage(packageId);
     }
+    
+    /** 
+     * average rating
+     */
+    @GetMapping("/{packageId}/average-rating")
+    public ResponseEntity<Double> getAverageRating(@PathVariable Long packageId) {
+        double avgRating = reviewService.getAverageRatingForPackage(packageId);
+        return ResponseEntity.ok(avgRating);
+    }
+
 
     /**
      * Update an existing review
