@@ -1,5 +1,7 @@
 package com.example.usermanagementservice.service.impl;
 import com.example.usermanagementservice.model.User;
+
+import jakarta.servlet.http.HttpServletRequest;
 import com.example.usermanagementservice.repository.UserRepository;
 import com.example.usermanagementservice.service.UserService;
 import org.slf4j.Logger;
@@ -122,10 +124,13 @@ public class UserServiceImpl implements UserService {
 	
 	//to get all the created packages of an agent
 	@Override
-	public List<PackageDTO> getPackagesOfAgent(Long agentId) {
-		logger.info("Fetching packages for agent ID: {}", agentId);
-		return travelPackageClient.getPackagesByAgentId(agentId);
-	}
+    public List<PackageDTO> getPackagesOfAgent(Long id) {
+        // ✅ Pass `id` as `agentId`
+        return travelPackageClient.getPackagesByAgentId(id);
+    }
+
+	
+	
 	
 	//convert user to userDTO for the user data transfer to other services
 	public UserDTO convertToDTO(User user) {

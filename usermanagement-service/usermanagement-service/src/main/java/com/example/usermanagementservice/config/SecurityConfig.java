@@ -22,9 +22,10 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())  // Disable CSRF protection for APIs (stateless)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/users/register").permitAll() // Allow login/register
-                .requestMatchers("/api/users/internal/**").permitAll()
-                .anyRequest().authenticated() // All other endpoints need JWT
+
+            	    .requestMatchers("/api/auth/**", "/api/users/register", "/api/users/internal/{id}").permitAll()
+            	    .requestMatchers("/api/users/{id}/packages").permitAll() 
+            	    .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No HTTP session saved

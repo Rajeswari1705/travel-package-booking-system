@@ -193,12 +193,10 @@ public class UserController {
 	
     
     //To fetch all the packages under a travel agent
-    @GetMapping("/users/{id}/packages")
-    public ResponseEntity<?> getPackagesOfAgent(@PathVariable Long id){
-    	List<PackageDTO> packages = userService.getPackagesOfAgent(id);
-    	return ResponseEntity.ok(packages);
+	@GetMapping("/{id}/packages")
+    public ResponseEntity<?> getPackagesOfAgent(@PathVariable Long id) {
+        List<PackageDTO> packages = userService.getPackagesOfAgent(id); 
+        return ResponseEntity.ok(packages);
     }
-    
-    
-     
+
 }

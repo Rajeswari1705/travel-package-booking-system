@@ -12,6 +12,6 @@ import com.example.dto.UserDTO;
 public interface UserClient {
 	
 	@GetMapping("/api/users/internal/{id}")
-	UserDTO getUserById(@PathVariable("id") Long id);
+	UserDTO getUserById(@PathVariable("id") Long agentid);
 
 }
