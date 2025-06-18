@@ -79,6 +79,19 @@ public class TravelPackage {
     @Valid
     private Offer offer;
     
+    //new things
+    
+    @NotBlank(message = "Country is required")
+    private String country;
+    
+    @NotBlank(message = "destination is required")
+    private String destination;
+    
+    @NotBlank(message = "trip type is required")
+    private String tripType;
+    
+    
+    
     
 
 	

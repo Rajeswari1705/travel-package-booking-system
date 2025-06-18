@@ -239,6 +239,10 @@ public class TravelPackageService {
             od.setActive(offer.isActive());
             dto.setOffer(od);
         }
+        
+        dto.setCountry(pkg.getCountry());
+        dto.setDestination(pkg.getDestination());
+        dto.setTripType(pkg.getTripType());
      
         return dto;
     }
@@ -256,8 +260,9 @@ public class TravelPackageService {
     public List<TravelPackage> searchByOffer(String couponCode) {
         return repository.findByOffer_CouponCode(couponCode);
     }
+    
+    
 
-     
      
 }
 

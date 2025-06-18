@@ -23,5 +23,10 @@ public class TravelPackageDTO {
 	private List<ItineraryDTO> itinerary;
 	private OfferDTO offer;
 	
+	//newly added fields
+	private String country;
+	private String destination;
+	private String tripType;
+	
 
 }
