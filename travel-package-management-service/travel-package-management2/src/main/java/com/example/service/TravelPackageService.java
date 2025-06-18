@@ -53,7 +53,7 @@ public class TravelPackageService {
                     return new ResourceNotFoundException("Package not found with ID: " + id);
                 });
     }
-    
+    //for getting packages using agentid
     public List<TravelPackage> getPackageByAgentId(Long agentId){
     	logger.info("Fetching packages for agent ID: {} ", agentId);
     	

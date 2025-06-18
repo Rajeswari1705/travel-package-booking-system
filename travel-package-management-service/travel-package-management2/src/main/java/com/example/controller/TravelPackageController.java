@@ -84,4 +84,16 @@ public class TravelPackageController {
     	TravelPackageDTO dto = service.convertToDTO(pkg);
     	return ResponseEntity.ok(new ApiResponse(true, "Package with full details", dto));
     }
+    
+    // admin fetch packages by agent id
+    @GetMapping("/admin/agent/{agentId}")
+    public ResponseEntity<?> getPackagesByAgentId(@PathVariable Long agentId) {
+        List<TravelPackage> packages = service.getPackageByAgentId(agentId);
+     
+    List dtoList = packages.stream()
+            .map(service::convertToDTO)
+            .toList();
+     
+        return ResponseEntity.ok(new ApiResponse(true, "Packages for agent retrieved", dtoList));
+    }
 }
