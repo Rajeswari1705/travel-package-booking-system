@@ -1,21 +1,25 @@
 package com.example.travelinsuranceservice.service;
  
+import com.example.travelinsuranceservice.client.BookingClient;
 import com.example.travelinsuranceservice.client.UserClient;
-import com.example.travelinsuranceservice.exception.InvalidInputException;
-import com.example.travelinsuranceservice.exception.ResourceNotFoundException;
+import com.example.travelinsuranceservice.dto.*;
+import com.example.travelinsuranceservice.exception.*;
 import com.example.travelinsuranceservice.model.Insurance;
 import com.example.travelinsuranceservice.repository.InsuranceRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
  
 import java.util.List;
  
 /**
- * Service layer that handles all business logic related to Insurance operations.
- * This class is used by the controller to separate logic from HTTP handling.
+ * Business logic for managing Insurance operations.
  */
 @Service
 public class InsuranceService {
+ 
+    private static final Logger logger = LoggerFactory.getLogger(InsuranceService.class);
  
     @Autowired
     private InsuranceRepository repo;
@@ -23,59 +27,62 @@ public class InsuranceService {
     @Autowired
     private UserClient userClient;
  
+    @Autowired
+    private BookingClient bookingClient;
+ 
     /**
-     * Creates a new insurance record after validating userId using Feign client.
-     * bookingId is not required during creation.
-     *
-     * @param insurance The insurance object sent from controller
-     * @return Saved insurance object in database
-     * @throws InvalidInputException if userId is not valid
+     * Creates a new insurance after validating userId via UserClient.
      */
-    public Insurance createInsurance(Insurance insurance) {
-        if (!userClient.isUserValid(insurance.getUserId())) {
-            throw new InvalidInputException("Invalid user ID: " + insurance.getUserId());
+    public Insurance createInsurance(InsuranceRequestDTO dto) {
+        logger.info("Validating userId: {}", dto.getUserId());
+        if (userClient.getUserById(dto.getUserId()) == null) {
+            logger.error("Invalid userId: {}", dto.getUserId());
+            throw new InvalidInputException("Invalid user ID: " + dto.getUserId());
         }
+ 
+        Insurance insurance = new Insurance();
+        insurance.setUserId(dto.getUserId());
+        insurance.setCoverageType(dto.getCoverageType());
+ 
+        logger.info("Saving insurance for userId {}", dto.getUserId());
         return repo.save(insurance);
     }
  
     /**
-     * Fetches all insurance records associated with a specific userId.
-     *
-     * @param userId ID of the user
-     * @return List of insurance records for the user
-     */
-    public List<Insurance> getUserInsurance(Integer userId) {
-        return repo.findByUserId(userId);
-    }
- 
-    /**
-     * Updates the insurance status like "APPROVED", "CANCELLED", etc.
-     *
-     * @param insuranceId ID of the insurance to update
-     * @param status New status to set
-     * @return Updated insurance object
-     * @throws ResourceNotFoundException if insuranceId is invalid
-     */
-    public Insurance updateInsuranceStatus(Integer insuranceId, String status) {
-        Insurance insurance = repo.findById(insuranceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Insurance ID not found: " + insuranceId));
-        insurance.setStatus(status);
-        return repo.save(insurance);
-    }
- 
-    /**
-     * Sets the bookingId field after the booking is created in Booking module.
-     *
-     * @param insuranceId ID of the insurance to attach booking to
-     * @param bookingId The newly created booking ID
-     * @return Insurance with updated bookingId
-     * @throws ResourceNotFoundException if insuranceId is invalid
+     * Updates insurance with bookingId after Booking module creates it.
      */
     public Insurance updateBookingId(Integer insuranceId, Integer bookingId) {
         Insurance insurance = repo.findById(insuranceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Insurance ID not found: " + insuranceId));
+                .orElseThrow(() -> new ResourceNotFoundException("Insurance not found: " + insuranceId));
+ 
+        BookingDTO booking = bookingClient.getBookingById(bookingId);
+        if (booking == null) {
+            logger.error("Invalid booking ID: {}", bookingId);
+            throw new InvalidInputException("Invalid booking ID: " + bookingId);
+        }
+ 
         insurance.setBookingId(bookingId);
+        logger.info("Linked bookingId {} to insuranceId {}", bookingId, insuranceId);
         return repo.save(insurance);
+    }
+ 
+    /**
+     * Updates the status of an insurance policy.
+     */
+    public Insurance updateStatus(Integer insuranceId, String status) {
+        Insurance insurance = repo.findById(insuranceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Insurance not found: " + insuranceId));
+        insurance.setStatus(status);
+        logger.info("Updated insurance status for {} to {}", insuranceId, status);
+        return repo.save(insurance);
+    }
+ 
+    /**
+     * Returns all insurance records for a given user.
+     */
+    public List<Insurance> getUserInsurance(Integer userId) {
+        logger.info("Fetching insurance list for userId: {}", userId);
+        return repo.findByUserId(userId);
     }
 }
  

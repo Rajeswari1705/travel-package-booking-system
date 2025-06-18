@@ -1,24 +1,23 @@
 package com.example.travelinsuranceservice.client;
  
+import com.example.travelinsuranceservice.dto.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
  
 /**
- * Feign client to communicate with the User Management service.
- * Uses Eureka service discovery with name 'user-service'.
+ * Feign client to communicate with the User module.
  */
-@FeignClient(name = "usermanagement-service")  // application name of the user service
+@FeignClient(name = "user-service")
 public interface UserClient {
  
     /**
-     * Calls the User service to verify if the provided user ID exists.
-     *
-     * @param userId the ID of the user to validate
-     * @return true if the user exists, false otherwise
+     * Fetch user details by userId from the User module.
+     * @param userId the ID of the user
+     * @return the UserDTO containing user information
      */
-    @GetMapping("/api/users/validate/{userId}")
-    boolean isUserValid(@PathVariable("userId") Integer userId);
+    @GetMapping("/api/users/internal/{id}")
+    UserDTO getUserById(@PathVariable("id") Integer userId);
 }
 
  

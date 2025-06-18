@@ -1,56 +1,66 @@
 package com.example.travelinsuranceservice.service;
  
-import com.example.travelinsuranceservice.exception.ResourceNotFoundException;
+import com.example.travelinsuranceservice.client.UserClient;
+import com.example.travelinsuranceservice.dto.AssistanceRequestDTO;
+import com.example.travelinsuranceservice.exception.*;
 import com.example.travelinsuranceservice.model.AssistanceRequest;
 import com.example.travelinsuranceservice.repository.AssistanceRequestRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
  
 import java.util.List;
  
 /**
- * Service layer for Assistance Request module.
- * Manages creation, fetching, and status updates.
+ * Business logic for managing Assistance requests.
  */
 @Service
 public class AssistanceRequestService {
  
+    private static final Logger logger = LoggerFactory.getLogger(AssistanceRequestService.class);
+ 
     @Autowired
     private AssistanceRequestRepository repo;
  
+    @Autowired
+    private UserClient userClient;
+ 
     /**
-     * Creates a new assistance request.
-     * Timestamp and resolution time are auto-set in the entity.
-     *
-     * @param request Assistance request object
-     * @return persisted AssistanceRequest
+     * Validates user and creates a new assistance request.
      */
-    public AssistanceRequest createRequest(AssistanceRequest request) {
+    public AssistanceRequest createRequest(AssistanceRequestDTO dto) {
+        logger.info("Validating userId: {}", dto.getUserId());
+        if (userClient.getUserById(dto.getUserId()) == null) {
+            logger.error("Invalid userId: {}", dto.getUserId());
+            throw new InvalidInputException("Invalid user ID: " + dto.getUserId());
+        }
+ 
+        AssistanceRequest request = new AssistanceRequest();
+        request.setUserId(dto.getUserId());
+        request.setIssueDescription(dto.getIssueDescription());
+ 
+        logger.info("Saving new assistance request for userId: {}", dto.getUserId());
         return repo.save(request);
     }
  
     /**
-     * Retrieves all assistance requests submitted by a user.
-     *
-     * @param userId User's ID
-     * @return List of assistance requests
-     */
-    public List<AssistanceRequest> getRequestsByUser(Integer userId) {
-        return repo.findByUserId(userId);
-    }
- 
-    /**
-     * Updates the status of an existing request (e.g., to 'Resolved').
-     *
-     * @param requestId ID of the request to update
-     * @param status New status value
-     * @return Updated AssistanceRequest object
+     * Updates the status of an existing assistance request.
      */
     public AssistanceRequest updateStatus(Integer requestId, String status) {
         AssistanceRequest req = repo.findById(requestId)
-                .orElseThrow(() -> new ResourceNotFoundException("Assistance Request ID not found: " + requestId));
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found: " + requestId));
         req.setStatus(status);
+        logger.info("Updated status for requestId {} to {}", requestId, status);
         return repo.save(req);
+    }
+ 
+    /**
+     * Fetches all assistance records for a specific user.
+     */
+    public List<AssistanceRequest> getByUser(Integer userId) {
+        logger.info("Fetching assistance list for userId: {}", userId);
+        return repo.findByUserId(userId);
     }
 }
  
