@@ -6,7 +6,8 @@ import com.example.usermanagementservice.model.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import com.example.usermanagementservice.dto.PackageDTO;
+//import com.example.usermanagementservice.dto.PackageDTO;
+import com.example.usermanagementservice.dto.TravelPackageDTO;
 import com.example.usermanagementservice.dto.UserDTO;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface UserService {
 	UserRoleCountResponse getUserRoleCounts();
 	
 	//get all packages created by clients
-	List<PackageDTO> getPackagesOfAgent(Long id);
+	List<TravelPackageDTO> fetchAllPackagesByAgent(Long agentId);
 
 	UserDTO convertToDTO(User user);
 }

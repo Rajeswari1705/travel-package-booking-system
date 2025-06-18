@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.usermanagementservice.dto.PackageDTO;
+//import com.example.usermanagementservice.dto.TravelPackageDTO;
+import com.example.usermanagementservice.dto.TravelPackageDTO;
 import com.example.usermanagementservice.dto.UserDTO;
 import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.exception.AdminRegistrationNotAllowedException;
@@ -124,9 +125,9 @@ public class UserServiceImpl implements UserService {
 	
 	//to get all the created packages of an agent
 	@Override
-    public List<PackageDTO> getPackagesOfAgent(Long id) {
+    public List<TravelPackageDTO> fetchAllPackagesByAgent(Long agentId) {
         // ✅ Pass `id` as `agentId`
-        return travelPackageClient.getPackagesByAgentId(id);
+        return travelPackageClient.getPackagesByAgent(agentId);
     }
 
 	

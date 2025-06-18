@@ -1,7 +1,7 @@
 package com.example.usermanagementservice.controller;
  
 
-import com.example.usermanagementservice.dto.PackageDTO;
+import com.example.usermanagementservice.dto.TravelPackageDTO;
 import com.example.usermanagementservice.dto.UserDTO;
 import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.exception.RoleChangeNotAllowedException;
@@ -193,9 +193,9 @@ public class UserController {
 	
     
     //To fetch all the packages under a travel agent
-	@GetMapping("/{id}/packages")
-    public ResponseEntity<?> getPackagesOfAgent(@PathVariable Long id) {
-        List<PackageDTO> packages = userService.getPackagesOfAgent(id); 
+	@GetMapping("admin/agents/{agentId}/packages")
+    public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long agentId) {
+        List<TravelPackageDTO> packages = userService.fetchAllPackagesByAgent(agentId); 
         return ResponseEntity.ok(packages);
     }
 

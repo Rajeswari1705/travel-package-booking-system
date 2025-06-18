@@ -25,6 +25,7 @@ public class TravelPackageController {
         List<TravelPackage> packages = service.getAllPackages();
         return ResponseEntity.ok(new ApiResponse(true, "All packages retrieved ", packages));
     }
+
     //for booking payment module
     @GetMapping("/search/title/{title}")
     public ResponseEntity<ApiResponse> getByTitlePath(@PathVariable String title) {
@@ -43,6 +44,7 @@ public class TravelPackageController {
         List<TravelPackage> packages = service.searchByOffer(couponCode);
         return ResponseEntity.ok(new ApiResponse(true, "Packages with offer", packages));
     }
+
 
 
     
@@ -84,6 +86,7 @@ public class TravelPackageController {
     	TravelPackageDTO dto = service.convertToDTO(pkg);
     	return ResponseEntity.ok(new ApiResponse(true, "Package with full details", dto));
     }
+
     
     // admin fetch packages by agent id
     @GetMapping("/admin/agent/{agentId}")
@@ -96,4 +99,18 @@ public class TravelPackageController {
      
         return ResponseEntity.ok(new ApiResponse(true, "Packages for agent retrieved", dtoList));
     }
+
+    @GetMapping("/search/by-title")
+    public ResponseEntity<ApiResponse> getByTitle(@RequestParam String title) {
+        List<TravelPackage> packages = service.searchByTitle(title);
+        return ResponseEntity.ok(new ApiResponse(true, "Packages found", packages));
+    }
+
+    @GetMapping("/search/by-price")
+    public ResponseEntity<ApiResponse> getByPrice(@RequestParam double maxPrice) {
+        List<TravelPackage> packages = service.searchByPrice(maxPrice);
+        return ResponseEntity.ok(new ApiResponse(true, "Packages under price", packages));
+    }
+
+
 }
