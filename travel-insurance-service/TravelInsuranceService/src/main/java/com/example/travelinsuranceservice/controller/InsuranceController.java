@@ -42,7 +42,7 @@ public class InsuranceController {
      * PUT /api/insurance/{insuranceId}/booking?bookingId=123
      * Attach a bookingId to an existing insurance policy.
      */
-    @PutMapping("/{insuranceId}/booking")
+    @PutMapping("/{insuranceId}/bookings")
     public ResponseEntity<Insurance> updateBooking(@PathVariable Integer insuranceId,
                                                    @RequestParam Integer bookingId) {
         logger.info("Linking bookingId {} to insuranceId {}", bookingId, insuranceId);
