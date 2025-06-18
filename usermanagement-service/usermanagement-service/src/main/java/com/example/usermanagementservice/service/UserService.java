@@ -19,7 +19,10 @@ public interface UserService {
 	
 	void deleteUser(Long id); //deletes user
 	User getUserById(Long id); //View profile
-	User updateUserProfile(Long id, User updatedUser);//Update profile like user management in their profile for editing profiles
+	User updateUserProfile(Long id, User updatedUser, String oldPassword, String newPassword);//Update profile like user management in their profile for editing profiles
+	
+	//letting admin to update any user's details
+	User adminUpdateUserProfile(Long id, User updatedUser);
 	
 	//get user count and count by roles as well
 	UserRoleCountResponse getUserRoleCounts();

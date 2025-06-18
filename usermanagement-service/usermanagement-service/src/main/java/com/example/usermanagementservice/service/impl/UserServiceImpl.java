@@ -91,12 +91,50 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new UserNotFoundException("User not found with ID: "+ id));
 	}
 
-	//update user profile
+	//update user profile when a user is logged in
 	@Override
-	public User updateUserProfile(Long id, User updatedUser) {
-		logger.info("Updating profile for user with ID: {}", id);
+	public User updateUserProfile(Long id, User updatedUser, String oldPassword, String newPassword) {
+	    
+	logger.info("Attempting to update profile for user with ID: {}", id);
+	 
+	    // 1. Fetch the existing user from the database
+	    User existingUser = userRepository.findById(id)
+	            .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+	 
+	    // 2. Check if old password matches current password in DB
+	    if (!existingUser.getPassword().equals(oldPassword)) {
+	        logger.warn("Password mismatch for user ID: {}", id);
+	        throw new RuntimeException("Old password does not match. Update denied.");
+	    }
+	 
+	    // 3. Update basic fields
+	    existingUser.setName(updatedUser.getName());
+	    existingUser.setEmail(updatedUser.getEmail());
+	    existingUser.setContactNumber(updatedUser.getContactNumber());
+	    existingUser.setRole(updatedUser.getRole());  // ❗Optional: you can restrict this
+	 
+	    // 4. Update password only if new password is provided
+	    if (newPassword != null && !newPassword.trim().isEmpty()) {
+	        existingUser.setPassword(newPassword); // 🔐 In production, encode the password
+	logger.info("Password updated for user ID: {}", id);
+	    }
+	 
+	    // 5. Save changes
+	User savedUser = userRepository.save(existingUser);
+	logger.info("Profile successfully updated for user ID: {}", id);
+	    
+	    return savedUser;
+	}
+	
+	
+	
+	//admin can update any user details
+	@Override
+	public User adminUpdateUserProfile(Long id, User updatedUser) {
+		logger.info("Admin attempting Updating profile for user with ID: {}", id);
 		//First, get existing user
-		User existingUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+		User existingUser = userRepository.findById(id)
+										  .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
 		
 		
 		//Update fields
@@ -107,9 +145,19 @@ public class UserServiceImpl implements UserService {
 		existingUser.setContactNumber(updatedUser.getContactNumber());
 		
 		//save changes
+		logger.info("Admin updated profile for user with ID: {}", id);
 		
 		return userRepository.save(existingUser);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	//to get number of users, agents and customers
 	@Override

@@ -21,6 +21,7 @@ import com.example.usermanagementservice.security.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
  
 @RestController
 @RequestMapping("/api/users")
@@ -100,10 +101,11 @@ public class UserController {
  
         // Only ADMIN 
         if (!"ADMIN".equals(role)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: You can only update your own profile");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            		.body("Access denied: You can only update your own profile");
         }
  
-        User user = userService.updateUserProfile(id, updatedUser);
+        User user = userService.adminUpdateUserProfile(id, updatedUser);
         return ResponseEntity.ok(user);
     }
  
@@ -141,8 +143,59 @@ public class UserController {
      
         return ResponseEntity.ok(user);
     }
+    
+    
      //update their own profile details
+ // Allow a logged-in user to update their own profile details
     @PutMapping("/myprofile")
+    public ResponseEntity<?> updateMyProfile(@RequestBody Map<String, Object> payload) {
+     
+        // 1. Get logged-in user's email from JWT
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User existingUser = userService.getUserByEmail(email); // fetched from DB
+     
+        // 2. Check if the user is trying to promote themselves to ADMIN (not allowed)
+        if (!"ADMIN".equalsIgnoreCase(existingUser.getRole()) &&
+            "ADMIN".equalsIgnoreCase((String) payload.get("role"))) {
+            throw new RoleChangeNotAllowedException("You cannot assign yourself ADMIN role.");
+        }
+     
+        // 3. Prepare updatedUser object from input payload
+        User updatedUser = new User();
+        updatedUser.setId(existingUser.getId());
+        updatedUser.setName((String) payload.get("name"));
+        updatedUser.setEmail((String) payload.get("email"));
+        updatedUser.setContactNumber((String) payload.get("contactNumber"));
+        updatedUser.setRole((String) payload.get("role")); // still passing, but logic blocks ADMIN switch
+     
+        // 4. Extract passwords (if provided)
+        String oldPassword = (String) payload.get("oldPassword");
+        String newPassword = (String) payload.get("newPassword");
+     
+        // 5. Pass to service layer to validate and save
+        User user = userService.updateUserProfile(existingUser.getId(), updatedUser, oldPassword, newPassword);
+     
+        // 6. Return the updated user (or custom response)
+        return ResponseEntity.ok(user);
+    }
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   /* @PutMapping("/myprofile")
     public ResponseEntity<?> updateMyProfile(@RequestBody User updatedUser) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User existingUser = userService.getUserByEmail(email);
@@ -155,7 +208,11 @@ public class UserController {
      
         User user = userService.updateUserProfile(existingUser.getId(), updatedUser);
         return ResponseEntity.ok(user);
-    }
+    }*/
+    
+    
+    
+    
      
      //delete their own profile
     @DeleteMapping("/myprofile")
