@@ -25,7 +25,7 @@ public interface UserService {
 	UserRoleCountResponse getUserRoleCounts();
 	
 	//get all packages created by clients
-	List<TravelPackageDTO> fetchAllPackagesByAgent(Long agentId);
+	List<TravelPackageDTO> fetchAllPackagesByAgent(Long id);
 
 	UserDTO convertToDTO(User user);
 }

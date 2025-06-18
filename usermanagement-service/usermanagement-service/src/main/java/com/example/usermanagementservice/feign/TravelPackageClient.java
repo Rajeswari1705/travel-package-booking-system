@@ -9,6 +9,6 @@ import java.util.List;
 
 @FeignClient(name = "travel-package-management")
 public interface TravelPackageClient {
-    @GetMapping("/api/packages/admin/agent/{agentid}")
-    List<TravelPackageDTO> getPackagesByAgent(@PathVariable("agentId") Long agentId);
+    @GetMapping("/api/packages/admin/agent/{agentId}")
+    List<TravelPackageDTO> getPackagesByAgent(@PathVariable("agentId") Long id);
 }
