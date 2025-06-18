@@ -22,9 +22,15 @@ public class BookingService {
     @Autowired
     private BookingRepository bookingRepo;
 
-    @Autowired
-    private TravelPackageClient travelPackageClient;
+    private final TravelPackageClient travelPackageClient;
 
+    @Autowired
+    public BookingService(TravelPackageClient travelPackageClient) {
+        this.travelPackageClient = travelPackageClient;
+    }
+
+
+    
     public Booking createBooking(Booking booking) {
         ApiResponse response = travelPackageClient.getPackageById(Long.parseLong(booking.getPackageId()));
         Object data = response.getData();
@@ -92,30 +98,9 @@ public class BookingService {
     public List<Booking> getBookingsByPackageId(String packageId) {
         return bookingRepo.findByPackageId(packageId);
     }
-    public List<TravelPackageDTO> findPackagesByTitle(String title) {
-        ApiResponse response = travelPackageClient.searchByTitle(title);
-        return castToTravelPackageDTOList(response.getData());
-    }
+    
 
-    public List<TravelPackageDTO> findPackagesByPrice(double maxPrice) {
-        ApiResponse response = travelPackageClient.searchByPrice(maxPrice);
-        return castToTravelPackageDTOList(response.getData());
-    }
-
-    public List<TravelPackageDTO> findPackagesByOffer(String couponCode) {
-        ApiResponse response = travelPackageClient.searchByOffer(couponCode);
-        return castToTravelPackageDTOList(response.getData());
-    }
-//get packages by Id
-
-    public TravelPackageDTO getPackageById(Long id) {
-        ApiResponse response = travelPackageClient.getPackageById(id);
-        Object data = response.getData();
-        if (data instanceof TravelPackageDTO) {
-            return (TravelPackageDTO) data;
-        }
-        throw new RuntimeException("Invalid response format");
-    }
+    
 
 
 

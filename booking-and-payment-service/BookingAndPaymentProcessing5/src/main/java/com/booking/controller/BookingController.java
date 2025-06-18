@@ -1,7 +1,7 @@
 package com.booking.controller;
 
 import com.booking.entity.Booking;
-import com.booking.DTO.TravelPackageDTO;
+
 import com.booking.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,19 +41,6 @@ public class BookingController {
         return bookingService.cancelBooking(id);
     }
 
-    @GetMapping("/packages/search/title/{title}")
-    public List<TravelPackageDTO> searchPackagesByTitle(@PathVariable String title) {
-        return bookingService.findPackagesByTitle(title);
-    }
-
-    @GetMapping("/packages/search/price/{maxPrice}")
-    public List<TravelPackageDTO> searchPackagesByPrice(@PathVariable double maxPrice) {
-        return bookingService.findPackagesByPrice(maxPrice);
-    }
-
-    @GetMapping("/packages/search/offer/{couponCode}")
-    public List<TravelPackageDTO> searchPackagesByOffer(@PathVariable String couponCode) {
-        return bookingService.findPackagesByOffer(couponCode);
-    }
+ 
 
 }

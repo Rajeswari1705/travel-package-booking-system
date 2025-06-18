@@ -151,14 +151,7 @@ public class TravelPackageService {
      
     return repository.save(existing);
     }
-    //SEARCHING A PACKAGE
-    public List<TravelPackage> searchByTitle(String title) {
-        return repository.findByTitleContainingIgnoreCase(title);
-    }
-
-    public List<TravelPackage> searchByPrice(double maxPrice) {
-        return repository.findByPriceLessThanEqual(maxPrice);
-    }
+   
 
 
     // Delete package
@@ -250,6 +243,16 @@ public class TravelPackageService {
         return dto;
     }
     
+    // for booking logic
+    
+    public List<TravelPackage> searchByTitle(String title) {
+        return repository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<TravelPackage> searchByPrice(double maxPrice) {
+        return repository.findByPriceLessThanEqual(maxPrice);
+    }
+
     public List<TravelPackage> searchByOffer(String couponCode) {
         return repository.findByOffer_CouponCode(couponCode);
     }

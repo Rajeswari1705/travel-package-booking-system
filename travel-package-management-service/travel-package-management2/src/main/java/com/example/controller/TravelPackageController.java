@@ -47,6 +47,7 @@ public class TravelPackageController {
 
 
 
+
     
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -87,6 +88,7 @@ public class TravelPackageController {
     	return ResponseEntity.ok(new ApiResponse(true, "Package with full details", dto));
     }
 
+
     
     // admin fetch packages by agent id
     @GetMapping("/admin/agent/{agentId}")
@@ -100,17 +102,8 @@ public class TravelPackageController {
         return ResponseEntity.ok(new ApiResponse(true, "Packages for agent retrieved", dtoList));
     }
 
-    @GetMapping("/search/by-title")
-    public ResponseEntity<ApiResponse> getByTitle(@RequestParam String title) {
-        List<TravelPackage> packages = service.searchByTitle(title);
-        return ResponseEntity.ok(new ApiResponse(true, "Packages found", packages));
-    }
-
-    @GetMapping("/search/by-price")
-    public ResponseEntity<ApiResponse> getByPrice(@RequestParam double maxPrice) {
-        List<TravelPackage> packages = service.searchByPrice(maxPrice);
-        return ResponseEntity.ok(new ApiResponse(true, "Packages under price", packages));
-    }
-
-
+    
+    
+    
+   
 }
