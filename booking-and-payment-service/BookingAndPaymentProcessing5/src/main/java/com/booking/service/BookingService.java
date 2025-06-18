@@ -1,4 +1,5 @@
 package com.booking.service;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.booking.client.TravelPackageClient;
 import com.booking.DTO.TravelPackageDTO;
@@ -15,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
+	@Autowired
+	private ObjectMapper objectMapper;
 
     @Autowired
     private BookingRepository bookingRepo;
@@ -23,13 +26,20 @@ public class BookingService {
     private TravelPackageClient travelPackageClient;
 
     public Booking createBooking(Booking booking) {
-        TravelPackageDTO travelPackage = travelPackageClient.getPackageById(Long.parseLong(booking.getPackageId()));
+        ApiResponse response = travelPackageClient.getPackageById(Long.parseLong(booking.getPackageId()));
+        Object data = response.getData();
+
+        // Convert the response data to TravelPackageDTO
+        TravelPackageDTO travelPackage = objectMapper.convertValue(data, TravelPackageDTO.class);
+
         if (travelPackage == null) {
             throw new IllegalArgumentException("Invalid package ID");
         }
+
         booking.setStatus("CONFIRMED");
         return bookingRepo.save(booking);
     }
+
 
     public List<Booking> getAllBookings() {
         return bookingRepo.findAll();
@@ -59,12 +69,7 @@ public class BookingService {
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
 
-    public List<TravelPackageDTO> findPackagesByTitle(String title) {
-        ApiResponse response = travelPackageClient.searchByTitle(title);
-        return castToTravelPackageDTOList(response.getData());
-    }
-
- 
+    
 
     private List<TravelPackageDTO> castToTravelPackageDTOList(Object data) {
         if (data instanceof List<?>) {
@@ -87,23 +92,31 @@ public class BookingService {
     public List<Booking> getBookingsByPackageId(String packageId) {
         return bookingRepo.findByPackageId(packageId);
     }
+    public List<TravelPackageDTO> findPackagesByTitle(String title) {
+        ApiResponse response = travelPackageClient.searchByTitle(title);
+        return castToTravelPackageDTOList(response.getData());
+    }
+
     public List<TravelPackageDTO> findPackagesByPrice(double maxPrice) {
         ApiResponse response = travelPackageClient.searchByPrice(maxPrice);
-
-        if (response == null || response.getData() == null) {
-            throw new RuntimeException("No data received from Travel Package Service");
-        }
-
-        Object data = response.getData();
-
-        if (data instanceof List<?>) {
-            return ((List<?>) data).stream()
-                .filter(item -> item instanceof TravelPackageDTO)
-                .map(item -> (TravelPackageDTO) item)
-                .collect(Collectors.toList());
-        } else {
-            throw new RuntimeException("Unexpected response format: " + data.getClass().getName());
-        }
+        return castToTravelPackageDTOList(response.getData());
     }
+
+    public List<TravelPackageDTO> findPackagesByOffer(String couponCode) {
+        ApiResponse response = travelPackageClient.searchByOffer(couponCode);
+        return castToTravelPackageDTOList(response.getData());
+    }
+//get packages by Id
+
+    public TravelPackageDTO getPackageById(Long id) {
+        ApiResponse response = travelPackageClient.getPackageById(id);
+        Object data = response.getData();
+        if (data instanceof TravelPackageDTO) {
+            return (TravelPackageDTO) data;
+        }
+        throw new RuntimeException("Invalid response format");
+    }
+
+
 
 }

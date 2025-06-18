@@ -249,6 +249,11 @@ public class TravelPackageService {
      
         return dto;
     }
+    
+    public List<TravelPackage> searchByOffer(String couponCode) {
+        return repository.findByOffer_CouponCode(couponCode);
+    }
+
      
      
 }

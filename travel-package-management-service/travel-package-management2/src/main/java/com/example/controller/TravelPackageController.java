@@ -25,18 +25,25 @@ public class TravelPackageController {
         List<TravelPackage> packages = service.getAllPackages();
         return ResponseEntity.ok(new ApiResponse(true, "All packages retrieved ", packages));
     }
-    
-    @GetMapping("/search/by-title")
-    public ResponseEntity<ApiResponse> getByTitle(@RequestParam String title) {
+    //for booking payment module
+    @GetMapping("/search/title/{title}")
+    public ResponseEntity<ApiResponse> getByTitlePath(@PathVariable String title) {
         List<TravelPackage> packages = service.searchByTitle(title);
-        return ResponseEntity.ok(new ApiResponse(true, "Packages found", packages));
+        return ResponseEntity.ok(new ApiResponse(true, "Packages found by title", packages));
     }
 
-    @GetMapping("/search/by-price")
-    public ResponseEntity<ApiResponse> getByPrice(@RequestParam double maxPrice) {
+    @GetMapping("/search/price/{maxPrice}")
+    public ResponseEntity<ApiResponse> getByPricePath(@PathVariable double maxPrice) {
         List<TravelPackage> packages = service.searchByPrice(maxPrice);
         return ResponseEntity.ok(new ApiResponse(true, "Packages under price", packages));
     }
+
+    @GetMapping("/search/offer/{couponCode}")
+    public ResponseEntity<ApiResponse> getByOfferPath(@PathVariable String couponCode) {
+        List<TravelPackage> packages = service.searchByOffer(couponCode);
+        return ResponseEntity.ok(new ApiResponse(true, "Packages with offer", packages));
+    }
+
 
     
 

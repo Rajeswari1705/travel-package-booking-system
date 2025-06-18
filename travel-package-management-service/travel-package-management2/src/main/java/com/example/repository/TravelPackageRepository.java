@@ -12,5 +12,6 @@ public interface TravelPackageRepository extends JpaRepository<TravelPackage, Lo
 	List<TravelPackage> findByAgentId(Long agentId);
 	List<TravelPackage> findByTitleContainingIgnoreCase(String title);
 	List<TravelPackage> findByPriceLessThanEqual(double price);
+	List<TravelPackage> findByOffer_CouponCode(String couponCode);
 
 }
