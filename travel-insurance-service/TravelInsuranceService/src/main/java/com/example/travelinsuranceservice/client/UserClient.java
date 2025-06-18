@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * Feign client to communicate with the User Management service.
  * Uses Eureka service discovery with name 'user-service'.
  */
-@FeignClient(name = "usermanagement-service")  // This should match the application name of the user service
+@FeignClient(name = "usermanagement-service")  // application name of the user service
 public interface UserClient {
  
     /**
