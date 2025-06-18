@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.dto.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,28 +27,7 @@ public class TravelPackageController {
         return ResponseEntity.ok(new ApiResponse(true, "All packages retrieved ", packages));
     }
 
-    //for booking payment module
-    @GetMapping("/search/title/{title}")
-    public ResponseEntity<ApiResponse> getByTitlePath(@PathVariable String title) {
-        List<TravelPackage> packages = service.searchByTitle(title);
-        return ResponseEntity.ok(new ApiResponse(true, "Packages found by title", packages));
-    }
-
-    @GetMapping("/search/price/{maxPrice}")
-    public ResponseEntity<ApiResponse> getByPricePath(@PathVariable double maxPrice) {
-        List<TravelPackage> packages = service.searchByPrice(maxPrice);
-        return ResponseEntity.ok(new ApiResponse(true, "Packages under price", packages));
-    }
-
-    @GetMapping("/search/offer/{couponCode}")
-    public ResponseEntity<ApiResponse> getByOfferPath(@PathVariable String couponCode) {
-        List<TravelPackage> packages = service.searchByOffer(couponCode);
-        return ResponseEntity.ok(new ApiResponse(true, "Packages with offer", packages));
-    }
-
-
-
-
+    
     
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -79,7 +59,7 @@ public class TravelPackageController {
         return ResponseEntity.ok(new ApiResponse(true, "Package deleted successfully", null));
     }
     
-    //for DTO implementation
+   //---------------- //for DTO implementation------------------
     
     @GetMapping("/admin/{id}")
     public ResponseEntity<?> getPackageWithAllDetails(@PathVariable Long id){
@@ -98,6 +78,22 @@ public class TravelPackageController {
                       .map(service::convertToDTO)
                       .toList();
     }
+    
+    
+    //booking module fetch all the packages
+    @GetMapping("/internal/all")
+    public List<TravelPackageDTO> getAllPackagesForBookingModule(){
+    	List<TravelPackage> packages = service.getAllPackages();
+    	List<TravelPackageDTO> dtoList = new ArrayList<>();
+    	for(TravelPackage pkg: packages) {
+    		dtoList.add(service.convertToDTO(pkg));
+    	}
+    	return dtoList;
+    	
+    }
+    
+    
+    
     
     
     /*@GetMapping("/admin/agent/{agentId}")
