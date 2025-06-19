@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
 		//Update fields
 		existingUser.setName(updatedUser.getName());
 		existingUser.setEmail(updatedUser.getEmail());
-		existingUser.setPassword(updatedUser.getPassword());
+		//existingUser.setPassword(updatedUser.getPassword());
 		existingUser.setRole(updatedUser.getRole());
 		existingUser.setContactNumber(updatedUser.getContactNumber());
 		
