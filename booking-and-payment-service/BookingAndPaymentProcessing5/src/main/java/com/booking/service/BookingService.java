@@ -1,5 +1,7 @@
 package com.booking.service;
 
+import com.booking.client.TravelPackageClient;
+import com.booking.DTO.TravelPackageDTO;
 import com.booking.entity.Booking;
 import com.booking.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +13,29 @@ import java.util.List;
 
 @Service
 public class BookingService {
+	
     @Autowired
     private BookingRepository bookingRepo;
 
+    @Autowired
+    private TravelPackageClient travelPackageClient;
+    
     public Booking createBooking(Booking booking) {
+    	TravelPackageDTO travelPackage = travelPackageClient.getPackageById(booking.getPackageId());
+    	
+    	booking.setStartDate(travelPackage.getTripStartDate());
+    	booking.setEndDate(travelPackage.getTripEndDate());
         booking.setStatus("CONFIRMED");
+        
         return bookingRepo.save(booking);
+    }
+    
+    public Booking confirmBooking(Long bookingId) {
+    	Booking booking = bookingRepo.findById(bookingId).orElse(null);
+    	if (booking != null && booking.getStatus().equals("PENDING_PAYMENT")) {
+    		return bookingRepo.save(booking);
+    	}
+    	return null;
     }
 
     public List<Booking> getAllBookings() {

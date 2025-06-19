@@ -9,6 +9,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 List<Booking> findByUserId(Long userId);
 int countByUserId(Long userId);
-List<Booking> findByPackageId(String packageId);
-	
+List<Booking> findByPackageId(Long packageId);
+
 }

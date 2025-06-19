@@ -9,7 +9,7 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
     private Long userId;
-    private String packageId;
+    private Long packageId;
     private LocalDate startDate;
     private LocalDate endDate;
     private String status;
@@ -32,11 +32,11 @@ public class Booking {
         this.userId = userId;
     }
 
-    public String getPackageId() {
+    public Long getPackageId() {
         return packageId;
     }
 
-    public void setPackageId(String packageId) {
+    public void setPackageId(Long packageId) {
         this.packageId = packageId;
     }
 

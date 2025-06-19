@@ -1,26 +1,19 @@
 package com.booking.client;
+ 
+import com.booking.DTO.TravelPackageDTO;
+//import com.booking.response.ApiResponse;
 
-
-import com.booking.response.ApiResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import java.util.List;
+ 
 @FeignClient(name = "travel-package-management")
 public interface TravelPackageClient {
-
-    @GetMapping("/{id}")
-    ApiResponse getPackageById(@PathVariable("id") Long id);
-
-    @GetMapping("/search/title/{title}")
-    ApiResponse searchByTitle(@PathVariable("title") String title);
-
-    @GetMapping("/search/price/{maxPrice}")
-    ApiResponse searchByPrice(@PathVariable("maxPrice") double maxPrice);
-
-    @GetMapping("/search/offer/{couponCode}")
-    ApiResponse searchByOffer(@PathVariable("couponCode") String couponCode);
+	
+    @GetMapping("/api/packages/internal/all")
+    List<TravelPackageDTO> getAllPackages();
+ 
+    @GetMapping("/api/packages/{id}")
+    TravelPackageDTO getPackageById(@PathVariable("id") Long id);
 }
-
-
-
-
