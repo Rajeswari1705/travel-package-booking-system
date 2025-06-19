@@ -226,9 +226,9 @@ public class UserController {
     
     /*---------------------------------*/
     
-	// Internal endpoint for microservices (e.g., Travel Package Service)
+	// Internal endpoint for travel package microservices (e.g., Travel Package Service)
 	@GetMapping("/internal/{id}")
-	public ResponseEntity<?> getUserForInternalUse(@PathVariable Long id) {
+	public ResponseEntity<?> getAgentForInternalUse(@PathVariable Long id) {
 		User user = userService.getUserById(id); // No security check, get user from DB
 		
 		// ✅ Check if user exists
@@ -246,6 +246,26 @@ public class UserController {
 		UserDTO userDTO = userService.convertToDTO(user);
 		return ResponseEntity.ok(userDTO);
 	}
+	// Internal endpoint for booking package microservices to get customer (e.g.,Booking Service)
+		@GetMapping("/internal/customer/{id}")
+		public ResponseEntity<?> getCustomerForInternalUse(@PathVariable Long id) {
+			User user = userService.getUserById(id); // No security check, get user from DB
+			
+			// ✅ Check if user exists
+		    if (user == null) {
+		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+		                .body(Collections.singletonMap("message", "User not found with ID: " + id));
+		    }
+		 
+		    // ✅ Check if user is an AGENT
+		    if (!"CUSTOMER".equalsIgnoreCase(user.getRole())) {
+		        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+		                .body(Collections.singletonMap("message", "User with ID " + id + " is not an CUSTOMER"));
+		    }
+			
+			UserDTO userDTO = userService.convertToDTO(user);
+			return ResponseEntity.ok(userDTO);
+		}
 	
 	
     
