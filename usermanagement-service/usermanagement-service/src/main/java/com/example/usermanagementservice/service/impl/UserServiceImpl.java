@@ -183,7 +183,7 @@ public class UserServiceImpl implements UserService {
 	
 	//convert user to userDTO for the user data transfer to other services
 	public UserDTO convertToDTO(User user) {
-	    return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getRole());
+	    return new UserDTO(user.getId(), user.getName(), user.getEmail(),user.getContactNumber(), user.getRole());
 	}
 	
 	
