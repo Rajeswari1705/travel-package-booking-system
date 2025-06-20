@@ -52,7 +52,7 @@ logger.info("Login attempt for email: {}", request.getEmail());
 logger.info("Login successful for email: {} with role: {}", user.getEmail(), user.getRole());
  
         // 4. Return token + role in response
-        return ResponseEntity.ok(new LoginResponse(token, user.getRole()));
+        return ResponseEntity.ok(new LoginResponse(token, user.getRole(), user.getId()));
     }
     
     //log out endpoint
