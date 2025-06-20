@@ -246,6 +246,7 @@ public class UserController {
 		UserDTO userDTO = userService.convertToDTO(user);
 		return ResponseEntity.ok(userDTO);
 	}
+	
 	// Internal endpoint for booking package microservices to get customer (e.g.,Booking Service)
 		@GetMapping("/internal/customer/{id}")
 		public ResponseEntity<?> getCustomerForInternalUse(@PathVariable Long id) {
