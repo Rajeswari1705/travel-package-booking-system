@@ -8,7 +8,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 	private Long userId;
-    private String bookingId;
+    private Long bookingId;
     private double amount;
     private String status;
     
@@ -37,10 +37,10 @@ public class Payment {
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
-	public String getBookingId() {
+	public Long getBookingId() {
 		return bookingId;
 	}
-	public void setBookingId(String bookingId) {
+	public void setBookingId(Long bookingId) {
 		this.bookingId = bookingId;
 	}
 	public double getAmount() {

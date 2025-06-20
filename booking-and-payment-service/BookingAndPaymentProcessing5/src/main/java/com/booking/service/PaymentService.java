@@ -69,9 +69,9 @@ public class PaymentService {
         Payment savedPayment = paymentRepo.save(payment);
 
         // Fetch booking details using bookingId
-        Long bookingId = Long.parseLong(payment.getBookingId());
+        Long bookingId = payment.getBookingId();
         Booking booking = bookingRepo.findById(bookingId).orElse(null);
-
+        
         if (booking != null) {
         	TravelPackageDTO pkg = travelPackageClient.getPackageById(booking.getPackageId());
         	if(payment.getAmount() != pkg.getPrice()) {

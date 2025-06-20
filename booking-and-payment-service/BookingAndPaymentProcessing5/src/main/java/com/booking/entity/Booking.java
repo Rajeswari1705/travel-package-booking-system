@@ -1,4 +1,4 @@
-package com.booking.entity;
+  package com.booking.entity;
 
 import java.time.LocalDate;
 import jakarta.persistence.*;
@@ -10,8 +10,13 @@ public class Booking {
     private Long bookingId;
     private Long userId;
     private Long packageId;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    
+    @Column(name= "trip_start_date")
+    private LocalDate tripStartDate;
+    
+    @Column(name= "trip_end_date")
+    private LocalDate tripEndDate;
+    
     private String status;
     private Long paymentId;
 
@@ -39,23 +44,24 @@ public class Booking {
     public void setPackageId(Long packageId) {
         this.packageId = packageId;
     }
+    
+	public LocalDate getTripStartDate() {
+		return tripStartDate;
+	}
 
-    public LocalDate getStartDate() {
-        return startDate;
-    }
+	public void setTripStartDate(LocalDate tripStartDate) {
+		this.tripStartDate = tripStartDate;
+	}
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
+	public LocalDate getTripEndDate() {
+		return tripEndDate;
+	}
 
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
+	public void setTripEndDate(LocalDate tripEndDate) {
+		this.tripEndDate = tripEndDate;
+	}
+	
+    
     public String getStatus() {
         return status;
     }
@@ -71,5 +77,5 @@ public class Booking {
 	public void setPaymentId(Long paymentId) {
 		this.paymentId = paymentId;
 	}
-	
+
 }

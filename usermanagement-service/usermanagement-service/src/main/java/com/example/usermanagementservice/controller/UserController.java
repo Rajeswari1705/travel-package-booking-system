@@ -190,8 +190,7 @@ public class UserController {
 		return ResponseEntity.ok(userDTO);
 	}
 	
-	
-    
+
     //To fetch all the packages under a travel agent
 	@GetMapping("/packages/{id}")
     public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long id) {

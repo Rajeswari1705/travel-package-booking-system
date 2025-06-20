@@ -1,7 +1,10 @@
 package com.booking.service;
 
 import com.booking.client.TravelPackageClient;
+import com.booking.client.UserClient;
+import com.booking.DTO.BookingDTO;
 import com.booking.DTO.TravelPackageDTO;
+import com.booking.DTO.UserDTO;
 import com.booking.entity.Booking;
 import com.booking.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,29 +16,43 @@ import java.util.List;
 
 @Service
 public class BookingService {
-	
+
     @Autowired
     private BookingRepository bookingRepo;
 
     @Autowired
     private TravelPackageClient travelPackageClient;
-    
-    public Booking createBooking(Booking booking) {
-    	TravelPackageDTO travelPackage = travelPackageClient.getPackageById(booking.getPackageId());
-    	
-    	booking.setStartDate(travelPackage.getTripStartDate());
-    	booking.setEndDate(travelPackage.getTripEndDate());
-        booking.setStatus("CONFIRMED");
+
+    @Autowired
+    private UserClient userClient;
+
+    public BookingDTO createBooking(Booking booking) {
+        TravelPackageDTO travelPackage = travelPackageClient.getPackageById(booking.getPackageId());
+        UserDTO user = userClient.getUserById(booking.getUserId());
         
-        return bookingRepo.save(booking);
-    }
-    
-    public Booking confirmBooking(Long bookingId) {
-    	Booking booking = bookingRepo.findById(bookingId).orElse(null);
-    	if (booking != null && booking.getStatus().equals("PENDING_PAYMENT")) {
-    		return bookingRepo.save(booking);
-    	}
-    	return null;
+
+        if (travelPackage == null || user == null) {
+            System.out.println("travelPackage: " + travelPackage);
+            System.out.println("user: " + user);
+            throw new RuntimeException("Invalid travel package or user");
+        }
+
+        booking.setTripStartDate(travelPackage.getTripStartDate());
+        booking.setTripEndDate(travelPackage.getTripEndDate());
+        booking.setStatus("CONFIRMED");
+
+        Booking savedBooking = bookingRepo.save(booking);
+
+        BookingDTO dto = new BookingDTO();
+        dto.setBookingId(savedBooking.getBookingId());
+        dto.setUserId(savedBooking.getUserId());
+        dto.setPackageId(savedBooking.getPackageId());
+        dto.setTripStartDate(savedBooking.getTripStartDate());
+        dto.setTripEndDate(savedBooking.getTripEndDate());
+        dto.setStatus(savedBooking.getStatus());
+        dto.setPaymentId(savedBooking.getPaymentId());
+
+        return dto;
     }
 
     public List<Booking> getAllBookings() {
@@ -49,16 +66,15 @@ public class BookingService {
     public void deleteBooking(Long id) {
         bookingRepo.deleteById(id);
     }
-    
-    //Customers can cancel bookings up to 7 days before departure
+
     public ResponseEntity<String> cancelBooking(Long bookingId) {
         Booking booking = bookingRepo.findById(bookingId).orElse(null);
         if (booking == null) {
-            return ResponseEntity.badRequest().body("Booking not found."); 
+            return ResponseEntity.badRequest().body("Booking not found.");
         }
 
         LocalDate today = LocalDate.now();
-        if (booking.getStartDate().minusDays(7).isBefore(today)) {
+        if (booking.getTripStartDate().minusDays(7).isBefore(today)) {
             return ResponseEntity.badRequest().body("Cancellation not allowed. Must cancel at least 7 days before departure.");
         }
 
@@ -66,5 +82,4 @@ public class BookingService {
         bookingRepo.save(booking);
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
-
 }
