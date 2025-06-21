@@ -59,10 +59,10 @@ public class TravelPackageService {
     	
     	List<TravelPackage> packages = repository.findByAgentId(agentId);
     	
-    	if(packages.isEmpty()) {
-    		logger.warn("No packages found for agent ID: {}", agentId);
-    		throw new ResourceNotFoundException("No packages found for agent ID: "+agentId);
-    	}
+//    	if(packages.isEmpty()) {
+//    		logger.warn("No packages found for agent ID: {}", agentId);
+//    		throw new ResourceNotFoundException("No packages found for agent ID: "+agentId);
+//    	}
     	
     	return packages;
     }

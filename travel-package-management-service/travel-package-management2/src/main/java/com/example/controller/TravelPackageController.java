@@ -4,9 +4,13 @@ import com.example.model.TravelPackage;
 import com.example.response.ApiResponse;
 import com.example.service.TravelPackageService;
 import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.dto.*;
+import com.example.exception.ResourceNotFoundException;
+import com.example.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +20,10 @@ import java.util.List;
 public class TravelPackageController {
 
     private final TravelPackageService service;
+    
+    @Autowired
+    private TravelPackageRepository repository; //    new code for feign client purpose only
+    
 
     public TravelPackageController(TravelPackageService service) {
         this.service = service;
@@ -40,6 +48,7 @@ public class TravelPackageController {
     	List<TravelPackage> packages = service.getPackageByAgentId(agentId);
     	return ResponseEntity.ok(new ApiResponse(true, "Package by agent retrieve", packages));
     }
+    
 
     @PostMapping
     public ResponseEntity<ApiResponse> create(@Valid @RequestBody TravelPackage travelPackage) {
@@ -93,7 +102,12 @@ public class TravelPackageController {
     }
     
     
-    
+    @GetMapping("/api/packages/{packageId}/agent")
+    public ResponseEntity<Long> getAgentIdByPackage(@PathVariable Long packageId) {
+        TravelPackage travelPackage = repository.findById(packageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Package not found"));
+        return ResponseEntity.ok(travelPackage.getAgentId());
+    }
     
     
     /*@GetMapping("/admin/agent/{agentId}")
