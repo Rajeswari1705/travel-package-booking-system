@@ -1,4 +1,4 @@
-  package com.booking.entity;
+package com.booking.entity;
 
 import java.time.LocalDate;
 import jakarta.persistence.*;
