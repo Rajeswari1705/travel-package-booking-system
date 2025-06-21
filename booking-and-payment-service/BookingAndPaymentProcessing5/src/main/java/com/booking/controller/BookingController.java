@@ -1,9 +1,11 @@
 package com.booking.controller;
 
+import com.booking.DTO.BookingDTO;
 import com.booking.entity.Booking;
 
 import com.booking.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +18,15 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+//    @PostMapping
+//    public Booking create(@RequestBody Booking booking) {
+//        return bookingService.createBooking(booking);
+//    }
+//    
     @PostMapping
-    public Booking create(@RequestBody Booking booking) {
-        return bookingService.createBooking(booking);
+    public ResponseEntity<BookingDTO> createBooking(@RequestBody Booking booking) {
+        BookingDTO bookingDTO = bookingService.createBooking(booking);
+        return new ResponseEntity<>(bookingDTO, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -40,7 +48,7 @@ public class BookingController {
     public ResponseEntity<String> cancelBooking(@PathVariable Long id) {
         return bookingService.cancelBooking(id);
     }
+    
 
- 
 
 }

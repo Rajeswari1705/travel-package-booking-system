@@ -3,7 +3,7 @@ package com.booking.DTO;
 public class PaymentResponseDTO {
     private Long paymentId;
     private Long userId;
-    private String bookingId;
+    private Long bookingId;
     private double amount;
     private String status;
     private String paymentMethod;
@@ -26,11 +26,11 @@ public class PaymentResponseDTO {
         this.userId = userId;
     }
 
-    public String getBookingId() {
+    public Long getBookingId() {
         return bookingId;
     }
 
-    public void setBookingId(String bookingId) {
+    public void setBookingId(Long bookingId) {
         this.bookingId = bookingId;
     }
 
