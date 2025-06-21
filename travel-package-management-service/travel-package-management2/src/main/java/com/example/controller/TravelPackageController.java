@@ -1,20 +1,25 @@
 package com.example.controller;
 
 import com.example.model.TravelPackage;
+import com.example.repository.TravelPackageRepository;
 import com.example.response.ApiResponse;
 import com.example.service.TravelPackageService;
 import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/packages")
 public class TravelPackageController {
-
+	
+	//@Autowired
     private final TravelPackageService service;
 
     public TravelPackageController(TravelPackageService service) {
@@ -107,6 +112,16 @@ public class TravelPackageController {
         return ResponseEntity.ok(new ApiResponse(true, "Packages for agent retrieved", dtoList));
     }*/
 
+    
+    //for getting all packages for pamanji
+    @GetMapping("/getallpackages")
+    public ResponseEntity<List<PackageDTO>> getAllPackagesforCustomer() {
+        List<TravelPackage> packages = service.getAllPackages();
+    List dtos = packages.stream()
+            .map(pkg -> new PackageDTO(pkg.getPackageId(), pkg.getTitle(), pkg.getDescription(), pkg.getDuration(), pkg.getPrice(), pkg.getMaxCapacity(),  pkg.getTripStartDate(), pkg.getTripEndDate()))
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
     
     
     

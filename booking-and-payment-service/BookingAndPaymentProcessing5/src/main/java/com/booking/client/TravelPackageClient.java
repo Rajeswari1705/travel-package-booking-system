@@ -1,11 +1,15 @@
 package com.booking.client;
 
 
+import com.booking.DTO.PackageDTO;
 import com.booking.response.ApiResponse;
+
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "travel-package-management")
+/*@FeignClient(name = "travel-package-management")
 public interface TravelPackageClient {
 
     @GetMapping("/{id}")
@@ -19,6 +23,12 @@ public interface TravelPackageClient {
 
     @GetMapping("/search/offer/{couponCode}")
     ApiResponse searchByOffer(@PathVariable("couponCode") String couponCode);
+}*/
+
+@FeignClient(name = "travel-package-management")
+public interface TravelPackageClient {
+    @GetMapping("api/packages/getallpackages")
+    List<PackageDTO> getAllPackages();
 }
 
 

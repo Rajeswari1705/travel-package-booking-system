@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.0</version>
+        <version>3.1.12</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -20,13 +20,22 @@
         <java.version>17</java.version>
     </properties>
 
-    <!-- Spring Cloud BOM -->
+	<!--<repositories>
+    <repository>
+        <id>spring-releases</id>
+        <name>Spring Releases</name>
+        <url>https://repo.spring.io/release</url>
+    </repository>
+</repositories>-->
+
+
+	<!-- Spring Cloud BOM -->
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2024.0.1</version>
+                <version>2022.0.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -34,20 +43,28 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Spring Web -->
+		<!-- Spring Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         
-        <!--Eureka Client Dependency-->
+        <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+    <optional>true</optional>
+</dependency>
+
+		<!--Eureka Client Dependency-->
         <dependency>
     		<groupId>org.springframework.cloud</groupId>
     		<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    		<version>4.0.4</version> 
 		</dependency>
 
 
-        <!-- Thymeleaf (optional) -->
+		<!-- Thymeleaf (optional) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -59,44 +76,45 @@
     	<scope>provided</scope>
 		</dependency>
 
-        <!-- Spring Data JPA -->
+		<!-- Spring Data JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- MySQL Connector -->
+		<!-- MySQL Connector -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
 
-        <!-- Spring Cloud OpenFeign -->
+		<!-- Spring Cloud OpenFeign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>4.0.4</version> 
         </dependency>
-        <!--Dependency for load balancing-->
-        <dependency>
+		<!--Dependency for load balancing-->
+		<!-- <dependency>
    			<groupId>org.springframework.cloud</groupId>
     		<artifactId>spring-cloud-starter-loadbalancer</artifactId>
-		</dependency>
+		</dependency> -->
 
 
-        <!-- Spring Mail -->
+		<!-- Spring Mail -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
-        <!-- Web Services (optional) -->
+		<!-- Web Services (optional) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>
         </dependency>
 
-        <!-- Testing -->
+		<!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

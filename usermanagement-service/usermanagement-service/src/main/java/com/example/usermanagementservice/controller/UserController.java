@@ -183,18 +183,6 @@ public class UserController {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
    /* @PutMapping("/myprofile")
     public ResponseEntity<?> updateMyProfile(@RequestBody User updatedUser) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -270,7 +258,7 @@ public class UserController {
 	
 	
     
-    //To fetch all the packages under a travel agent
+    //To fetch all the packages under a travel agent using his id
 	@GetMapping("/packages/{id}")
     public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long id) {
         List<TravelPackageDTO> packages = userService.fetchAllPackagesByAgent(id); 

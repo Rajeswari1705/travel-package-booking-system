@@ -1,23 +1,28 @@
 package com.booking.service;
 
+import com.booking.DTO.TravelPackageDTO;
 import com.booking.entity.Booking;
+import com.booking.client.*;
 import com.booking.repository.BookingRepository;
+import com.booking.response.ApiResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
     @Autowired
     private BookingRepository bookingRepo;
 
-    public Booking createBooking(Booking booking) {
+    /*public Booking createBooking(Booking booking) {
 
 
-    	ApiResponse response = travelPackageClient.getPackageById(booking.getPackageId());
+   	ApiResponse response = TravelPackageClient.getPackageById(booking.getPackageId());
         Object data = response.getData();
 
         // Convert the response data to TravelPackageDTO
@@ -62,7 +67,7 @@ public class BookingService {
     }
 
 
-}
+
 
     
 
@@ -98,7 +103,7 @@ public class BookingService {
     }
 
     public List<TravelPackageDTO> findPackagesByOffer(String couponCode) {
-        ApiResponse response = travelPackageClient.searchByOffer(couponCode);
+        ApiResponse response = TravelPackageClient.searchByOffer(couponCode);
         return castToTravelPackageDTOList(response.getData());
     }
 //get packages by Id
@@ -114,5 +119,6 @@ public class BookingService {
 
 
 
+    }*/
 }
 
