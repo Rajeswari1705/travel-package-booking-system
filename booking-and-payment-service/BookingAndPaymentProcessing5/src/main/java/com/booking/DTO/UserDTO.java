@@ -8,5 +8,5 @@ public class UserDTO {
 	private Long userId;
 	private String name;
 	private String email;
-//	private String role;
+	private String role;
 }

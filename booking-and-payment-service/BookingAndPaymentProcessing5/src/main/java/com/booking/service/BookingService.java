@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class BookingService {
@@ -20,42 +21,30 @@ public class BookingService {
     @Autowired
     private BookingRepository bookingRepo;
 
-<<<<<<< HEAD
     @Autowired
     private TravelPackageClient travelPackageClient;
 
     @Autowired
     private UserClient userClient;
 
-    public BookingDTO createBooking(Booking booking) {
-        TravelPackageDTO travelPackage = travelPackageClient.getPackageById(booking.getPackageId());
-        UserDTO user = userClient.getUserById(booking.getUserId());
+    private static final Logger logger = Logger.getLogger(BookingService.class.getName());
+
+    public BookingDTO createBooking(Long userId, Long packageId) {
+        logger.info("Creating booking for userId: " + userId + " and packageId: " + packageId);
         
+        TravelPackageDTO travelPackage = travelPackageClient.getPackageById(packageId);
+        UserDTO user = userClient.getUserById(userId);
 
         if (travelPackage == null || user == null) {
-            System.out.println("travelPackage: " + travelPackage);
-            System.out.println("user: " + user);
+            logger.severe("Invalid travel package or user. travelPackage: " + travelPackage + ", user: " + user);
             throw new RuntimeException("Invalid travel package or user");
         }
 
+        Booking booking = new Booking();
+        booking.setUserId(userId);
+        booking.setPackageId(packageId);
         booking.setTripStartDate(travelPackage.getTripStartDate());
         booking.setTripEndDate(travelPackage.getTripEndDate());
-=======
-    public Booking createBooking(Booking booking) {
-
-
-    	ApiResponse response = travelPackageClient.getPackageById(booking.getPackageId());
-        Object data = response.getData();
-
-        // Convert the response data to TravelPackageDTO
-        TravelPackageDTO travelPackage = objectMapper.convertValue(data, TravelPackageDTO.class);
-
-        if (travelPackage == null) {
-            throw new IllegalArgumentException("Invalid package ID");
-        }
-
-
->>>>>>> da78b8b44b03d258736ef3becfb5e869e44cb504
         booking.setStatus("CONFIRMED");
 
         Booking savedBooking = bookingRepo.save(booking);
@@ -69,6 +58,7 @@ public class BookingService {
         dto.setStatus(savedBooking.getStatus());
         dto.setPaymentId(savedBooking.getPaymentId());
 
+        logger.info("Booking created successfully with bookingId: " + savedBooking.getBookingId());
         return dto;
     }
 
@@ -99,63 +89,4 @@ public class BookingService {
         bookingRepo.save(booking);
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
-<<<<<<< HEAD
 }
-=======
-
-
-}
-
-    
-
-    private List<TravelPackageDTO> castToTravelPackageDTOList(Object data) {
-        if (data instanceof List<?>) {
-            return ((List<?>) data).stream()
-                    .filter(item -> item instanceof TravelPackageDTO)
-                    .map(item -> (TravelPackageDTO) item)
-                    .collect(Collectors.toList());
-        }
-        return List.of();
-    }
-
-    public int getBookingCountByUser(Long userId) {
-        return bookingRepo.countByUserId(userId);
-    }
-
-    public List<Booking> getBookingsByUser(Long userId) {
-        return bookingRepo.findByUserId(userId);
-    }
-
-    public List<Booking> getBookingsByPackageId(Long packageId) {
-        return bookingRepo.findByPackageId(packageId);
-    }
-    public List<TravelPackageDTO> findPackagesByTitle(String title) {
-        ApiResponse response = travelPackageClient.searchByTitle(title);
-        return castToTravelPackageDTOList(response.getData());
-    }
-
-    public List<TravelPackageDTO> findPackagesByPrice(double maxPrice) {
-        ApiResponse response = travelPackageClient.searchByPrice(maxPrice);
-        return castToTravelPackageDTOList(response.getData());
-    }
-
-    public List<TravelPackageDTO> findPackagesByOffer(String couponCode) {
-        ApiResponse response = travelPackageClient.searchByOffer(couponCode);
-        return castToTravelPackageDTOList(response.getData());
-    }
-//get packages by Id
-
-    public TravelPackageDTO getPackageById(Long id) {
-        ApiResponse response = travelPackageClient.getPackageById(id);
-        Object data = response.getData();
-        if (data instanceof TravelPackageDTO) {
-            return (TravelPackageDTO) data;
-        }
-        throw new RuntimeException("Invalid response format");
-    }
-
-
-
-}
-
->>>>>>> da78b8b44b03d258736ef3becfb5e869e44cb504

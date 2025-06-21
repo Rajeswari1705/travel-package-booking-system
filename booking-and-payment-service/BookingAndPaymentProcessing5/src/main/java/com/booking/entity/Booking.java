@@ -8,20 +8,16 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
+    
     private Long userId;
     private Long packageId;
-<<<<<<< HEAD
     
     @Column(name= "trip_start_date")
     private LocalDate tripStartDate;
     
     @Column(name= "trip_end_date")
     private LocalDate tripEndDate;
-    
-=======
-    private LocalDate startDate;
-    private LocalDate endDate;
->>>>>>> da78b8b44b03d258736ef3becfb5e869e44cb504
+
     private String status;
     private Long paymentId;
 

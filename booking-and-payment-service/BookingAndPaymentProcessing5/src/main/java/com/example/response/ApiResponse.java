@@ -1,4 +1,4 @@
-package com.booking.response;
+package com.example.response;
  
 import lombok.AllArgsConstructor;
 import lombok.Data;
