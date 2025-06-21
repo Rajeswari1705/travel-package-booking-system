@@ -1,9 +1,13 @@
 package com.booking.controller;
 
+<<<<<<< HEAD
 import com.booking.DTO.PackageDTO;
 import com.booking.DTO.UserDTO;
 import com.booking.client.TravelPackageClient;
 import com.booking.client.UserClient;
+=======
+import com.booking.DTO.BookingDTO;
+>>>>>>> bb6a3afb12f3bc8e991cc02d0b275e93e06ff9e8
 import com.booking.entity.Booking;
 
 import com.booking.service.BookingService;
@@ -35,9 +39,21 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+<<<<<<< HEAD
    /* @PostMapping
     public Booking create(@RequestBody Booking booking) {
         return bookingService.createBooking(booking);
+=======
+//    @PostMapping
+//    public Booking create(@RequestBody Booking booking) {
+//        return bookingService.createBooking(booking);
+//    }
+//    
+    @PostMapping
+    public ResponseEntity<BookingDTO> createBooking(@RequestBody Booking booking) {
+        BookingDTO bookingDTO = bookingService.createBooking(booking);
+        return new ResponseEntity<>(bookingDTO, HttpStatus.CREATED);
+>>>>>>> bb6a3afb12f3bc8e991cc02d0b275e93e06ff9e8
     }
 
     @GetMapping
@@ -59,6 +75,7 @@ public class BookingController {
     public ResponseEntity<String> cancelBooking(@PathVariable Long id) {
         return bookingService.cancelBooking(id);
     }
+<<<<<<< HEAD
     */
     
     
@@ -85,7 +102,9 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong: " + e.getMessage());
         }
     }
+=======
+    
+>>>>>>> bb6a3afb12f3bc8e991cc02d0b275e93e06ff9e8
 
- 
 
 }

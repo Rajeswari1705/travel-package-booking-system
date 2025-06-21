@@ -8,20 +8,19 @@ import lombok.Data;
 @Data
 public class TravelPackageDTO {
 	private Long packageId;
-	private Long agentId;
+	//private Long agentId;
 	private String title;
-	private String description;
-	private int duration;
+	//private String description;
+//	private int duration;
 	private double price;
-	private int maxCapacity;
+//	private int maxCapacity;
 	private LocalDate tripStartDate;
 	private LocalDate tripEndDate;
-	private List<String> highlights;
-	private List<FlightDTO> flights;
-	private List<HotelDTO> hotels;
-	private List<SightseeingDTO> sightseeing;
-	private List<ItineraryDTO> itinerary;
-	private OfferDTO offer;
-	
+//	private List<String> highlights;
+//	private List<FlightDTO> flights;
+//	private List<HotelDTO> hotels;
+//	private List<SightseeingDTO> sightseeing;
+//	private List<ItineraryDTO> itinerary;
+//	private OfferDTO offer;
 
 }

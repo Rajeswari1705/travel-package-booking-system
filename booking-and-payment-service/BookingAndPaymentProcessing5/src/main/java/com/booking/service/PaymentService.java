@@ -1,5 +1,7 @@
 package com.booking.service;
 
+import com.booking.DTO.TravelPackageDTO;
+import com.booking.client.TravelPackageClient;
 import com.booking.entity.Booking;
 import com.booking.entity.Payment;
 import com.booking.repository.BookingRepository;
@@ -21,6 +23,9 @@ public class PaymentService {
 
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private TravelPackageClient travelPackageClient;
 
     public Payment processPayment(Payment payment) {
         if (!payment.getPaymentMethod().equalsIgnoreCase("Credit Card") &&
@@ -64,12 +69,18 @@ public class PaymentService {
         Payment savedPayment = paymentRepo.save(payment);
 
         // Fetch booking details using bookingId
-        Long bookingId = Long.parseLong(payment.getBookingId());
+        Long bookingId = payment.getBookingId();
         Booking booking = bookingRepo.findById(bookingId).orElse(null);
-
+        
         if (booking != null) {
-            notificationService.notifyCustomer(booking, savedPayment);
+        	TravelPackageDTO pkg = travelPackageClient.getPackageById(booking.getPackageId());
+        	if(payment.getAmount() != pkg.getPrice()) {
+        		throw new IllegalArgumentException("Amount does not match package price.");
+        	}
+        	
+        	notificationService.notifyCustomer(booking, savedPayment);
             notificationService.notifyTravelAgent(booking, savedPayment);
+            
         }
 
         return savedPayment;

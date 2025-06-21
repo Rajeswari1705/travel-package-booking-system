@@ -1,6 +1,14 @@
 package com.booking.service;
 
+<<<<<<< HEAD
 import com.booking.DTO.TravelPackageDTO;
+=======
+import com.booking.client.TravelPackageClient;
+import com.booking.client.UserClient;
+import com.booking.DTO.BookingDTO;
+import com.booking.DTO.TravelPackageDTO;
+import com.booking.DTO.UserDTO;
+>>>>>>> bb6a3afb12f3bc8e991cc02d0b275e93e06ff9e8
 import com.booking.entity.Booking;
 import com.booking.client.*;
 import com.booking.repository.BookingRepository;
@@ -16,10 +24,36 @@ import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
+
     @Autowired
     private BookingRepository bookingRepo;
 
+<<<<<<< HEAD
     /*public Booking createBooking(Booking booking) {
+=======
+<<<<<<< HEAD
+    @Autowired
+    private TravelPackageClient travelPackageClient;
+
+    @Autowired
+    private UserClient userClient;
+
+    public BookingDTO createBooking(Booking booking) {
+        TravelPackageDTO travelPackage = travelPackageClient.getPackageById(booking.getPackageId());
+        UserDTO user = userClient.getUserById(booking.getUserId());
+        
+
+        if (travelPackage == null || user == null) {
+            System.out.println("travelPackage: " + travelPackage);
+            System.out.println("user: " + user);
+            throw new RuntimeException("Invalid travel package or user");
+        }
+
+        booking.setTripStartDate(travelPackage.getTripStartDate());
+        booking.setTripEndDate(travelPackage.getTripEndDate());
+=======
+    public Booking createBooking(Booking booking) {
+>>>>>>> bb6a3afb12f3bc8e991cc02d0b275e93e06ff9e8
 
 
    	ApiResponse response = TravelPackageClient.getPackageById(booking.getPackageId());
@@ -33,8 +67,21 @@ public class BookingService {
         }
 
 
+>>>>>>> da78b8b44b03d258736ef3becfb5e869e44cb504
         booking.setStatus("CONFIRMED");
-        return bookingRepo.save(booking);
+
+        Booking savedBooking = bookingRepo.save(booking);
+
+        BookingDTO dto = new BookingDTO();
+        dto.setBookingId(savedBooking.getBookingId());
+        dto.setUserId(savedBooking.getUserId());
+        dto.setPackageId(savedBooking.getPackageId());
+        dto.setTripStartDate(savedBooking.getTripStartDate());
+        dto.setTripEndDate(savedBooking.getTripEndDate());
+        dto.setStatus(savedBooking.getStatus());
+        dto.setPaymentId(savedBooking.getPaymentId());
+
+        return dto;
     }
 
     public List<Booking> getAllBookings() {
@@ -48,16 +95,15 @@ public class BookingService {
     public void deleteBooking(Long id) {
         bookingRepo.deleteById(id);
     }
-    
-    //Customers can cancel bookings up to 7 days before departure
+
     public ResponseEntity<String> cancelBooking(Long bookingId) {
         Booking booking = bookingRepo.findById(bookingId).orElse(null);
         if (booking == null) {
-            return ResponseEntity.badRequest().body("Booking not found."); 
+            return ResponseEntity.badRequest().body("Booking not found.");
         }
 
         LocalDate today = LocalDate.now();
-        if (booking.getStartDate().minusDays(7).isBefore(today)) {
+        if (booking.getTripStartDate().minusDays(7).isBefore(today)) {
             return ResponseEntity.badRequest().body("Cancellation not allowed. Must cancel at least 7 days before departure.");
         }
 
@@ -65,6 +111,9 @@ public class BookingService {
         bookingRepo.save(booking);
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
+<<<<<<< HEAD
+}
+=======
 
 
 
@@ -122,3 +171,4 @@ public class BookingService {
     }*/
 }
 
+>>>>>>> da78b8b44b03d258736ef3becfb5e869e44cb504

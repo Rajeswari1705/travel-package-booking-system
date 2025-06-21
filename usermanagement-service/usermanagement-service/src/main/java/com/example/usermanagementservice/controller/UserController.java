@@ -235,6 +235,7 @@ public class UserController {
 		return ResponseEntity.ok(userDTO);
 	}
 	
+
 	// Internal endpoint for booking package microservices to get customer (e.g.,Booking Service)
 		@GetMapping("/internal/customer/{id}")
 		public ResponseEntity<?> getCustomerForInternalUse(@PathVariable Long id) {
@@ -258,7 +259,12 @@ public class UserController {
 	
 	
     
+
     //To fetch all the packages under a travel agent using his id
+
+
+    //To fetch all the packages under a travel agent
+
 	@GetMapping("/packages/{id}")
     public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long id) {
         List<TravelPackageDTO> packages = userService.fetchAllPackagesByAgent(id); 
