@@ -99,9 +99,9 @@ public class BookingService {
         bookingRepo.save(booking);
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
-<<<<<<< HEAD
+
 }
-=======
+
 
 
 }
@@ -129,20 +129,7 @@ public class BookingService {
     public List<Booking> getBookingsByPackageId(Long packageId) {
         return bookingRepo.findByPackageId(packageId);
     }
-    public List<TravelPackageDTO> findPackagesByTitle(String title) {
-        ApiResponse response = travelPackageClient.searchByTitle(title);
-        return castToTravelPackageDTOList(response.getData());
-    }
-
-    public List<TravelPackageDTO> findPackagesByPrice(double maxPrice) {
-        ApiResponse response = travelPackageClient.searchByPrice(maxPrice);
-        return castToTravelPackageDTOList(response.getData());
-    }
-
-    public List<TravelPackageDTO> findPackagesByOffer(String couponCode) {
-        ApiResponse response = travelPackageClient.searchByOffer(couponCode);
-        return castToTravelPackageDTOList(response.getData());
-    }
+    
 //get packages by Id
 
     public TravelPackageDTO getPackageById(Long id) {
@@ -158,4 +145,5 @@ public class BookingService {
 
 }
 
->>>>>>> da78b8b44b03d258736ef3becfb5e869e44cb504
+
+

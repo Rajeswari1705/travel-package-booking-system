@@ -11,6 +11,6 @@ import com.ratings.review.entity.Review;
  */
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-	List<Review> findByPackageId(Long packageId);
-
+	//List<Review> findByPackageId(Long packageId);
+	boolean existsByUserIdAndPackageId(Long userId, Long packageId);
 }
