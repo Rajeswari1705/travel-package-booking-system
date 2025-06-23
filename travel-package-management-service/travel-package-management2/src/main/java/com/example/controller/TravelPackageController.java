@@ -96,6 +96,7 @@ public class TravelPackageController {
     	}
     	return dtoList;
     }
+
     @GetMapping("/internal/{id}")
     public TravelPackageDTO getPackageById(@PathVariable Long id) {
     	TravelPackage pkg = service.getPackageById(id);

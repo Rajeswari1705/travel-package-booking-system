@@ -1,5 +1,5 @@
 package com.booking.entity;
- 
+
 import java.time.LocalDate;
 import jakarta.persistence.*;
  
@@ -10,11 +10,14 @@ public class Booking {
     private Long bookingId;
     private Long userId;
     private Long packageId;
+
+
     @Column(name= "trip_start_date")
     private LocalDate tripStartDate;
     @Column(name= "trip_end_date")
     private LocalDate tripEndDate;
- 
+
+
     private String status;
     private Long paymentId;
  

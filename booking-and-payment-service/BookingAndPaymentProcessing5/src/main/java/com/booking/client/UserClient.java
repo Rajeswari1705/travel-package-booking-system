@@ -13,4 +13,5 @@ public interface UserClient {
     UserDTO getCustomerById(@PathVariable("id") Long userId);
  
 	//UserDTO getCustomerById(Long userId);
+
 }

@@ -23,11 +23,25 @@ public class PaymentService {
 
     @Autowired
     private NotificationService notificationService;
-    
+
     @Autowired
     private TravelPackageClient travelPackageClient;
 
     public Payment processPayment(Payment payment) {
+        // 1. Validate Booking
+        Long bookingId = payment.getBookingId();
+        Booking booking = bookingRepo.findById(bookingId).orElse(null);
+        if (booking == null) {
+            throw new IllegalArgumentException("Booking with ID " + bookingId + " not found.");
+        }
+
+        // 2. Validate Travel Package
+        TravelPackageDTO pkg = travelPackageClient.getPackageById(booking.getPackageId());
+        if (pkg == null) {
+            throw new IllegalArgumentException("Invalid package ID associated with booking.");
+        }
+
+        // 3. Validate Payment Method and Details
         if (!payment.getPaymentMethod().equalsIgnoreCase("Credit Card") &&
             !payment.getPaymentMethod().equalsIgnoreCase("Debit Card")) {
             throw new IllegalArgumentException("Only Credit Card or Debit Card are accepted.");
@@ -45,43 +59,37 @@ public class PaymentService {
             throw new IllegalArgumentException("Invalid ATM PIN. Must be 4 digits.");
         }
 
-        // Expiry Date Format: MM/YY
         if (payment.getExpiryDate() == null || !payment.getExpiryDate().matches("\\d{2}/\\d{2}")) {
             throw new IllegalArgumentException("Expiry date must be in MM/YY format.");
         }
 
         String[] parts = payment.getExpiryDate().split("/");
         int expMonth = Integer.parseInt(parts[0]);
-        int expYear = 2000 + Integer.parseInt(parts[1]); // e.g., "25" becomes 2025
-
-        if (expMonth < 1 || expMonth > 12) {
-            throw new IllegalArgumentException("Expiry month must be between 01 and 12.");
-        }
+        int expYear = 2000 + Integer.parseInt(parts[1]);
 
         int currentMonth = LocalDate.now().getMonthValue();
         int currentYear = LocalDate.now().getYear();
 
-        if (expYear < currentYear || (expYear == currentYear && expMonth < currentMonth)) {
+        if (expMonth < 1 || expMonth > 12 || expYear < currentYear ||
+           (expYear == currentYear && expMonth < currentMonth)) {
             throw new IllegalArgumentException("Card has expired.");
         }
 
+        // 4. Amount Validation
+        if (payment.getAmount() != pkg.getPrice()) {
+            throw new IllegalArgumentException("Payment amount does not match the package price.");
+        }
+
+        // 5. Save Payment and Update Booking
         payment.setStatus("PAID");
         Payment savedPayment = paymentRepo.save(payment);
 
-        // Fetch booking details using bookingId
-        Long bookingId = payment.getBookingId();
-        Booking booking = bookingRepo.findById(bookingId).orElse(null);
-        
-        if (booking != null) {
-        	TravelPackageDTO pkg = travelPackageClient.getPackageById(booking.getPackageId());
-        	if(payment.getAmount() != pkg.getPrice()) {
-        		throw new IllegalArgumentException("Amount does not match package price.");
-        	}
-        	
-        	notificationService.notifyCustomer(booking, savedPayment);
-            notificationService.notifyTravelAgent(booking, savedPayment);
-            
-        }
+        booking.setPaymentId(savedPayment.getPaymentId());
+        bookingRepo.save(booking);
+
+        // 6. Send Notifications
+        notificationService.notifyCustomer(booking, savedPayment);
+        notificationService.notifyTravelAgent(booking, savedPayment);
 
         return savedPayment;
     }

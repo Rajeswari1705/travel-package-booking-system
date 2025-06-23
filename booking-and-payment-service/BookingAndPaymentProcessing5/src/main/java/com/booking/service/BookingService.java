@@ -36,7 +36,7 @@ logger.info("Creating booking for userId: " + userId + " and packageId: " + pack
         if (travelPackage == null) {
             throw new IllegalArgumentException("Invalid travel package ID.");
         }
-
+ 
         // Create and save booking
         Booking booking = new Booking();
         booking.setUserId(userId);
@@ -80,6 +80,49 @@ logger.info("Booking created successfully with bookingId: " + savedBooking.getBo
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
 
+
+
+
+    
+
+    private List<TravelPackageDTO> castToTravelPackageDTOList(Object data) {
+        if (data instanceof List<?>) {
+            return ((List<?>) data).stream()
+                    .filter(item -> item instanceof TravelPackageDTO)
+                    .map(item -> (TravelPackageDTO) item)
+                    .collect(Collectors.toList());
+        }
+        return List.of();
+    }
+
+    public int getBookingCountByUser(Long userId) {
+        return bookingRepo.countByUserId(userId);
+    }
+
+    public List<Booking> getBookingsByUser(Long userId) {
+        return bookingRepo.findByUserId(userId);
+    }
+
+    public List<Booking> getBookingsByPackageId(Long packageId) {
+        return bookingRepo.findByPackageId(packageId);
+    }
+    
+//get packages by Id
+
+    public TravelPackageDTO getPackageById(Long id) {
+        ApiResponse response = travelPackageClient.getPackageById(id);
+        Object data = response.getData();
+        if (data instanceof TravelPackageDTO) {
+            return (TravelPackageDTO) data;
+        }
+        throw new RuntimeException("Invalid response format");
+    }
+
+
+
+
+
+ 
     // Rating and reviews module to validate booking
     public boolean hasUserCompletedPackage(Long userId, String packageId) {
         List<Booking> bookings = bookingRepo.findByUserId(userId);
@@ -92,3 +135,4 @@ logger.info("Booking created successfully with bookingId: " + savedBooking.getBo
             );
     }
 }
+
