@@ -1,12 +1,14 @@
-package com.booking.DTO;
+package com.booking.dto;
 
 import lombok.Data;
+
 
 @Data
 public class UserDTO {
 	
-	private Long userId;
+	private Long id;
 	private String name;
 	private String email;
-//	private String role;
+	private String role;
+
 }
