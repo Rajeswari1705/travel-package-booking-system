@@ -43,7 +43,7 @@
         <!--Eureka Client Dependency-->
         <dependency>
     		<groupId>org.springframework.cloud</groupId>
-    		<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    		<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>    
 		</dependency>
 
 
@@ -102,6 +102,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+       
+       <!--<dependency>
+        	<groupId>com.example.apigateway</groupId>
+        	<artifactId>usermanagement-service</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+        </dependency>-->
     </dependencies>
 
     <build>

@@ -41,6 +41,7 @@ public class TravelPackageController {
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
         TravelPackage travelPackage = service.getPackageById(id);
+        TravelPackageDTO dto = service.convertToDTO(travelPackage);
         return ResponseEntity.ok(new ApiResponse(true, "Package found", travelPackage));
     }
     @GetMapping("/agent/{agentId}")
@@ -99,6 +100,12 @@ public class TravelPackageController {
     	}
     	return dtoList;
     	
+    }
+    
+    @GetMapping("/internal/{id}")
+    public TravelPackageDTO getPackageById(@PathVariable Long id) {
+    	TravelPackage pkg = service.getPackageById(id);
+    	return service.convertToDTO(pkg);
     }
     
     

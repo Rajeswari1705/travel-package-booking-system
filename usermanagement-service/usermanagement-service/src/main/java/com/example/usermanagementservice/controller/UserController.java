@@ -259,7 +259,7 @@ public class UserController {
 		                .body(Collections.singletonMap("message", "User not found with ID: " + id));
 		    }
 		 
-		    // ✅ Check if user is an AGENT
+		    // ✅ Check if user is an CUSTOMER
 		    if (!"CUSTOMER".equalsIgnoreCase(user.getRole())) {
 		        return ResponseEntity.status(HttpStatus.FORBIDDEN)
 		                .body(Collections.singletonMap("message", "User with ID " + id + " is not an CUSTOMER"));
