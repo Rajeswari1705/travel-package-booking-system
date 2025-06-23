@@ -1,4 +1,4 @@
-package com.booking.DTO;
+package com.booking.dto;
 
 import lombok.Data;
 import java.time.LocalDate;

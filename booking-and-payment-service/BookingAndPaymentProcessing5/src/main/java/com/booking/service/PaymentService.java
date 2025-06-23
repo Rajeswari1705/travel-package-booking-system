@@ -1,7 +1,7 @@
 package com.booking.service;
 
-import com.booking.DTO.TravelPackageDTO;
 import com.booking.client.TravelPackageClient;
+import com.booking.dto.TravelPackageDTO;
 import com.booking.entity.Booking;
 import com.booking.entity.Payment;
 import com.booking.repository.BookingRepository;

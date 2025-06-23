@@ -1,6 +1,6 @@
 package com.booking.controller;
 
-import com.booking.DTO.PaymentResponseDTO;
+import com.booking.dto.PaymentResponseDTO;
 import com.booking.entity.Payment;
 import com.booking.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;

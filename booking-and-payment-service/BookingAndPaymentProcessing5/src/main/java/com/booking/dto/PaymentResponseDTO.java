@@ -1,4 +1,4 @@
-package com.booking.DTO;
+package com.booking.dto;
 
 public class PaymentResponseDTO {
     private Long paymentId;

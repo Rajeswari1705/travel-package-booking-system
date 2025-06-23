@@ -1,49 +1,46 @@
 package com.example.controller;
-
+ 
 import com.example.model.TravelPackage;
-import com.example.repository.TravelPackageRepository;
 import com.example.response.ApiResponse;
 import com.example.service.TravelPackageService;
 import jakarta.validation.Valid;
-
+ 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.dto.*;
 import com.example.exception.ResourceNotFoundException;
 import com.example.repository.*;
-
+ 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
+ 
 @RestController
 @RequestMapping("/api/packages")
 public class TravelPackageController {
-	
-	//@Autowired
+ 
     private final TravelPackageService service;
-    
     @Autowired
     private TravelPackageRepository repository; //    new code for feign client purpose only
-    
 
+ 
     public TravelPackageController(TravelPackageService service) {
         this.service = service;
     }
-
+ 
     @GetMapping(produces = "application/json")
     public ResponseEntity<ApiResponse> getAllPackages() {
         List<TravelPackage> packages = service.getAllPackages();
         return ResponseEntity.ok(new ApiResponse(true, "All packages retrieved ", packages));
     }
-
+ 
     
-    
 
+ 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
         TravelPackage travelPackage = service.getPackageById(id);
+        TravelPackageDTO dto = service.convertToDTO(travelPackage);
         return ResponseEntity.ok(new ApiResponse(true, "Package found", travelPackage));
     }
     @GetMapping("/agent/{agentId}")
@@ -51,36 +48,34 @@ public class TravelPackageController {
     	List<TravelPackage> packages = service.getPackageByAgentId(agentId);
     	return ResponseEntity.ok(new ApiResponse(true, "Package by agent retrieve", packages));
     }
-    
 
+ 
     @PostMapping
     public ResponseEntity<ApiResponse> create(@Valid @RequestBody TravelPackage travelPackage) {
         TravelPackage created = service.createPackage(travelPackage);
         return ResponseEntity.ok( new ApiResponse(true, "Package created successfully", created));
     }
-
+ 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> update(@PathVariable Long id, @Valid @RequestBody TravelPackage travelPackage) {
         TravelPackage updated = service.updatePackage(id, travelPackage);
         return ResponseEntity.ok(new ApiResponse(true, "Package updated successfully", updated));
     }
-
+ 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
         service.deletePackage(id);
         return ResponseEntity.ok(new ApiResponse(true, "Package deleted successfully", null));
     }
-    
    //---------------- //for DTO implementation------------------
-    
     @GetMapping("/admin/{id}")
     public ResponseEntity<?> getPackageWithAllDetails(@PathVariable Long id){
     	TravelPackage pkg = service.getPackageById(id);
     	TravelPackageDTO dto = service.convertToDTO(pkg);
     	return ResponseEntity.ok(new ApiResponse(true, "Package with full details", dto));
     }
-
-
+ 
+ 
     
     // admin fetch packages by agent id
     @GetMapping("/admin/agent/{agentId}")
@@ -90,8 +85,7 @@ public class TravelPackageController {
                       .map(service::convertToDTO)
                       .toList();
     }
-    
-    
+
     //booking module fetch all the packages
     @GetMapping("/internal/all")
     public List<TravelPackageDTO> getAllPackagesForBookingModule(){
@@ -101,41 +95,29 @@ public class TravelPackageController {
     		dtoList.add(service.convertToDTO(pkg));
     	}
     	return dtoList;
-    	
     }
-    
-    
+    @GetMapping("/internal/{id}")
+    public TravelPackageDTO getPackageById(@PathVariable Long id) {
+    	TravelPackage pkg = service.getPackageById(id);
+    	return service.convertToDTO(pkg);
+    }
+
     @GetMapping("/api/packages/{packageId}/agent")
     public ResponseEntity<Long> getAgentIdByPackage(@PathVariable Long packageId) {
         TravelPackage travelPackage = repository.findById(packageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Package not found"));
         return ResponseEntity.ok(travelPackage.getAgentId());
     }
-    
-    
+
     /*@GetMapping("/admin/agent/{agentId}")
     public ResponseEntity<?> getPackagesByAgentId(@PathVariable Long agentId) {
         List<TravelPackage> packages = service.getPackageByAgentId(agentId);
-     
     List dtoList = packages.stream()
             .map(service::convertToDTO)
             .toList();
-     
         return ResponseEntity.ok(new ApiResponse(true, "Packages for agent retrieved", dtoList));
     }*/
+ 
+    
 
-    
-    //for getting all packages for pamanji
-    @GetMapping("/getallpackages")
-    public ResponseEntity<List<PackageDTO>> getAllPackagesforCustomer() {
-        List<TravelPackage> packages = service.getAllPackages();
-    List dtos = packages.stream()
-            .map(pkg -> new PackageDTO(pkg.getPackageId(), pkg.getTitle(), pkg.getDescription(), pkg.getDuration(), pkg.getPrice(), pkg.getMaxCapacity(),  pkg.getTripStartDate(), pkg.getTripEndDate()))
-            .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
-    }
-    
-    
-    
-   
 }
