@@ -1,4 +1,4 @@
-package com.booking.DTO;
+package com.booking.dto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +22,5 @@ public class TravelPackageDTO {
 	private List<SightseeingDTO> sightseeing;
 	private List<ItineraryDTO> itinerary;
 	private OfferDTO offer;
-	
 
 }

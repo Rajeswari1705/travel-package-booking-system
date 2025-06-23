@@ -31,4 +31,7 @@ public interface UserService {
 	List<TravelPackageDTO> fetchAllPackagesByAgent(Long id);
 
 	UserDTO convertToDTO(User user);
+	
+	//to send password through mail
+	void sendForgotPasswordEmail(String email);
 }

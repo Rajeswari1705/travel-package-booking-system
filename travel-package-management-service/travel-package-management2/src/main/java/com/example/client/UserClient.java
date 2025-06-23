@@ -8,7 +8,7 @@ import com.example.dto.UserDTO;
 
 
 
-@FeignClient(name="USERMANAGEMENT-SERVICE")
+@FeignClient(name="usermanagement-service")
 public interface UserClient {
 	
 	@GetMapping("/api/users/internal/{id}")

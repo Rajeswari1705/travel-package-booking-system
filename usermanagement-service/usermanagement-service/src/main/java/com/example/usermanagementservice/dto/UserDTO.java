@@ -4,17 +4,27 @@ public class UserDTO {
 	private Long id;
 	private String name;
 	private String email;
+	private String contactNumber;
 	private String role;
 
 	// Constructors
 	public UserDTO() {
 	}
 
-	public UserDTO(Long id, String name, String email, String role) {
+	public UserDTO(Long id, String name, String email, String contactNumber, String role) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
+		this.contactNumber= contactNumber;
 		this.role = role;
+	}
+
+	public String getContactNumber() {
+		return contactNumber;
+	}
+
+	public void setContactNumber(String contactNumber) {
+		this.contactNumber = contactNumber;
 	}
 
 	// Getters & Setters

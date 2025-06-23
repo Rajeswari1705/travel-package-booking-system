@@ -1,17 +1,23 @@
 package com.example.usermanagementservice.controller;
  
 
+import com.example.usermanagementservice.dto.ForgotPasswordRequest;
 import com.example.usermanagementservice.dto.TravelPackageDTO;
 import com.example.usermanagementservice.dto.UserDTO;
 import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.exception.RoleChangeNotAllowedException;
+import com.example.usermanagementservice.exception.UserNotFoundException;
 import com.example.usermanagementservice.model.User;
 import com.example.usermanagementservice.service.UserService;
+import com.example.usermanagementservice.service.impl.UserServiceImpl;
+
 import io.jsonwebtoken.Jwts;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +32,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
  
     @Autowired
     private UserService userService;
@@ -183,18 +190,6 @@ public class UserController {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
    /* @PutMapping("/myprofile")
     public ResponseEntity<?> updateMyProfile(@RequestBody User updatedUser) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -226,9 +221,9 @@ public class UserController {
     
     /*---------------------------------*/
     
-	// Internal endpoint for microservices (e.g., Travel Package Service)
+	// Internal endpoint for travel package microservices (e.g., Travel Package Service)
 	@GetMapping("/internal/{id}")
-	public ResponseEntity<?> getUserForInternalUse(@PathVariable Long id) {
+	public ResponseEntity<?> getAgentForInternalUse(@PathVariable Long id) {
 		User user = userService.getUserById(id); // No security check, get user from DB
 		
 		// ✅ Check if user exists
@@ -247,13 +242,60 @@ public class UserController {
 		return ResponseEntity.ok(userDTO);
 	}
 	
+
+	// Internal endpoint for booking package microservices to get customer (e.g.,Booking Service)
+		@GetMapping("/internal/customer/{id}")
+		public ResponseEntity<?> getCustomerForInternalUse(@PathVariable Long id) {
+			User user = userService.getUserById(id); // No security check, get user from DB
+			
+			// ✅ Check if user exists
+		    if (user == null) {
+		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+		                .body(Collections.singletonMap("message", "User not found with ID: " + id));
+		    }
+		 
+		    // ✅ Check if user is an CUSTOMER
+		    if (!"CUSTOMER".equalsIgnoreCase(user.getRole())) {
+		        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+		                .body(Collections.singletonMap("message", "User with ID " + id + " is not an CUSTOMER"));
+		    }
+			
+			UserDTO userDTO = userService.convertToDTO(user);
+			return ResponseEntity.ok(userDTO);
+		}
+	
 	
     
+
+    //To fetch all the packages under a travel agent using his id
+
+
     //To fetch all the packages under a travel agent
+
 	@GetMapping("/packages/{id}")
     public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long id) {
         List<TravelPackageDTO> packages = userService.fetchAllPackagesByAgent(id); 
         return ResponseEntity.ok(packages);
     }
+	
+	
+	//to send password to user mail
+	
+	@PostMapping("/forgot-password")
+	public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+	    try {
+	logger.info("Processing forgot-password for email: {}", request.getEmail());
+	        userService.sendForgotPasswordEmail(request.getEmail());
+	        return ResponseEntity.ok(Collections.singletonMap("message", "Password sent to your email."));
+	    } catch (UserNotFoundException ex) {
+	        logger.warn("Forgot-password failed: {}", ex.getMessage());
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	            .body(Collections.singletonMap("error", "Email not found."));
+	    } catch (Exception e) {
+	        logger.error("Error while sending email: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	            .body(Collections.singletonMap("error", "Something went wrong."));
+	    }
+	}
 
 }

@@ -7,6 +7,8 @@ import com.example.usermanagementservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 //import com.example.usermanagementservice.dto.TravelPackageDTO;
@@ -24,6 +26,10 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	
+	@Autowired
+	private JavaMailSender mailSender;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -183,7 +189,35 @@ public class UserServiceImpl implements UserService {
 	
 	//convert user to userDTO for the user data transfer to other services
 	public UserDTO convertToDTO(User user) {
-	    return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getRole());
+	    return new UserDTO(user.getId(), user.getName(), user.getEmail(),user.getContactNumber(), user.getRole());
+	}
+	
+	
+	
+	
+	//for sending password through email if user forgets password
+	
+	 
+	@Override
+	public void sendForgotPasswordEmail(String email) {
+	logger.info("Received forgot password request for email: {}", email);
+	 
+	    User user = userRepository.findByEmail(email)
+	        .orElseThrow(() -> new UserNotFoundException("User with email not found: " + email));
+	 
+	    String subject = "Your Travel Booking Password";
+	    String message = "Dear " + user.getName() + ",\n\n"
+	        + "Your password is: " + user.getPassword()
+	        + "\n\nPlease login and change your password if needed.\n\nRegards,\nTravel Team";
+	 
+	    SimpleMailMessage mailMessage = new SimpleMailMessage();
+	    mailMessage.setTo(user.getEmail());
+	    mailMessage.setSubject(subject);
+	    mailMessage.setText(message);
+	 
+	    mailSender.send(mailMessage);
+	 
+	logger.info("Password email sent to {}", user.getEmail());
 	}
 	
 	

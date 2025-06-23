@@ -34,10 +34,16 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
- 
         
         
-        <!-- Spring Boot Starter Test (JUnit + Spring Test) -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-gateway-server</artifactId>
+			<version>4.0.5</version> <!-- Matches 2022.0.4 BOM -->
+		</dependency>
+
+
+		<!-- Spring Boot Starter Test (JUnit + Spring Test) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
