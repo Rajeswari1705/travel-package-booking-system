@@ -76,26 +76,7 @@ public class BookingController {
         return ResponseEntity.ok(booking);
     }
  
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        service.deleteBooking(id);
-    }
-    
-    //  Reviews and rating to validate booking
-    @GetMapping("/user/{userId}/package/{packageId}/completed")
-    public boolean hasUserCompletedPackage(@PathVariable Long userId, @PathVariable String packageId) {
-        return service.hasUserCompletedPackage(userId, packageId);
-    }
-    
-    // Insurance module to get Booking ID
-    @GetMapping("/internal/{id}")
-    public ResponseEntity<Booking> getInternalBookingById(@PathVariable Long id) {
-        Booking booking = service.getBookingById(id);
-        if (booking == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(booking);
-    }
+   
     
 }
     
