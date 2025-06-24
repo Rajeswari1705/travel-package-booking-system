@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 /**
  * Feign client to communicate with the User module.
  */
-@FeignClient(name = "user-service")
+@FeignClient(name = "usermanagement-service")
 public interface UserClient {
  
     /**
@@ -16,7 +16,7 @@ public interface UserClient {
      * @param userId the ID of the user
      * @return the UserDTO containing user information
      */
-    @GetMapping("/api/users/internal/{id}")
+    @GetMapping("/api/users/internal/customer/{id}")
     UserDTO getUserById(@PathVariable("id") Integer userId);
 }
 

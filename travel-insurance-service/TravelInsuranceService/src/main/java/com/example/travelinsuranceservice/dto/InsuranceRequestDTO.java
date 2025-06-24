@@ -11,6 +11,8 @@ import lombok.Data;
 @Data
 public class InsuranceRequestDTO {
  
+	private Integer insuranceId;
+	
     @NotNull(message = "User ID is required")
     private Integer userId;
  

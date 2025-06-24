@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 /**
 * Feign client to communicate with the Booking module.
 */
-@FeignClient(name = "TravelBooking_PaymentModule")
+@FeignClient(name = "TravelBooking-PaymentModule")
 public interface BookingClient {
  
     /**
@@ -17,5 +17,5 @@ public interface BookingClient {
      * @return the BookingDTO containing booking information
      */
     @GetMapping("/api/bookings/internal/{id}")
-    BookingDTO getBookingById(@PathVariable("id") Integer bookingId);
+    BookingDTO getBookingById(@PathVariable("id") Long bookingId);
 }

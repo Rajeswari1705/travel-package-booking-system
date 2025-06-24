@@ -6,7 +6,7 @@ import java.time.LocalDate;
  
 @Data
 public class BookingDTO {
-    private Integer bookingId;
+    private Long bookingId;
     private Integer userId;
     private Integer packageId;
     private LocalDate startDate;

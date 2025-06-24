@@ -15,13 +15,12 @@ import java.util.*;
 import java.util.stream.Collectors;
  
 /**
- * Controller for managing travel insurance APIs.
+ * Controller exposing REST endpoints for insurance operations.
  */
 @RestController
 @RequestMapping("/api/insurance")
 public class InsuranceController {
  
-    // Logger to track method execution and debug
     private static final Logger logger = LoggerFactory.getLogger(InsuranceController.class);
  
     @Autowired
@@ -29,54 +28,47 @@ public class InsuranceController {
  
     /**
      * POST /api/insurance
-     * Create new insurance for a user with selected coverage type.
+     * Creates new insurance with fixed status "ISSUED".
      */
     @PostMapping
     public ResponseEntity<Insurance> createInsurance(@Valid @RequestBody InsuranceRequestDTO dto) {
-        logger.info("Creating insurance for userId: {}", dto.getUserId());
+        logger.info("POST /api/insurance - creating insurance");
         Insurance insurance = service.createInsurance(dto);
         return new ResponseEntity<>(insurance, HttpStatus.CREATED);
     }
  
     /**
-     * PUT /api/insurance/{insuranceId}/booking?bookingId=123
-     * Attach a bookingId to an existing insurance policy.
+     * PUT /api/insurance/internal/{insuranceId}/booking?bookingId={id}
+     * Internal-only endpoint used by Booking module to update booking ID.
      */
-    @PutMapping("/{insuranceId}/bookings")
-    public ResponseEntity<Insurance> updateBooking(@PathVariable Integer insuranceId,
-                                                   @RequestParam Integer bookingId) {
-        logger.info("Linking bookingId {} to insuranceId {}", bookingId, insuranceId);
+    @PutMapping("/internal/{insuranceId}/booking")
+    public ResponseEntity<Insurance> updateBookingFromBookingModule(
+            @PathVariable Integer insuranceId,
+            @RequestParam Long bookingId) {
+ 
+        logger.info("PUT /api/insurance/internal/{}/booking?bookingId={} - Called from Booking service",
+                insuranceId, bookingId);
         return ResponseEntity.ok(service.updateBookingId(insuranceId, bookingId));
     }
  
     /**
-     * PUT /api/insurance/{insuranceId}/status?status=Cancelled
-     * Update the status of an insurance policy.
-     */
-    @PutMapping("/{insuranceId}/status")
-    public ResponseEntity<Insurance> updateStatus(@PathVariable Integer insuranceId,
-                                                  @RequestParam String status) {
-        logger.info("Updating insurance status for ID {} to {}", insuranceId, status);
-        return ResponseEntity.ok(service.updateStatus(insuranceId, status));
-    }
- 
-    /**
      * GET /api/insurance/user/{userId}
-     * Fetch all insurance policies for a specific user.
+     * Fetches insurance policies for a given user.
      */
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Insurance>> getByUser(@PathVariable Integer userId) {
-        logger.info("Fetching insurance for userId: {}", userId);
+        logger.info("GET /api/insurance/user/{} - Fetching insurance list", userId);
         return ResponseEntity.ok(service.getUserInsurance(userId));
     }
  
     /**
      * GET /api/insurance/coverage-plans
-     * Return available insurance coverage options.
+     * Returns available coverage options (name, price, details, claim).
      */
     @GetMapping("/coverage-plans")
     public ResponseEntity<List<CoveragePlanDTO>> getCoveragePlans() {
-        logger.info("Fetching available coverage plan options.");
+        logger.info("GET /api/insurance/coverage-plans - Fetching all coverage plans");
+ 
         List<CoveragePlanDTO> plans = Arrays.stream(CoverageType.values())
                 .map(type -> new CoveragePlanDTO(
                         type.name(),
@@ -88,4 +80,5 @@ public class InsuranceController {
         return ResponseEntity.ok(plans);
     }
 }
+
  
