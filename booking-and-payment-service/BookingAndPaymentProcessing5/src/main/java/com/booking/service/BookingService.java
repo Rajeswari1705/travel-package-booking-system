@@ -101,9 +101,10 @@ logger.info("Booking created successfully with bookingId: " + savedBooking.getBo
         LocalDate today = LocalDate.now();
         return bookings.stream()
             .anyMatch(b ->
-                b.getPackageId().equals(packageId) &&
+                String.valueOf(b.getPackageId()).equals(packageId) &&
                 "CONFIRMED".equalsIgnoreCase(b.getStatus()) &&
-                b.getTripEndDate().isBefore(today)
+                !b.getTripEndDate().isAfter(today) // includes today
             );
     }
+
 }

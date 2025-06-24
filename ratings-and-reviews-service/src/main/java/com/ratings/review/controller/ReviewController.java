@@ -41,6 +41,7 @@ public class ReviewController {
         Map<String, Object> response = new HashMap<>();
         response.put("reviewId", savedReview.getReviewId()); // Add reviewId here
         response.put("userId", savedReview.getUserId());
+        response.put("packageId", savedReview.getPackageId());
         response.put("comment", savedReview.getComment());
         response.put("rating", savedReview.getRating());
         response.put("timestamp", savedReview.getTimestamp());
