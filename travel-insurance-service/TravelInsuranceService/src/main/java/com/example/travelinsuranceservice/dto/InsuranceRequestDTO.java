@@ -12,10 +12,11 @@ import lombok.Data;
 public class InsuranceRequestDTO {
  
     @NotNull(message = "User ID is required")
-    private Integer userId;
+    private Long userId;
  
     @NotNull(message = "Coverage type is required")
     private CoverageType coverageType;
-  
+    
+    private Double Price;
 }
  

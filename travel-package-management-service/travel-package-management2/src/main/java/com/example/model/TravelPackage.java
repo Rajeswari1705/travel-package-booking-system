@@ -48,6 +48,10 @@ public class TravelPackage {
     @NotNull(message="Trip end date is required")
     private LocalDate tripEndDate;
     
+    //images new feature
+    @Column(name="image_url")
+    private String imageUrl;
+    
     
     @ElementCollection
     @CollectionTable(name="travel_package_highlights", joinColumns= @JoinColumn(name="travel_package_package_id"))

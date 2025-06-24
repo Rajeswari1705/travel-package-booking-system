@@ -21,7 +21,7 @@ public class AssistanceRequest {
     private Integer requestId; // Auto-generated primary key
  
     @NotNull(message = "User ID cannot be null")
-    private Integer userId; // Provided by external module
+    private Long userId; // Provided by external module
  
     @NotNull(message = "Issue description cannot be empty")
     private String issueDescription; // Reason for assistance (e.g. Lost passport)

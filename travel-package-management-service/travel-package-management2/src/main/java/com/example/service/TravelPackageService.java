@@ -126,6 +126,7 @@ public class TravelPackageService {
         existing.setTripStartDate(updatedPackage.getTripStartDate());
         existing.setTripEndDate(updatedPackage.getTripEndDate());
         existing.setHighlights(updatedPackage.getHighlights());
+        existing.setImageUrl(updatedPackage.getImageUrl());
         existing.setOffer(updatedPackage.getOffer());
      
         // ✅ Safely update child lists — DO NOT use setFlights()
@@ -249,14 +250,14 @@ public class TravelPackageService {
     
     //review module feign service logic impl
 
-/**
-     * Returns the agent ID for a given package ID.
-     */
-    public Long getAgentIdByPackageId(Long packageId) {
-        TravelPackage travelPackage = repository.findById(packageId)
-            .orElseThrow(() -> new ResourceNotFoundException("Package not found with ID: " + packageId));
-        return travelPackage.getAgentId();
-    }
+///**
+//     * Returns the agent ID for a given package ID.
+//     */
+//    public Long getAgentIdByPackageId(Long packageId) {
+//        TravelPackage travelPackage = repository.findById(packageId)
+//            .orElseThrow(() -> new ResourceNotFoundException("Package not found with ID: " + packageId));
+//        return travelPackage.getAgentId();
+//    }
 
     
 

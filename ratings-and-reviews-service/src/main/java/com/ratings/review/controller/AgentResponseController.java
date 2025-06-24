@@ -60,4 +60,23 @@ public class AgentResponseController {
         List<AgentResponse> responses = agentResponseService.getResponsesForReview(reviewId);
         return ResponseEntity.ok(responses);
     }
+    @PutMapping("/{responseId}")
+    public ResponseEntity<AgentResponse> updateAgentResponse(
+            @PathVariable Long responseId,
+            @RequestBody Map<String, String> requestBody) {
+
+        String updatedMessage = requestBody.get("responseMessage");
+        AgentResponse updatedResponse = agentResponseService.updateResponse(responseId, updatedMessage);
+
+        return ResponseEntity.ok(updatedResponse);
+    }
+    @DeleteMapping("/{responseId}")
+    public ResponseEntity<Map<String, String>> deleteAgentResponse(@PathVariable Long responseId) {
+        agentResponseService.deleteResponse(responseId);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Agent response deleted successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    
 }

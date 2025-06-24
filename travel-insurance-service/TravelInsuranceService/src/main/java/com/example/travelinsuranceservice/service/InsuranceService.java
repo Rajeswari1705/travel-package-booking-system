@@ -78,9 +78,25 @@ public class InsuranceService {
     /**
      * Returns all insurance policies linked to a specific user.
      */
-    public List<Insurance> getUserInsurance(Integer userId) {
+    public List<Insurance> getUserInsurance(Long userId) {
         logger.info("Fetching insurance list for userId: {}", userId);
         return repo.findByUserId(userId);
+    }
+    
+    /**
+    * Returns the price of the insurance selected by the user.
+    * If no insurance is found, returns 0.0.
+    */
+    public double getInsurancePriceByUserId(Long userId) {
+        Insurance insurance = repo.findByUserId(userId).stream().findFirst().orElse(null);
+     
+        if (insurance == null) {
+            logger.warn("No insurance found for userId {}", userId);
+            return 0.0; // Means user hasn't selected insurance
+        }
+     
+    logger.info("Returning insurance price for userId {}: {}", userId, insurance.getPrice());
+        return insurance.getPrice();
     }
 } 
  

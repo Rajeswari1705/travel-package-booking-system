@@ -56,7 +56,7 @@ public class InsuranceController {
      * Fetches insurance policies for a given user.
      */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Insurance>> getByUser(@PathVariable Integer userId) {
+    public ResponseEntity<List<Insurance>> getByUser(@PathVariable Long userId) {
         logger.info("GET /api/insurance/user/{} - Fetching insurance list", userId);
         return ResponseEntity.ok(service.getUserInsurance(userId));
     }
@@ -78,6 +78,25 @@ public class InsuranceController {
                 .collect(Collectors.toList());
  
         return ResponseEntity.ok(plans);
+    }
+    
+    /**
+    * GET /api/insurance/price/{userId}
+    * Fetch insurance price selected by userId
+    */
+    @GetMapping("/price/{userId}")
+    public ResponseEntity<Double> getInsurancePriceByUserId(@PathVariable Long userId) {
+    logger.info("GET /api/insurance/price/{} - Fetching insurance price", userId);
+     
+        double price = service.getInsurancePriceByUserId(userId);
+     
+        if (price <= 0) {
+            logger.warn("No insurance found for userId: {}", userId);
+            return ResponseEntity.notFound().build();
+        }
+     
+    logger.info("Insurance price for userId {} is {}", userId, price);
+        return ResponseEntity.ok(price);
     }
 }
 
