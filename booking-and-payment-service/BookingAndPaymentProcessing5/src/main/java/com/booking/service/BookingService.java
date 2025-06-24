@@ -1,4 +1,5 @@
 package com.booking.service;
+ 
 import com.booking.client.TravelPackageClient;
 import com.booking.client.UserClient;
 import com.booking.dto.BookingDTO;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
+ 
 @Service
 public class BookingService {
     @Autowired
@@ -36,7 +38,6 @@ logger.info("Creating booking for userId: " + userId + " and packageId: " + pack
         if (travelPackage == null) {
             throw new IllegalArgumentException("Invalid travel package ID.");
         }
- 
         // Create and save booking
         Booking booking = new Booking();
         booking.setUserId(userId);
@@ -63,6 +64,9 @@ logger.info("Booking created successfully with bookingId: " + savedBooking.getBo
     public Booking getBookingById(Long id) {
         return bookingRepo.findById(id).orElse(null);
     }
+    public Booking getInternalBookingById(Long id) {
+        return bookingRepo.findById(id).orElse(null);
+    }
     public void deleteBooking(Long id) {
         bookingRepo.deleteById(id);
     }
@@ -80,59 +84,20 @@ logger.info("Booking created successfully with bookingId: " + savedBooking.getBo
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
 
-
-
-
-    
-
-    private List<TravelPackageDTO> castToTravelPackageDTOList(Object data) {
-        if (data instanceof List<?>) {
-            return ((List<?>) data).stream()
-                    .filter(item -> item instanceof TravelPackageDTO)
-                    .map(item -> (TravelPackageDTO) item)
-                    .collect(Collectors.toList());
-        }
-        return List.of();
+    // User module to return Bookings by UserId
+    public List<Booking> getBookingsByUserId(Long userId) {
+    	return bookingRepo.findByUserId(userId);
     }
-
-    public int getBookingCountByUser(Long userId) {
-        return bookingRepo.countByUserId(userId);
-    }
-
-    public List<Booking> getBookingsByUser(Long userId) {
-        return bookingRepo.findByUserId(userId);
-    }
-
-    public List<Booking> getBookingsByPackageId(Long packageId) {
-        return bookingRepo.findByPackageId(packageId);
-    }
-    
-//get packages by Id
-
-    public TravelPackageDTO getPackageById(Long id) {
-        ApiResponse response = travelPackageClient.getPackageById(id);
-        Object data = response.getData();
-        if (data instanceof TravelPackageDTO) {
-            return (TravelPackageDTO) data;
-        }
-        throw new RuntimeException("Invalid response format");
-    }
-
-
-
-
-
- 
     // Rating and reviews module to validate booking
     public boolean hasUserCompletedPackage(Long userId, String packageId) {
         List<Booking> bookings = bookingRepo.findByUserId(userId);
         LocalDate today = LocalDate.now();
         return bookings.stream()
             .anyMatch(b ->
-                b.getPackageId().equals(packageId) &&
+                String.valueOf(b.getPackageId()).equals(packageId) &&
                 "CONFIRMED".equalsIgnoreCase(b.getStatus()) &&
-                b.getTripEndDate().isBefore(today)
+                !b.getTripEndDate().isAfter(today) // includes today
             );
     }
+ 
 }
-
