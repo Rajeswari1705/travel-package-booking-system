@@ -218,6 +218,7 @@ public class UserServiceImpl implements UserService {
 	    mailSender.send(mailMessage);
 	 
 	logger.info("Password email sent to {}", user.getEmail());
+	System.out.println("sending mail to:");
 	}
 	
 	
