@@ -33,7 +33,7 @@ public class AssistanceRequest {
     private LocalDateTime requestTimestamp; // Date + time of request
  
     /**
-     * Automatically sets the timestamp before insertion.
+     * Automatically sets the time-stamp before insertion.
      */
     @PrePersist
     public void setRequestTimestamp() {

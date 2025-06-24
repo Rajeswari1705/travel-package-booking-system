@@ -6,17 +6,16 @@ import lombok.Data;
  
 /**
  * DTO used to receive insurance creation requests.
- * Sent by the Booking module or frontend when a user selects a coverage plan.
+ * Sent by the Booking module or front-end when a user selects a coverage plan.
  */
 @Data
 public class InsuranceRequestDTO {
  
-	private Integer insuranceId;
-	
     @NotNull(message = "User ID is required")
     private Integer userId;
  
     @NotNull(message = "Coverage type is required")
     private CoverageType coverageType;
+  
 }
  

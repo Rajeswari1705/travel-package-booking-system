@@ -72,7 +72,6 @@ public class BookingController {
     	}
 
     
-
     //  Reviews and rating to validate booking
     @GetMapping("/user/{userId}/package/{packageId}/completed")
     public boolean hasUserCompletedPackage(@PathVariable Long userId, @PathVariable String packageId) {
