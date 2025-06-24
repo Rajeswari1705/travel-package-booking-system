@@ -15,5 +15,5 @@ public interface AgentResponseRepository extends JpaRepository<AgentResponse, Lo
     /**
      * Find all responses related to a specific review.
      */
-    List<AgentResponse> findByReview_ReviewId(Long reviewId);
+    List<AgentResponse> findByReviewId(Long reviewId);
 }
