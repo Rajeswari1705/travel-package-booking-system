@@ -123,7 +123,7 @@ public class TravelPackageController {
     }*/
    
 
-    @GetMapping("/{packageId}/agent")
+   /* @GetMapping("/{packageId}/agent")
     public ResponseEntity<Map<String, Long>> getAgentIdByPackage(@PathVariable Long packageId) {
         TravelPackage travelPackage = repository.findById(packageId)
             .orElseThrow(() -> new ResourceNotFoundException("Package not found"));
@@ -132,9 +132,20 @@ public class TravelPackageController {
         response.put("agentId", travelPackage.getAgentId());
 
         return ResponseEntity.ok(response);
+    }*/
+
+//End Point use for Review and Ratings Module only
+    @GetMapping("/internal/agent-id/{packageId}")
+    public Map<String, Long> getAgentIdByPackageId(@PathVariable Long packageId) {
+        System.out.println(">> Inside agent-id endpoint with packageId = " + packageId);
+ 
+        TravelPackage travelPackage = repository.findById(packageId)
+            .orElseThrow(() -> new ResourceNotFoundException("Package not found with ID: " + packageId));
+ 
+        Map<String, Long> response = new HashMap<>();
+        response.put("agentId", travelPackage.getAgentId());
+        return response;
     }
-
-
 
 
     
