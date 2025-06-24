@@ -126,6 +126,7 @@ public class TravelPackageService {
         existing.setTripStartDate(updatedPackage.getTripStartDate());
         existing.setTripEndDate(updatedPackage.getTripEndDate());
         existing.setHighlights(updatedPackage.getHighlights());
+        existing.setImageUrl(updatedPackage.getImageUrl());
         existing.setOffer(updatedPackage.getOffer());
      
         // ✅ Safely update child lists — DO NOT use setFlights()
