@@ -10,9 +10,9 @@ import lombok.Getter;
 @Getter
 public enum CoverageType {
  
-    BASIC("Basic Coverage", 200.0, 100000.0),
-    STANDARD("Standard Coverage", 400.0, 200000.0),
-    PREMIUM("Premium Coverage", 600.0, 500000.0);
+    BASIC("Covers emergency medical expenses and trip cancellation for domestic travel.", 500.0, 100000.0),
+    STANDARD("Includes medical coverage, trip cancellation, lost baggage, and flight delay protection.", 1000.0, 200000.0),
+    PREMIUM("Comprehensive coverage including international medical support, evacuation, trip interruption, and personal liability", 2000.0, 500000.0);
  
     private final String coverageDetails;
     private final Double price;

@@ -3,6 +3,7 @@ package com.example.travelinsuranceservice.controller;
 import com.example.travelinsuranceservice.dto.*;
 import com.example.travelinsuranceservice.model.CoverageType;
 import com.example.travelinsuranceservice.model.Insurance;
+import com.example.travelinsuranceservice.repository.InsuranceRepository;
 import com.example.travelinsuranceservice.service.InsuranceService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -25,6 +26,9 @@ public class InsuranceController {
  
     @Autowired
     private InsuranceService service;
+    
+    @Autowired
+    private InsuranceRepository repo;
  
     /**
      * POST /api/insurance
@@ -37,19 +41,6 @@ public class InsuranceController {
         return new ResponseEntity<>(insurance, HttpStatus.CREATED);
     }
  
-    /**
-     * PUT /api/insurance/internal/{insuranceId}/booking?bookingId={id}
-     * Internal-only endpoint used by Booking module to update booking ID.
-     */
-    @PutMapping("/internal/{insuranceId}/booking")
-    public ResponseEntity<Insurance> updateBookingFromBookingModule(
-            @PathVariable Integer insuranceId,
-            @RequestParam Long bookingId) {
- 
-        logger.info("PUT /api/insurance/internal/{}/booking?bookingId={} - Called from Booking service",
-                insuranceId, bookingId);
-        return ResponseEntity.ok(service.updateBookingId(insuranceId, bookingId));
-    }
  
     /**
      * GET /api/insurance/user/{userId}
@@ -60,6 +51,8 @@ public class InsuranceController {
         logger.info("GET /api/insurance/user/{} - Fetching insurance list", userId);
         return ResponseEntity.ok(service.getUserInsurance(userId));
     }
+    
+   
  
     /**
      * GET /api/insurance/coverage-plans
@@ -78,6 +71,23 @@ public class InsuranceController {
                 .collect(Collectors.toList());
  
         return ResponseEntity.ok(plans);
+    }
+    
+    @PutMapping("/{insuranceId}/booking/{bookingId}")
+    public ResponseEntity<String> updateInsuranceBookingId(
+            @PathVariable Integer insuranceId, @PathVariable Long bookingId) {
+        
+        Insurance insurance = repo.findById(insuranceId).orElse(null);
+        
+        if (insurance == null) {
+            return ResponseEntity.badRequest().body("Insurance not found.");
+        }
+        
+        insurance.setBookingId(bookingId);
+        insurance.setIssuanceStatus("ACTIVE");
+        repo.save(insurance);
+        
+        return ResponseEntity.ok("Insurance linked to booking successfully.");
     }
     
     /**

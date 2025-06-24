@@ -33,9 +33,9 @@ public class Insurance {
     private Double price;
     private Double claimableAmount;
  
-    // Fixed, permanent field indicating issuance status
-    @Column(updatable = false)
-    private String issuanceStatus = "ISSUED";
+    // Default Status Pending
+    @Column(nullable=false)
+    private String issuanceStatus = "PENDING";
  
     @CreationTimestamp
     private LocalDateTime createdAt;
