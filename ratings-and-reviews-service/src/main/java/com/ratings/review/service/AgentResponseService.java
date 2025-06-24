@@ -56,4 +56,21 @@ public class AgentResponseService {
     public List<AgentResponse> getResponsesForReview(Long reviewId) {
         return agentResponseRepository.findByReviewId(reviewId);
     }
+    
+    public AgentResponse updateResponse(Long responseId, String updatedMessage) {
+        AgentResponse response = agentResponseRepository.findById(responseId)
+            .orElseThrow(() -> new ResourceNotFoundException("Agent Response not found"));
+
+        response.setResponseMessage(updatedMessage);
+        response.setResponseTime(LocalDateTime.now());
+
+        return agentResponseRepository.save(response);
+    }
+    public void deleteResponse(Long responseId) {
+        AgentResponse response = agentResponseRepository.findById(responseId)
+            .orElseThrow(() -> new ResourceNotFoundException("Agent Response not found"));
+
+        agentResponseRepository.delete(response);
+    }
+
 }
