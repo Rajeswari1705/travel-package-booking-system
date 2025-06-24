@@ -19,7 +19,7 @@ public class Insurance {
     private Integer insuranceId;
  
     @NotNull(message = "User ID cannot be null")
-    private Integer userId;
+    private Long userId;
  
     // Booking ID will be updated later from the Booking module
     private Long bookingId;

@@ -58,7 +58,7 @@ public class AssistanceRequestService {
     /**
      * Fetches all assistance records for a specific user.
      */
-    public List<AssistanceRequest> getByUser(Integer userId) {
+    public List<AssistanceRequest> getByUser(Long userId) {
         logger.info("Fetching assistance list for userId: {}", userId);
         return repo.findByUserId(userId);
     }

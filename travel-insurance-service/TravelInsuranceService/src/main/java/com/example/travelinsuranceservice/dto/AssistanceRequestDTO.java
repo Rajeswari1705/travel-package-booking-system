@@ -10,7 +10,7 @@ import lombok.Data;
 public class AssistanceRequestDTO {
  
     @NotNull(message = "User ID is required")
-    private Integer userId;
+    private Long userId;
  
     @NotNull(message = "Issue description is required")
     private String issueDescription;

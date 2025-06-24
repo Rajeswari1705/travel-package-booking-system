@@ -13,11 +13,11 @@ public interface UserClient {
  
     /**
      * Fetch user details by userId from the User module.
-     * @param userId the ID of the user
+     * @param long1 the ID of the user
      * @return the UserDTO containing user information
      */
     @GetMapping("/api/users/internal/customer/{id}")
-    UserDTO getUserById(@PathVariable("id") Integer userId);
+    UserDTO getUserById(@PathVariable("id") Long userId);
 }
 
  
