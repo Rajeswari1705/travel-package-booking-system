@@ -13,7 +13,9 @@ import com.example.exception.ResourceNotFoundException;
 import com.example.repository.*;
  
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
  
 @RestController
 @RequestMapping("/api/packages")
@@ -102,13 +104,14 @@ public class TravelPackageController {
     	TravelPackage pkg = service.getPackageById(id);
     	return service.convertToDTO(pkg);
     }
-
-    @GetMapping("/api/packages/{packageId}/agent")
-    public ResponseEntity<Long> getAgentIdByPackage(@PathVariable Long packageId) {
-        TravelPackage travelPackage = repository.findById(packageId)
-                .orElseThrow(() -> new ResourceNotFoundException("Package not found"));
-        return ResponseEntity.ok(travelPackage.getAgentId());
-    }
+////    //end point for reviews module
+//    @GetMapping("/{packageId}/agent")
+//    public ResponseEntity<Long> getAgentIdByPackage(@PathVariable Long packageId) {
+//       TravelPackage travelPackage = repository.findById(packageId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Package not found"));
+//        return ResponseEntity.ok(travelPackage.getAgentId());
+//    }
+    
 
     /*@GetMapping("/admin/agent/{agentId}")
     public ResponseEntity<?> getPackagesByAgentId(@PathVariable Long agentId) {
@@ -118,7 +121,22 @@ public class TravelPackageController {
             .toList();
         return ResponseEntity.ok(new ApiResponse(true, "Packages for agent retrieved", dtoList));
     }*/
- 
+   
+
+    @GetMapping("/{packageId}/agent")
+    public ResponseEntity<Map<String, Long>> getAgentIdByPackage(@PathVariable Long packageId) {
+        TravelPackage travelPackage = repository.findById(packageId)
+            .orElseThrow(() -> new ResourceNotFoundException("Package not found"));
+
+        Map<String, Long> response = new HashMap<>();
+        response.put("agentId", travelPackage.getAgentId());
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
     
 
 }

@@ -13,8 +13,6 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
     private Long userId;
-
-
     @Column(name = "package_id", nullable = false)
     private Long packageId;
 
