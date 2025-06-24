@@ -51,7 +51,7 @@ public class AssistanceRequestController {
      * Fetch all assistance requests made by a user.
      */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AssistanceRequest>> getByUser(@PathVariable Integer userId) {
+    public ResponseEntity<List<AssistanceRequest>> getByUser(@PathVariable Long userId) {
         logger.info("Fetching assistance requests for userId: {}", userId);
         return ResponseEntity.ok(service.getByUser(userId));
     }

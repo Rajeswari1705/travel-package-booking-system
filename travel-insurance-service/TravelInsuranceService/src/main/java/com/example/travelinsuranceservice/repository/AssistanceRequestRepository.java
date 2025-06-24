@@ -17,6 +17,6 @@ public interface AssistanceRequestRepository extends JpaRepository<AssistanceReq
      * @param userId ID of the user
      * @return List of AssistanceRequest objects
      */
-    List<AssistanceRequest> findByUserId(Integer userId);
+    List<AssistanceRequest> findByUserId(Long userId);
 }
  

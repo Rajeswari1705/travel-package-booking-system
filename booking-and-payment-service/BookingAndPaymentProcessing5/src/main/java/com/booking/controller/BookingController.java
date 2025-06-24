@@ -60,6 +60,19 @@ public class BookingController {
         service.deleteBooking(id);
     }
     
+
+    // User Module to get bookings by User ID
+    @GetMapping("/internal/bookings/user/{userId}")
+    public ResponseEntity<List<Booking>> getBookingsByUserId(@PathVariable Long userId) {
+    	List<Booking> bookings = service.getBookingsByUserId(userId);
+    	if (bookings.isEmpty()) {
+    		return ResponseEntity.notFound().build();
+    		}
+    	return ResponseEntity.ok(bookings);
+    	}
+
+    
+
     //  Reviews and rating to validate booking
     @GetMapping("/user/{userId}/package/{packageId}/completed")
     public boolean hasUserCompletedPackage(@PathVariable Long userId, @PathVariable String packageId) {
@@ -75,10 +88,4 @@ public class BookingController {
         }
         return ResponseEntity.ok(booking);
     }
- 
-
-    
 }
-    
-
-

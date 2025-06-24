@@ -1,4 +1,5 @@
 package com.booking.service;
+
 import com.booking.client.TravelPackageClient;
 import com.booking.client.UserClient;
 import com.booking.dto.BookingDTO;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
+
 @Service
 public class BookingService {
     @Autowired
@@ -60,12 +62,19 @@ logger.info("Booking created successfully with bookingId: " + savedBooking.getBo
     public List<Booking> getAllBookings() {
         return bookingRepo.findAll();
     }
+    
     public Booking getBookingById(Long id) {
         return bookingRepo.findById(id).orElse(null);
     }
+    
+    public Booking getInternalBookingById(Long id) {
+        return bookingRepo.findById(id).orElse(null);
+    }
+    
     public void deleteBooking(Long id) {
         bookingRepo.deleteById(id);
     }
+    
     public ResponseEntity<String> cancelBooking(Long bookingId) {
         Booking booking = bookingRepo.findById(bookingId).orElse(null);
         if (booking == null) {
@@ -78,6 +87,12 @@ logger.info("Booking created successfully with bookingId: " + savedBooking.getBo
         booking.setStatus("CANCELLED");
         bookingRepo.save(booking);
         return ResponseEntity.ok("Booking cancelled successfully.");
+    }
+    
+    
+    // User module to return Bookings by UserId
+    public List<Booking> getBookingsByUserId(Long userId) {
+    	return bookingRepo.findByUserId(userId);
     }
  
     // Rating and reviews module to validate booking
