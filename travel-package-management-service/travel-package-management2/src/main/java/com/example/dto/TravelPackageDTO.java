@@ -21,6 +21,7 @@ public class TravelPackageDTO {
 	private List<HotelDTO> hotels;
 	private List<SightseeingDTO> sightseeing;
 	private List<ItineraryDTO> itinerary;
+	private String imageUrl; //for images in frontend
 	private OfferDTO offer;
 	
 	//newly added fields

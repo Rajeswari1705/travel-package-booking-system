@@ -60,6 +60,19 @@ public class BookingController {
         service.deleteBooking(id);
     }
     
+
+    // User Module to get bookings by User ID
+    @GetMapping("/internal/bookings/user/{userId}")
+    public ResponseEntity<List<Booking>> getBookingsByUserId(@PathVariable Long userId) {
+    	List<Booking> bookings = service.getBookingsByUserId(userId);
+    	if (bookings.isEmpty()) {
+    		return ResponseEntity.notFound().build();
+    		}
+    	return ResponseEntity.ok(bookings);
+    	}
+
+    
+
     //  Reviews and rating to validate booking
     @GetMapping("/user/{userId}/package/{packageId}/completed")
     public boolean hasUserCompletedPackage(@PathVariable Long userId, @PathVariable String packageId) {
@@ -75,70 +88,4 @@ public class BookingController {
         }
         return ResponseEntity.ok(booking);
     }
- 
-
-    
 }
-    
-//  @PostMapping("/user/{userId}/package/{packageId}")
-//  public ResponseEntity<BookingDTO> createBooking(@PathVariable Long userId, @PathVariable Long packageId) {
-//      try {
-//          BookingDTO bookingDTO = bookingService.createBooking(userId, packageId); // Define bookingDTO here
-//          return new ResponseEntity<>(bookingDTO, HttpStatus.CREATED);
-//      } catch (RuntimeException ex) {
-//          logger.severe("Error creating booking: " + ex.getMessage());
-//          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-//      }
-//  }
-    
-//    @GetMapping("/packages/{id}")
-//    public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long id) {
-//        UserService userService = new UserService(); // Create a local variable userService
-//        List<TravelPackageDTO> packages = userService.fetchAllPackagesByAgent(id); 
-//        return ResponseEntity.ok(packages);
-//    }
-
-    
-//    @GetMapping("/packages/{id}")
-//    public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long id) {
-//        List<TravelPackageDTO> packages = userService.fetchAllPackagesByAgent(id); 
-//        return ResponseEntity.ok(packages);
-//    }
-    
-
-    
-//  @PostMapping("/user/{userId}/package/{packageId}")
-//  public ResponseEntity<BookingDTO> createBooking(@PathVariable Long userId, @PathVariable Long packageId) {
-//      try {
-//          BookingDTO bookingDTO = bookingService.createBooking(userId, packageId); // Define bookingDTO here
-//          return new ResponseEntity<>(bookingDTO, HttpStatus.CREATED);
-//      } catch (RuntimeException ex) {
-//          logger.severe("Error creating booking: " + ex.getMessage());
-//          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-//      }
-//  }
-    
-//    @GetMapping("/packages/{id}")
-//    public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long id) {
-//        UserService userService = new UserService(); // Create a local variable userService
-//        List<TravelPackageDTO> packages = userService.fetchAllPackagesByAgent(id);
-//        return ResponseEntity.ok(packages);
-//    }
- 
-    
-//    @GetMapping("/packages/{id}")
-//    public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long id) {
-//        List<TravelPackageDTO> packages = userService.fetchAllPackagesByAgent(id);
-//        return ResponseEntity.ok(packages);
-//    }
-    
- 
- 
-    
-    
- 
-//    @GetMapping(value = "/{id}", produces = "application/json")
-//    public ResponseEntity<ApiResponse> getById(@PathVariable Long id) {
-//        TravelPackage travelPackage = service.getPackageById(id);
-//        return ResponseEntity.ok(new ApiResponse(true, "Package found", travelPackage));
-//    }

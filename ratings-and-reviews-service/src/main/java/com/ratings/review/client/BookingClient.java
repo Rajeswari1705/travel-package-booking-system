@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * Feign client interface for communicating with the TravelBooking_PaymentModule service.
  * This client is used to check whether a user has completed a booking for a specific travel package.
  */
-@FeignClient(name = "TravelBooking_PaymentModule") // Specifies the name of the service to connect to via Eureka
+@FeignClient(name = "TravelBooking-PaymentModule") // Specifies the name of the service to connect to via Eureka
 public interface BookingClient {
 
     /**

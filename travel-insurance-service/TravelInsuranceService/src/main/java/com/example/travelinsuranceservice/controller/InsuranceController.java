@@ -3,6 +3,7 @@ package com.example.travelinsuranceservice.controller;
 import com.example.travelinsuranceservice.dto.*;
 import com.example.travelinsuranceservice.model.CoverageType;
 import com.example.travelinsuranceservice.model.Insurance;
+import com.example.travelinsuranceservice.repository.InsuranceRepository;
 import com.example.travelinsuranceservice.service.InsuranceService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -15,68 +16,52 @@ import java.util.*;
 import java.util.stream.Collectors;
  
 /**
- * Controller for managing travel insurance APIs.
+ * Controller exposing REST endpoints for insurance operations.
  */
 @RestController
 @RequestMapping("/api/insurance")
 public class InsuranceController {
  
-    // Logger to track method execution and debug
     private static final Logger logger = LoggerFactory.getLogger(InsuranceController.class);
  
     @Autowired
     private InsuranceService service;
+    
+    @Autowired
+    private InsuranceRepository repo;
  
     /**
      * POST /api/insurance
-     * Create new insurance for a user with selected coverage type.
+     * Creates new insurance with fixed status "ISSUED".
      */
     @PostMapping
     public ResponseEntity<Insurance> createInsurance(@Valid @RequestBody InsuranceRequestDTO dto) {
-        logger.info("Creating insurance for userId: {}", dto.getUserId());
+        logger.info("POST /api/insurance - creating insurance");
         Insurance insurance = service.createInsurance(dto);
         return new ResponseEntity<>(insurance, HttpStatus.CREATED);
     }
  
-    /**
-     * PUT /api/insurance/{insuranceId}/booking?bookingId=123
-     * Attach a bookingId to an existing insurance policy.
-     */
-    @PutMapping("/{insuranceId}/bookings")
-    public ResponseEntity<Insurance> updateBooking(@PathVariable Integer insuranceId,
-                                                   @RequestParam Integer bookingId) {
-        logger.info("Linking bookingId {} to insuranceId {}", bookingId, insuranceId);
-        return ResponseEntity.ok(service.updateBookingId(insuranceId, bookingId));
-    }
- 
-    /**
-     * PUT /api/insurance/{insuranceId}/status?status=Cancelled
-     * Update the status of an insurance policy.
-     */
-    @PutMapping("/{insuranceId}/status")
-    public ResponseEntity<Insurance> updateStatus(@PathVariable Integer insuranceId,
-                                                  @RequestParam String status) {
-        logger.info("Updating insurance status for ID {} to {}", insuranceId, status);
-        return ResponseEntity.ok(service.updateStatus(insuranceId, status));
-    }
  
     /**
      * GET /api/insurance/user/{userId}
-     * Fetch all insurance policies for a specific user.
+     * Fetches insurance policies for a given user.
      */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Insurance>> getByUser(@PathVariable Integer userId) {
-        logger.info("Fetching insurance for userId: {}", userId);
+    public ResponseEntity<List<Insurance>> getByUser(@PathVariable Long userId) {
+        logger.info("GET /api/insurance/user/{} - Fetching insurance list", userId);
         return ResponseEntity.ok(service.getUserInsurance(userId));
     }
+    
+   
  
     /**
      * GET /api/insurance/coverage-plans
-     * Return available insurance coverage options.
+     * Returns available coverage options (name, price, details, claim).
      */
     @GetMapping("/coverage-plans")
     public ResponseEntity<List<CoveragePlanDTO>> getCoveragePlans() {
-        logger.info("Fetching available coverage plan options.");
+        logger.info("GET /api/insurance/coverage-plans - Fetching all coverage plans");
+ 
         List<CoveragePlanDTO> plans = Arrays.stream(CoverageType.values())
                 .map(type -> new CoveragePlanDTO(
                         type.name(),
@@ -87,5 +72,42 @@ public class InsuranceController {
  
         return ResponseEntity.ok(plans);
     }
+    
+    @PutMapping("/{insuranceId}/booking/{bookingId}")
+    public ResponseEntity<String> updateInsuranceBookingId(
+            @PathVariable Integer insuranceId, @PathVariable Long bookingId) {
+        
+        Insurance insurance = repo.findById(insuranceId).orElse(null);
+        
+        if (insurance == null) {
+            return ResponseEntity.badRequest().body("Insurance not found.");
+        }
+        
+        insurance.setBookingId(bookingId);
+        insurance.setIssuanceStatus("ACTIVE");
+        repo.save(insurance);
+        
+        return ResponseEntity.ok("Insurance linked to booking successfully.");
+    }
+    
+    /**
+    * GET /api/insurance/price/{userId}
+    * Fetch insurance price selected by userId
+    */
+    @GetMapping("/price/{userId}")
+    public ResponseEntity<Double> getInsurancePriceByUserId(@PathVariable Long userId) {
+    logger.info("GET /api/insurance/price/{} - Fetching insurance price", userId);
+     
+        double price = service.getInsurancePriceByUserId(userId);
+     
+        if (price <= 0) {
+            logger.warn("No insurance found for userId: {}", userId);
+            return ResponseEntity.notFound().build();
+        }
+     
+    logger.info("Insurance price for userId {} is {}", userId, price);
+        return ResponseEntity.ok(price);
+    }
 }
+
  

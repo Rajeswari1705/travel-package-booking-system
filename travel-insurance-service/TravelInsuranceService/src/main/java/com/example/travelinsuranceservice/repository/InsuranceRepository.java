@@ -18,6 +18,6 @@ public interface InsuranceRepository extends JpaRepository<Insurance, Integer> {
      * @param userId ID of the user
      * @return List of Insurance objects associated with the user
      */
-    List<Insurance> findByUserId(Integer userId);
+    List<Insurance> findByUserId(Long userId);
 }
  

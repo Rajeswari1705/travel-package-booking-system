@@ -3,15 +3,15 @@ package com.example.travelinsuranceservice.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+ 
+import java.time.LocalDateTime;
  
 /**
- * Represents an insurance record for a user's travel booking.
- * bookingId is set later after booking is created.
+ * Entity representing an insurance policy for travel booking.
  */
 @Entity
 @Data
-@NoArgsConstructor
 public class Insurance {
  
     @Id
@@ -19,27 +19,33 @@ public class Insurance {
     private Integer insuranceId;
  
     @NotNull(message = "User ID cannot be null")
-    private Integer userId;
+    private Long userId;
  
-    // Optional field, set later
-    private Integer bookingId;
- 
-    private String coverageDetails;
- 
-    private String provider = "Secure Travel Insurance Co.";
- 
-    private String status = "Active";
- 
-    private Double price;
- 
-    private Double claimableAmount;
+    // Booking ID will be updated later from the Booking module
+    private Long bookingId;
  
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Coverage Type is required")
+    @NotNull(message = "Coverage type is required")
     private CoverageType coverageType;
  
+    // Fields populated based on coverageType at creation
+    private String coverageDetails;
+    private Double price;
+    private Double claimableAmount;
+ 
+    // Default Status Pending
+    @Column(nullable=false)
+    private String issuanceStatus = "PENDING";
+ 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+ 
+    /**
+     * Automatically sets coverageDetails, price, and claimableAmount
+     * before saving to DB based on the selected coverageType.
+     */
     @PrePersist
-    public void setValuesFromCoverageType() {
+    public void setDefaults() {
         if (coverageType != null) {
             this.coverageDetails = coverageType.getCoverageDetails();
             this.price = coverageType.getPrice();
