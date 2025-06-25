@@ -125,5 +125,15 @@ public class BookingService {
                 !b.getTripEndDate().isAfter(today) // includes today
             );
     }
+    
+    // Get all packages
+    public List<TravelPackageDTO> getAllPackages() {
+        return travelPackageClient.getAllPackages();
+    }
+    
+    // Get Package by ID
+    public TravelPackageDTO getPackageById(Long packageId) {
+        return travelPackageClient.getPackageById(packageId);
+    }
 
 }

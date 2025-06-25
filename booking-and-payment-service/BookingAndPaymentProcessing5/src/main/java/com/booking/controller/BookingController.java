@@ -3,6 +3,9 @@ package com.booking.controller;
 import com.booking.dto.BookingDTO;
 import com.booking.entity.Booking;
 import com.booking.service.BookingService;
+import com.example.response.ApiResponse;
+import com.booking.dto.TravelPackageDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,4 +90,19 @@ public class BookingController {
         }
         return ResponseEntity.ok(booking);
     }
+    
+    // To get All Packages
+    @GetMapping("/packages")
+    public ResponseEntity<ApiResponse> getAllPackages() {
+        List<TravelPackageDTO> packages = service.getAllPackages();
+        return ResponseEntity.ok(new ApiResponse(true, "All packages retrieved ", packages));
+    }
+    
+    @GetMapping("/packages/{id}")
+    public ResponseEntity<ApiResponse> getPackageById(@PathVariable Long packageId) {
+    	
+        TravelPackageDTO p = service.getPackageById(packageId);
+        return ResponseEntity.ok(new ApiResponse(true, "Package retrieved successfully ", p));
+    }
+    
 }
