@@ -12,6 +12,9 @@ public interface TravelInsuranceClient {
  
 	@GetMapping("/api/insurance/price/{userId}")
     double getInsurancePriceByUserId(@PathVariable("userId") Long userId);
+	
+	@GetMapping("/api/insurance/validate/{insuranceId}")
+	boolean validateInsurance(@PathVariable("insuranceId") Long insuranceId);
  
     @PutMapping("/api/insurance/{insuranceId}/booking/{bookingId}")
     String updateInsuranceBookingId(@PathVariable("insuranceId") Long insuranceId, @PathVariable("bookingId") Long bookingId);

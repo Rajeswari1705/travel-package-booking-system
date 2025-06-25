@@ -1,6 +1,7 @@
 package com.booking.service;
 
 import com.booking.client.TravelPackageClient;
+import com.booking.client.TravelInsuranceClient;
 import com.booking.client.UserClient;
 import com.booking.dto.BookingDTO;
 import com.booking.dto.TravelPackageDTO;
@@ -22,43 +23,62 @@ public class BookingService {
     @Autowired
     private TravelPackageClient travelPackageClient;
     @Autowired
+    private TravelInsuranceClient travelInsuranceClient;
+    @Autowired
     private UserClient userClient;
     private static final Logger logger = Logger.getLogger(BookingService.class.getName());
     public BookingDTO createBooking(Booking bookingRequest) {
         Long userId = bookingRequest.getUserId();
         Long packageId = bookingRequest.getPackageId();
-logger.info("Creating booking for userId: " + userId + " and packageId: " + packageId);
+        Long insuranceId = bookingRequest.getInsuranceId();
+        
+        logger.info("Creating booking for userId: " + userId + " and packageId: " + packageId);
+        
         // Validate User
         UserDTO user = userClient.getCustomerById(userId);
         if (user == null || !"CUSTOMER".equalsIgnoreCase(user.getRole())) {
             throw new RuntimeException("User is not a valid CUSTOMER.");
         }
+        
         // Validate Package
         TravelPackageDTO travelPackage = travelPackageClient.getPackageById(packageId);
         if (travelPackage == null) {
             throw new IllegalArgumentException("Invalid travel package ID.");
         }
- 
+        
+        //Optional: Validate Insurance if selected
+        if (insuranceId != null && insuranceId > 0) {
+            boolean exists = travelInsuranceClient.validateInsurance(insuranceId);
+            if (!exists) {
+                throw new IllegalArgumentException("Selected Insurance ID is invalid.");
+            }
+        }
+        
         // Create and save booking
         Booking booking = new Booking();
         booking.setUserId(userId);
         booking.setPackageId(packageId);
+        booking.setInsuranceId(insuranceId);
         booking.setTripStartDate(travelPackage.getTripStartDate());
         booking.setTripEndDate(travelPackage.getTripEndDate());
         booking.setStatus("CONFIRMED");
         Booking savedBooking = bookingRepo.save(booking);
+        
         // Build response DTO
         BookingDTO dto = new BookingDTO();
         dto.setBookingId(savedBooking.getBookingId());
         dto.setUserId(userId);
         dto.setPackageId(packageId);
+        dto.setInsuranceId(insuranceId);
         dto.setTripStartDate(savedBooking.getTripStartDate());
         dto.setTripEndDate(savedBooking.getTripEndDate());
         dto.setStatus(savedBooking.getStatus());
         dto.setPaymentId(savedBooking.getPaymentId());
-logger.info("Booking created successfully with bookingId: " + savedBooking.getBookingId());
+        
+        logger.info("Booking created successfully with bookingId: " + savedBooking.getBookingId());
         return dto;
     }
+    
     public List<Booking> getAllBookings() {
         return bookingRepo.findAll();
     }
@@ -88,13 +108,12 @@ logger.info("Booking created successfully with bookingId: " + savedBooking.getBo
         bookingRepo.save(booking);
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
-    
-    
+
     // User module to return Bookings by UserId
     public List<Booking> getBookingsByUserId(Long userId) {
     	return bookingRepo.findByUserId(userId);
     }
- 
+
     // Rating and reviews module to validate booking
     public boolean hasUserCompletedPackage(Long userId, String packageId) {
         List<Booking> bookings = bookingRepo.findByUserId(userId);

@@ -45,13 +45,16 @@ public class PaymentService {
         if (pkg == null) {
             throw new IllegalArgumentException("Invalid package ID associated with booking.");
         }
- 
-        // Fetch insurance price for user
-        double insurancePrice = travelInsuranceClient.getInsurancePriceByUserId(booking.getUserId());
         double packagePrice = pkg.getPrice();
+        
+        // Fetch insurance price for user
+        double insurancePrice = 0.0;
+        if (booking.getInsuranceId() != null && booking.getInsuranceId() > 0) {
+        	insurancePrice = travelInsuranceClient.getInsurancePriceByUserId(booking.getInsuranceId());
+        }
         double discountAmount = 0.0;
  
-     // Coupon logic via OfferDTO
+        // Coupon logic via OfferDTO
         if (couponCodeApplied != null && pkg.getOffer() != null) {
             OfferDTO offer = pkg.getOffer();
          

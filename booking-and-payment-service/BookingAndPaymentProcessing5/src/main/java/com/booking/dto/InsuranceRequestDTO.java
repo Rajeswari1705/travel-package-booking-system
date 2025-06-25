@@ -6,7 +6,7 @@ import lombok.Data;
  * DTO to expose insurance coverage plans to Booking module.
  */
 @Data
-public class InsuranceDTO {
+public class InsuranceRequestDTO {
    
     private Long insuranceId;
 

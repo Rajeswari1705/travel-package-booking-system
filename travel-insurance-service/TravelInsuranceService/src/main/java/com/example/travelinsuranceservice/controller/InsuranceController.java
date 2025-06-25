@@ -108,6 +108,13 @@ public class InsuranceController {
     logger.info("Insurance price for userId {} is {}", userId, price);
         return ResponseEntity.ok(price);
     }
+    
+    @GetMapping("/validate/{insuranceId}")
+    public ResponseEntity<Boolean> validateInsurance(@PathVariable Long insuranceId) {
+        boolean exists = repo.exists(insuranceId);
+        return ResponseEntity.ok(exists);
+    }
+
 }
 
  

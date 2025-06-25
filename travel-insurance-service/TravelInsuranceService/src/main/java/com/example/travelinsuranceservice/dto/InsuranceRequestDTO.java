@@ -16,7 +16,6 @@ public class InsuranceRequestDTO {
  
     private String coverageDetails;
     
- 
     private String coverageType;
  
     private double price;
