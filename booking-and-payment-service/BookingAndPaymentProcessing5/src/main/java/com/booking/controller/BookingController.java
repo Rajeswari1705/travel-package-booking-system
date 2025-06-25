@@ -100,7 +100,6 @@ public class BookingController {
     
     @GetMapping("/packages/{id}")
     public ResponseEntity<ApiResponse> getPackageById(@PathVariable Long packageId) {
-    	
         TravelPackageDTO p = service.getPackageById(packageId);
         return ResponseEntity.ok(new ApiResponse(true, "Package retrieved successfully ", p));
     }

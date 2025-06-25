@@ -20,6 +20,6 @@ public interface InsuranceRepository extends JpaRepository<Insurance, Integer> {
      */
     List<Insurance> findByUserId(Long userId);
 
-	boolean exists(Long insuranceId);
+	boolean existsById(Long insuranceId);
 }
  
