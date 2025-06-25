@@ -38,7 +38,6 @@ logger.info("Creating booking for userId: " + userId + " and packageId: " + pack
         if (travelPackage == null) {
             throw new IllegalArgumentException("Invalid travel package ID.");
         }
- 
         // Create and save booking
         Booking booking = new Booking();
         booking.setUserId(userId);
@@ -88,13 +87,12 @@ logger.info("Booking created successfully with bookingId: " + savedBooking.getBo
         bookingRepo.save(booking);
         return ResponseEntity.ok("Booking cancelled successfully.");
     }
-    
-    
+
     // User module to return Bookings by UserId
     public List<Booking> getBookingsByUserId(Long userId) {
     	return bookingRepo.findByUserId(userId);
     }
- 
+
     // Rating and reviews module to validate booking
     public boolean hasUserCompletedPackage(Long userId, String packageId) {
         List<Booking> bookings = bookingRepo.findByUserId(userId);
