@@ -91,24 +91,22 @@ public class InsuranceService {
      * Updates bookingId and sets issuanceStatus = "ISSUED".
      */
     public String updateBookingIdInInsurance(Integer insuranceId, Long bookingId) {
-        logger.info("Updating bookingId for insuranceId: {}", insuranceId);
- 
         Insurance insurance = repo.findById(insuranceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Insurance not found: " + insuranceId));
- 
+                .orElseThrow(() -> new ResourceNotFoundException("Insurance not found"));
+     
         BookingDTO booking = bookingClient.getBookingById(bookingId);
         if (booking == null) {
-            logger.error("Invalid bookingId: {}", bookingId);
             throw new InvalidInputException("Invalid booking ID: " + bookingId);
         }
- 
+     
         insurance.setBookingId(bookingId);
-        insurance.setIssuanceStatus("ISSUED");
- 
+        insurance.setIssuanceStatus("ISSUED"); 
+     
         repo.save(insurance);
-        logger.info("Insurance {} updated: bookingId linked and status marked ISSUED", insuranceId);
-        return "✅ Insurance successfully linked with booking and marked ISSUED.";
+     
+        return "Insurance linked to booking successfully.";
     }
+     
 }
 
  

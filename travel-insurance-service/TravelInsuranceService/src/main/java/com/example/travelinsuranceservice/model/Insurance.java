@@ -22,6 +22,7 @@ public class Insurance {
     private Long userId;
  
     // Booking ID will be updated later from the Booking module
+    @Column(name="booking_id")
     private Long bookingId;
  
     @Enumerated(EnumType.STRING)
@@ -36,6 +37,9 @@ public class Insurance {
     // Default Status Pending
     @Column(nullable=false)
     private String issuanceStatus = "PENDING";
+    
+    @Column(nullable=false)
+    private String provider="Secure Travel Insurance Co.";
  
     @CreationTimestamp
     private LocalDateTime createdAt;
