@@ -50,7 +50,7 @@ public class PaymentService {
         // Fetch insurance price for user
         double insurancePrice = 0.0;
         if (booking.getInsuranceId() != null && booking.getInsuranceId() > 0) {
-        	insurancePrice = travelInsuranceClient.getInsurancePriceByUserId(booking.getInsuranceId());
+        	insurancePrice = travelInsuranceClient.getInsurancePriceByUserId(booking.getUserId());
         }
         double discountAmount = 0.0;
  
@@ -114,7 +114,7 @@ public class PaymentService {
  
         // Update insurance record with booking ID if insurance selected
         if (insurancePrice > 0.0) {
-            travelInsuranceClient.updateInsuranceBookingId(booking.getUserId(), booking.getBookingId());
+            travelInsuranceClient.updateInsuranceBookingId(booking.getInsuranceId(), booking.getBookingId());
         }
  
         // Send Notifications
