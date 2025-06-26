@@ -6,7 +6,7 @@ import java.time.LocalDate;
 @Data
 public class PackageDTO {
 	private Long packageId;
-	//private Long agentId;
+	private Long agentId;
 	private String title;
 	private String description;
 	private int duration;

@@ -13,6 +13,5 @@ public class BookingDTO {
     private String status;
     private Long paymentId;
 	private Long insuranceId;
-		// TODO Auto-generated method stub
 		
 }

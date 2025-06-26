@@ -113,6 +113,6 @@ public class InsuranceService {
      * Validates if the given insurance ID exists in the repository.
      */
     public boolean validateInsuranceId(Long insuranceId) {
-        return repo.existsById(insuranceId);
+        return repo.existsByInsuranceId(insuranceId);
     }
 }
