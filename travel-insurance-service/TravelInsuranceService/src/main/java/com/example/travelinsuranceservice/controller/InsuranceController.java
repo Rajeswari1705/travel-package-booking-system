@@ -25,6 +25,8 @@ public class InsuranceController {
  
     @Autowired
     private InsuranceService service;
+    
+ 
  
     /**
      * POST /api/insurance
@@ -37,19 +39,6 @@ public class InsuranceController {
         return new ResponseEntity<>(insurance, HttpStatus.CREATED);
     }
  
-    /**
-     * PUT /api/insurance/internal/{insuranceId}/booking?bookingId={id}
-     * Internal-only endpoint used by Booking module to update booking ID.
-     */
-    @PutMapping("/internal/{insuranceId}/booking")
-    public ResponseEntity<Insurance> updateBookingFromBookingModule(
-            @PathVariable Integer insuranceId,
-            @RequestParam Long bookingId) {
- 
-        logger.info("PUT /api/insurance/internal/{}/booking?bookingId={} - Called from Booking service",
-                insuranceId, bookingId);
-        return ResponseEntity.ok(service.updateBookingId(insuranceId, bookingId));
-    }
  
     /**
      * GET /api/insurance/user/{userId}
@@ -60,6 +49,8 @@ public class InsuranceController {
         logger.info("GET /api/insurance/user/{} - Fetching insurance list", userId);
         return ResponseEntity.ok(service.getUserInsurance(userId));
     }
+    
+   
  
     /**
      * GET /api/insurance/coverage-plans
@@ -80,6 +71,21 @@ public class InsuranceController {
         return ResponseEntity.ok(plans);
     }
     
+    @PutMapping("/{insuranceId}/booking/{bookingId}")
+    public ResponseEntity<String> updateInsuranceBookingId(
+            @PathVariable Integer insuranceId,
+            @PathVariable Long bookingId) {
+     
+        logger.info("PUT /api/insurance/{}/booking/{} - Linking insurance to booking", insuranceId, bookingId);
+     
+        String result = service.updateBookingIdInInsurance(insuranceId, bookingId);
+     
+        return ResponseEntity.ok(result);
+    }
+
+     
+     
+    
     /**
     * GET /api/insurance/price/{userId}
     * Fetch insurance price selected by userId
@@ -98,6 +104,13 @@ public class InsuranceController {
     logger.info("Insurance price for userId {} is {}", userId, price);
         return ResponseEntity.ok(price);
     }
+    
+    @GetMapping("/validate/{insuranceId}")
+    public ResponseEntity<Boolean> validateInsurance(@PathVariable Long insuranceId) {
+        boolean exists = service.validateInsuranceId(insuranceId);
+        return ResponseEntity.ok(exists);
+    }
+
 }
 
  

@@ -3,6 +3,9 @@ package com.booking.controller;
 import com.booking.dto.BookingDTO;
 import com.booking.entity.Booking;
 import com.booking.service.BookingService;
+import com.booking.response.ApiResponse;
+import com.booking.dto.TravelPackageDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +25,10 @@ public class BookingController {
     public BookingController(BookingService service) {
         this.service = service;
     }
- 
+    
+    /**
+     * Create a Booking
+     */
     @PostMapping
     public ResponseEntity<BookingDTO> createBooking(@RequestBody Booking booking) {
         try {
@@ -33,13 +39,19 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
- 
+    
+    /**
+     * To get all Bookings
+     */
     @GetMapping
     public ResponseEntity<List<Booking>> getAllBookings() {
         List<Booking> bookings = service.getAllBookings();
         return ResponseEntity.ok(bookings);
     }
- 
+    
+    /**
+     * To get booking by Booking ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
         Booking booking = service.getBookingById(id);
@@ -49,19 +61,25 @@ public class BookingController {
         return ResponseEntity.ok(booking);
     }
     
- 
+    /**
+     * Cancel booking by Booking ID
+     */
     @PutMapping("/cancel/{id}")
     public ResponseEntity<String> cancelBooking(@PathVariable Long id) {
         return service.cancelBooking(id);
     }
- 
+    
+    /**
+     * Delete booking by Booking ID
+     */
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.deleteBooking(id);
     }
     
-
-    // User Module to get bookings by User ID
+    /**
+     * User Management Module to get bookings by User ID
+     */
     @GetMapping("/internal/bookings/user/{userId}")
     public ResponseEntity<List<Booking>> getBookingsByUserId(@PathVariable Long userId) {
     	List<Booking> bookings = service.getBookingsByUserId(userId);
@@ -72,14 +90,17 @@ public class BookingController {
     	}
 
     
-
-    //  Reviews and rating to validate booking
+    /**
+     * Reviews and Rating Module to validate booking
+     */
     @GetMapping("/user/{userId}/package/{packageId}/completed")
     public boolean hasUserCompletedPackage(@PathVariable Long userId, @PathVariable String packageId) {
         return service.hasUserCompletedPackage(userId, packageId);
     }
     
-    // Insurance module to get Booking ID
+    /**
+     * Travel Insurance module to get Booking ID
+     */
     @GetMapping("/internal/{id}")
     public ResponseEntity<Booking> getInternalBookingById(@PathVariable Long id) {
         Booking booking = service.getBookingById(id);
@@ -88,4 +109,23 @@ public class BookingController {
         }
         return ResponseEntity.ok(booking);
     }
+     
+    /**
+     * To get All packages from Travel Package Management Module
+     */
+    @GetMapping("/packages")
+    public ResponseEntity<ApiResponse> getAllPackages() {
+        List<TravelPackageDTO> packages = service.getAllPackages();
+        return ResponseEntity.ok(new ApiResponse(true, "All packages retrieved ", packages));
+    }
+    
+    /**
+     * To get package by ID from Travel Package Management Module
+     */
+    @GetMapping("/packages/{id}")
+    public ResponseEntity<ApiResponse> getPackageById(@PathVariable("id") Long packageId) {
+        TravelPackageDTO packages = service.getPackageById(packageId);
+        return ResponseEntity.ok(new ApiResponse(true, "Package retrieved successfully ", packages));
+    }
+    
 }
