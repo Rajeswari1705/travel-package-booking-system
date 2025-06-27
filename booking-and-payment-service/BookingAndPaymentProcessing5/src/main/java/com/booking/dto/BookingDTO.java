@@ -12,6 +12,6 @@ public class BookingDTO {
     private LocalDate tripEndDate;
     private String status;
     private Long paymentId;
-	private Long insuranceId;
+	private Integer insuranceId;
 		
 }
