@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class InsuranceRequestDTO {
    
-    private Long insuranceId;
+    private Integer insuranceId;
 
     private Long userId;
  

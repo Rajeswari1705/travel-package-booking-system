@@ -30,7 +30,7 @@ public class BookingService {
     public BookingDTO createBooking(Booking bookingRequest) {
         Long userId = bookingRequest.getUserId();
         Long packageId = bookingRequest.getPackageId();
-        Long insuranceId = bookingRequest.getInsuranceId();
+        Integer insuranceId = bookingRequest.getInsuranceId();
         
         logger.info("Creating booking for userId: " + userId + " and packageId: " + packageId);
         

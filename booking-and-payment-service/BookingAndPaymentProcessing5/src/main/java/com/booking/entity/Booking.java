@@ -20,7 +20,7 @@ public class Booking {
 
     private String status;
     private Long paymentId;
-    private Long insuranceId;
+    private Integer insuranceId;
  
     // Getters and Setters
     public Long getBookingId() {
@@ -78,11 +78,11 @@ public class Booking {
 		this.paymentId = paymentId;
 	}
 
-	public Long getInsuranceId() {
+	public Integer getInsuranceId() {
 		return insuranceId;
 	}
 
-	public void setInsuranceId(Long insuranceId) {
+	public void setInsuranceId(Integer insuranceId) {
 		this.insuranceId = insuranceId;
 	}
  

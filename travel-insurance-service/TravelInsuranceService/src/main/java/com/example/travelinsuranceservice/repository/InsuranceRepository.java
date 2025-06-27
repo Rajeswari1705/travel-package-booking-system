@@ -4,6 +4,7 @@ import com.example.travelinsuranceservice.model.Insurance;
 import org.springframework.data.jpa.repository.JpaRepository;
  
 import java.util.List;
+import java.util.Optional;
  
 /**
  * Repository interface for Insurance entity.
@@ -20,6 +21,8 @@ public interface InsuranceRepository extends JpaRepository<Insurance, Integer> {
      */
     List<Insurance> findByUserId(Long userId);
 
-	boolean existsByInsuranceId(Long insuranceId);
+	boolean existsByInsuranceId(Integer insuranceId);
+
+	Optional<Insurance> findById(Integer insuranceId);
 }
  
