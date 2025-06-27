@@ -83,9 +83,9 @@ public class BookingController {
     @GetMapping("/internal/bookings/user/{userId}")
     public ResponseEntity<List<Booking>> getBookingsByUserId(@PathVariable Long userId) {
     	List<Booking> bookings = service.getBookingsByUserId(userId);
-    	if (bookings.isEmpty()) {
+    	/*if (bookings.isEmpty()) {
     		return ResponseEntity.notFound().build();
-    		}
+    		}*/
     	return ResponseEntity.ok(bookings);
     	}
 

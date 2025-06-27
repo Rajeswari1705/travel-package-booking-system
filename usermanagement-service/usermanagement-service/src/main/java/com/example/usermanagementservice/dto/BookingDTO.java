@@ -1,4 +1,5 @@
-package com.booking.dto;
+package com.example.usermanagementservice.dto;
+
 
 import lombok.Data;
 import java.time.LocalDate;
@@ -12,6 +13,6 @@ public class BookingDTO {
     private LocalDate tripEndDate;
     private String status;
     private Long paymentId;
-	private Integer insuranceId;
+	private Long insuranceId;
 		
 }

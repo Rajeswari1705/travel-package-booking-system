@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
  
 /**
- * Controller exposing REST endpoints for insurance operations.
+ * Controller exposing REST end-points for insurance operations.
  */
 @RestController
 @RequestMapping("/api/insurance")
@@ -104,9 +104,27 @@ public class InsuranceController {
     logger.info("Insurance price for userId {} is {}", userId, price);
         return ResponseEntity.ok(price);
     }
+    /**
+     * GET /api/insurance/price/{insuranceId}
+     * Fetch insurance price selected by insuranceId
+     */
+    @GetMapping("/price/insurance/{insuranceId}")
+    public ResponseEntity<Double> getInsurancePriceByInsuranceId(@PathVariable Integer insuranceId) {
+        logger.info("GET /api/insurance/price/insurance/{} - Fetching insurance price by insuranceId", insuranceId);
+
+        double price = service.getInsurancePriceByInsuranceId(insuranceId);
+
+        if (price <= 0) {
+            logger.warn("No insurance found for insuranceId: {}", insuranceId);
+            return ResponseEntity.notFound().build();
+        }
+
+        logger.info("Insurance price for insuranceId {} is {}", insuranceId, price);
+        return ResponseEntity.ok(price);
+    }
     
     @GetMapping("/validate/{insuranceId}")
-    public ResponseEntity<Boolean> validateInsurance(@PathVariable Long insuranceId) {
+    public ResponseEntity<Boolean> validateInsurance(@PathVariable Integer insuranceId) {
         boolean exists = service.validateInsuranceId(insuranceId);
         return ResponseEntity.ok(exists);
     }
