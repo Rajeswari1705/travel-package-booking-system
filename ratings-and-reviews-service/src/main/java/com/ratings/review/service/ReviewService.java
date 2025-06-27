@@ -134,4 +134,8 @@ public class ReviewService {
         logger.info("Average rating for package ID {} is {}", packageId, average);
         return average;
     }
+    //To verify customer reviewed or not
+    public boolean hasAlreadyReviewed(Long userId, Long packageId) {
+        return reviewRepository.existsByUserIdAndPackageId(userId, packageId);
+    }
 }
