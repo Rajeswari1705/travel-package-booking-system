@@ -6,6 +6,7 @@ import com.example.usermanagementservice.model.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import com.example.usermanagementservice.dto.BookingDTO;
 //import com.example.usermanagementservice.dto.PackageDTO;
 import com.example.usermanagementservice.dto.TravelPackageDTO;
 import com.example.usermanagementservice.dto.UserDTO;
@@ -34,4 +35,7 @@ public interface UserService {
 	
 	//to send password through mail
 	void sendForgotPasswordEmail(String email);
+	
+	//to get bookings under a customerid
+	List<BookingDTO> getBookingsByUserId(Long userId);
 }
