@@ -20,6 +20,7 @@ import java.util.HashMap;
 /**
  * Controller for handling agent responses to reviews.
  */
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/agent-responses")
 public class AgentResponseController {
