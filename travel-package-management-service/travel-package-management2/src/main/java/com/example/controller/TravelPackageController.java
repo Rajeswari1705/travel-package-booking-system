@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-@CrossOrigin(origins = "http://localhost:4200/")
+//@CrossOrigin(origins = "http://localhost:4200/")
 @RestController
 @RequestMapping("/api/packages")
 public class TravelPackageController {
