@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * Controller for managing travel package reviews.
  */
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/reviews")
 public class ReviewController {
@@ -71,7 +72,11 @@ public class ReviewController {
         return ResponseEntity.ok(avgRating);
     }
 
-
+//To verify customer given review or not-- only one time he can give review
+    @GetMapping("/exists/{userId}/{packageId}")
+    public boolean hasReviewed(@PathVariable Long userId, @PathVariable Long packageId) {
+        return reviewService.hasAlreadyReviewed(userId, packageId);
+    }
     /**
      * Update an existing review
      */

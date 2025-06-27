@@ -34,25 +34,33 @@ public class InsuranceService {
     private BookingClient bookingClient;
 
     /**
-     * Creates new insurance with default status "PENDING".
-     * Called when user selects insurance during booking.
+     * Creates new insurance only if user doesn't already have one.
      */
     public Insurance createInsurance(InsuranceRequestDTO dto) {
-        logger.info("Creating insurance for userId: {}", dto.getUserId());
-
+    	logger.info("Creating insurance for userId: {}", dto.getUserId());
+ 
+        // Step 1: Validate user exists (using Feign client)
         if (userClient.getUserById(dto.getUserId()) == null) {
             logger.error("Invalid user ID: {}", dto.getUserId());
             throw new InvalidInputException("Invalid user ID: " + dto.getUserId());
         }
-
+ 
+        // Step 2: Check if insurance already exists
+        List<Insurance> existing = repo.findByUserId(dto.getUserId());
+        if (!existing.isEmpty()) {
+            logger.warn("Insurance already exists for user ID {}", dto.getUserId());
+            throw new InvalidInputException("Insurance already exists for user.");
+        }
+ 
+        // Step 3: Create insurance
         Insurance insurance = new Insurance();
         insurance.setUserId(dto.getUserId());
         insurance.setCoverageType(CoverageType.valueOf(dto.getCoverageType().toUpperCase()));
-
-        // issuanceStatus = "PENDING" is default in entity
-
+ 
+        // Note: other values (price, claim, details, status) set automatically via @PrePersist
         Insurance saved = repo.save(insurance);
         logger.info("Insurance created with ID: {}", saved.getInsuranceId());
+ 
         return saved;
     }
 
@@ -87,6 +95,25 @@ public class InsuranceService {
         logger.info("Returning insurance price {} for insuranceId {}", insurance.getPrice(), insurance.getInsuranceId());
         return insurance.getPrice();
     }
+    
+    public double getInsurancePriceByInsuranceId(Integer insuranceId) {
+        logger.info("Fetching insurance price for insuranceId: {}", insuranceId);
+
+        Insurance insurance = repo.findById(insuranceId).orElse(null);
+
+        if (insurance == null) {
+            logger.warn("No insurance found for insuranceId {}", insuranceId);
+            return 0.0;
+        }
+
+        if ("CANCELLED".equalsIgnoreCase(insurance.getIssuanceStatus())) {
+            logger.info("Insurance is cancelled for insuranceId {}", insuranceId);
+            return 0.0;
+        }
+
+        logger.info("Returning insurance price {} for insuranceId {}", insurance.getPrice(), insuranceId);
+        return insurance.getPrice();
+    }
 
     /**
      * Called by Booking module after booking/payment is successful.
@@ -112,7 +139,7 @@ public class InsuranceService {
     /**
      * Validates if the given insurance ID exists in the repository.
      */
-    public boolean validateInsuranceId(Long insuranceId) {
+    public boolean validateInsuranceId(Integer insuranceId) {
         return repo.existsByInsuranceId(insuranceId);
     }
 }

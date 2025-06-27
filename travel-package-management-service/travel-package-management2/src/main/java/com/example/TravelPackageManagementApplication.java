@@ -13,5 +13,5 @@ public class TravelPackageManagementApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TravelPackageManagementApplication.class, args);
 	}
-
+	
 }
