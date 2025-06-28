@@ -11,6 +11,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.example.usermanagementservice.dto.BookingDTO;
 //import com.example.usermanagementservice.dto.TravelPackageDTO;
 import com.example.usermanagementservice.dto.TravelPackageDTO;
 import com.example.usermanagementservice.dto.UserDTO;
@@ -19,6 +20,7 @@ import com.example.usermanagementservice.exception.AdminRegistrationNotAllowedEx
 import com.example.usermanagementservice.exception.EmailAlreadyExistsException;
 import com.example.usermanagementservice.exception.PhoneNumberAlreadyExistsException;
 import com.example.usermanagementservice.exception.UserNotFoundException;
+import com.example.usermanagementservice.feign.BookingClient;
 import com.example.usermanagementservice.feign.TravelPackageClient;
 
 import java.util.List;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired 
 	private TravelPackageClient travelPackageClient;
+	
+	@Autowired
+	private BookingClient bookingClient;
 	
 	//Register a new user
 	@Override
@@ -157,14 +162,6 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
 	//to get number of users, agents and customers
 	@Override
 	public UserRoleCountResponse getUserRoleCounts() {
@@ -183,8 +180,6 @@ public class UserServiceImpl implements UserService {
         // ✅ Pass `id` as `agentId`
         return travelPackageClient.getPackagesByAgent(agentId);
     }
-
-	
 	
 	
 	//convert user to userDTO for the user data transfer to other services
@@ -193,10 +188,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
-	
-	
 	//for sending password through email if user forgets password
-	
 	 
 	@Override
 	public void sendForgotPasswordEmail(String email) {
@@ -221,6 +213,11 @@ public class UserServiceImpl implements UserService {
 	System.out.println("sending mail to:");
 	}
 	
-	
+	//to get all bookings under a customer id
+	@Override
+	public List<BookingDTO> getBookingsByUserId(Long userId) {
+		logger.info("Fetching bookings for user ID: {}", userId);
+		return bookingClient.getBookingsByUserId(userId);
+	}
 
 }

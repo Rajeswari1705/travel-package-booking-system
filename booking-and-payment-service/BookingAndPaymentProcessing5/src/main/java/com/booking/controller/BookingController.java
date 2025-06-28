@@ -113,7 +113,6 @@ public class BookingController {
         }
         return ResponseEntity.ok(bookings);
     }
-
     /**
      * Check if a user has completed a package.
      * 

@@ -1,6 +1,7 @@
 package com.example.usermanagementservice.controller;
  
 
+import com.example.usermanagementservice.dto.BookingDTO;
 import com.example.usermanagementservice.dto.ForgotPasswordRequest;
 import com.example.usermanagementservice.dto.TravelPackageDTO;
 import com.example.usermanagementservice.dto.UserDTO;
@@ -296,6 +297,27 @@ public class UserController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	            .body(Collections.singletonMap("error", "Something went wrong."));
 	    }
+	}
+	
+	
+	//to get bookings under a customer's id
+	@GetMapping("/{id}/bookings")
+	public ResponseEntity<?> getUserBookings(@PathVariable Long id, HttpServletRequest request) {
+	    String role = extractRoleFromHeader(request);
+	 
+	    if (!"ADMIN".equalsIgnoreCase(role) && !"CUSTOMER".equalsIgnoreCase(role)) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+	                .body(Collections.singletonMap("message", "Access denied"));
+	    }
+	 
+	    List<BookingDTO> bookings = userService.getBookingsByUserId(id);
+	 
+	    /*if (bookings.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(Collections.singletonMap("message", "No bookings found for this user"));
+	    }*/
+	 
+	    return ResponseEntity.ok(bookings);
 	}
 
 }
