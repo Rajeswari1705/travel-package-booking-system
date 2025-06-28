@@ -1,89 +1,41 @@
 package com.booking.entity;
 
 import java.time.LocalDate;
+import lombok.Data;
 import jakarta.persistence.*;
- 
+
+/**
+ * Entity class representing a Booking.
+ * This class maps to the booking table in the database and contains details about a booking.
+ */
+@Data
 @Entity
 public class Booking {
+    /**The ID of the booking.*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
+
+    /** The ID of the user who made the booking.*/
     private Long userId;
+
+    /**The ID of the travel package associated with the booking.*/
     private Long packageId;
 
-
-    @Column(name= "trip_start_date")
+    /**The start date of the trip.*/
+    @Column(name = "trip_start_date")
     private LocalDate tripStartDate;
-    @Column(name= "trip_end_date")
+
+    /**The end date of the trip.*/
+    @Column(name = "trip_end_date")
     private LocalDate tripEndDate;
 
-
+    /**The status of the booking.*/
     private String status;
+
+    /**The ID of the payment associated with the booking.*/
     private Long paymentId;
+
+    /**The ID of the insurance associated with the booking.*/
     private Integer insuranceId;
- 
-    // Getters and Setters
-    public Long getBookingId() {
-        return bookingId;
-    }
- 
-    public void setBookingId(Long bookingId) {
-        this.bookingId = bookingId;
-    }
- 
-    public Long getUserId() {
-        return userId;
-    }
- 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
- 
-    public Long getPackageId() {
-        return packageId;
-    }
- 
-    public void setPackageId(Long packageId) {
-        this.packageId = packageId;
-    }
-	public LocalDate getTripStartDate() {
-		return tripStartDate;
-	}
- 
-	public void setTripStartDate(LocalDate tripStartDate) {
-		this.tripStartDate = tripStartDate;
-	}
- 
-	public LocalDate getTripEndDate() {
-		return tripEndDate;
-	}
- 
-	public void setTripEndDate(LocalDate tripEndDate) {
-		this.tripEndDate = tripEndDate;
-	}
-
-    public String getStatus() {
-        return status;
-    }
- 
-    public void setStatus(String status) {
-        this.status = status;
-    }
- 
-	public Long getPaymentId() {
-		return paymentId;
-	}
- 
-	public void setPaymentId(Long paymentId) {
-		this.paymentId = paymentId;
-	}
-
-	public Integer getInsuranceId() {
-		return insuranceId;
-	}
-
-	public void setInsuranceId(Integer insuranceId) {
-		this.insuranceId = insuranceId;
-	}
- 
 }

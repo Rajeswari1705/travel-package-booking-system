@@ -6,11 +6,20 @@ import com.booking.dto.UserDTO;
 import com.booking.client.TravelPackageClient;
 import com.booking.client.UserClient;
 import com.booking.dto.TravelPackageDTO;
+import com.booking.exception.CustomBusinessException;
+import feign.FeignException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Service class for handling notification-related operations.
+ * This class provides methods for sending booking details to customers and travel agents via email.
+ */
 @Service
 public class NotificationService {
 
@@ -23,9 +32,16 @@ public class NotificationService {
     @Autowired
     private TravelPackageClient travelPackageClient;
 
+    private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
+
     private final String senderEmail = "indhaanman@gmail.com";
 
-    // Booking details are sent to customers through Email
+    /**
+     * Send booking details to the customer via email.
+     * 
+     * @param booking The booking entity containing the booking details.
+     * @param payment The payment entity containing the payment details.
+     */
     public void notifyCustomer(Booking booking, Payment payment) {
         UserDTO user = userClient.getCustomerById(booking.getUserId());
         String customerEmail = user.getEmail();
@@ -46,9 +62,21 @@ public class NotificationService {
         System.out.println("Email is sent to " + customerEmail);
     }
 
-    // Booking details are sent to travel agent through Email
+    /**
+     * Send booking details to the travel agent via email.
+     * 
+     * @param booking The booking entity containing the booking details.
+     * @param payment The payment entity containing the payment details.
+     */
     public void notifyTravelAgent(Booking booking, Payment payment) {
         TravelPackageDTO pkg = travelPackageClient.getPackageById(booking.getPackageId());
+
+        try {
+            String agentEmail = userClient.getCustomerById(pkg.getAgentId()).getEmail();
+        } catch (FeignException.Forbidden e) {
+            log.error("Forbidden from UserService: {}", e.getMessage());
+            throw new CustomBusinessException("User is not a CUSTOMER");
+        }
         String agentEmail = userClient.getCustomerById(pkg.getAgentId()).getEmail();
 
         String subject = "New Booking Received – Booking ID: " + booking.getBookingId();
@@ -67,6 +95,13 @@ public class NotificationService {
         System.out.println("Email is sent to " + agentEmail);
     }
 
+    /**
+     * Send an email with the specified subject and body to the specified recipient.
+     * 
+     * @param to The recipient's email address.
+     * @param subject The subject of the email.
+     * @param body The body of the email.
+     */
     private void sendEmail(String to, String subject, String body) {
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setFrom(senderEmail);

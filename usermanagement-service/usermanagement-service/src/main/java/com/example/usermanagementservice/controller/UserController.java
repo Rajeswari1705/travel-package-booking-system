@@ -255,10 +255,10 @@ public class UserController {
 		    }
 		 
 		    // ✅ Check if user is an CUSTOMER
-		    if (!"CUSTOMER".equalsIgnoreCase(user.getRole())) {
-		        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-		                .body(Collections.singletonMap("message", "User with ID " + id + " is not an CUSTOMER"));
-		    }
+//		    if (!"CUSTOMER".equalsIgnoreCase(user.getRole())) {
+//		        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+//		                .body(Collections.singletonMap("message", "User with ID " + id + " is not an CUSTOMER"));
+//		    }
 			
 			UserDTO userDTO = userService.convertToDTO(user);
 			return ResponseEntity.ok(userDTO);

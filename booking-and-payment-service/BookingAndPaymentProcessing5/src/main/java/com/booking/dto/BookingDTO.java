@@ -3,6 +3,10 @@ package com.booking.dto;
 import lombok.Data;
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object for booking.
+ * Used to transfer booking data between different layers of the application.
+ */
 @Data
 public class BookingDTO {
     private Long bookingId;
