@@ -1,42 +1,63 @@
 package com.example.travelinsuranceservice.controller;
  
+import com.example.travelinsuranceservice.dto.AssistanceRequestDTO;
 import com.example.travelinsuranceservice.model.AssistanceRequest;
 import com.example.travelinsuranceservice.service.AssistanceRequestService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.*;
+import org.springframework.http.ResponseEntity;
  
 import java.util.List;
  
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
  
-/**
- * Test class for AssistanceRequestController
- */
-@WebMvcTest(controllers = AssistanceRequestController.class)
-public class AssistanceRequestControllerTest {
+class AssistanceRequestControllerTest {
  
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private AssistanceRequestService service;
  
-    @MockBean
-    private AssistanceRequestService assistanceService;
+    @InjectMocks
+    private AssistanceRequestController controller;
  
-    @Test
-    void testGetRequestsByUserId() throws Exception {
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+ 
+    @SuppressWarnings("deprecation")
+	@Test
+    void testCreateAssistanceSuccess() {
+        AssistanceRequestDTO dto = new AssistanceRequestDTO();
+        dto.setUserId(1L);
+        dto.setIssueDescription("Medical emergency");
+ 
+        AssistanceRequest expected = new AssistanceRequest();
+        expected.setUserId(1L);
+        expected.setRequestId(101);
+        expected.setIssueDescription("Medical emergency");
+ 
+        when(service.createRequest(dto)).thenReturn(expected);
+ 
+        ResponseEntity<AssistanceRequest> response = controller.requestHelp(dto);
+ 
+        assertEquals(201, response.getStatusCodeValue());
+        assertEquals("Medical emergency", response.getBody().getIssueDescription());
+    }
+ 
+    @SuppressWarnings("deprecation")
+	@Test
+    void testGetAssistanceByUser() {
         AssistanceRequest req = new AssistanceRequest();
-        req.setRequestId(1);
-        req.setUserId(202L);
-        req.setIssueDescription("Lost passport");
+        req.setUserId(1L);
  
-        when(assistanceService.getByUser(202L)).thenReturn(List.of(req));
+        when(service.getByUser(1L)).thenReturn(List.of(req));
  
-        mockMvc.perform(get("/api/assistance/user/202"))
-                .andExpect(status().isOk());
+        ResponseEntity<List<AssistanceRequest>> response = controller.getByUser(1L);
+ 
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1L, response.getBody().get(0).getUserId());
     }
 }
  

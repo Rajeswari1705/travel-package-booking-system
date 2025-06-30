@@ -1,30 +1,26 @@
 package com.example.travelinsuranceservice.service;
  
+import com.example.travelinsuranceservice.client.BookingClient;
+import com.example.travelinsuranceservice.client.UserClient;
 import com.example.travelinsuranceservice.dto.InsuranceRequestDTO;
 import com.example.travelinsuranceservice.dto.UserDTO;
+import com.example.travelinsuranceservice.exception.InvalidInputException;
 import com.example.travelinsuranceservice.model.CoverageType;
 import com.example.travelinsuranceservice.model.Insurance;
 import com.example.travelinsuranceservice.repository.InsuranceRepository;
-import com.example.travelinsuranceservice.client.UserClient;
-import com.example.travelinsuranceservice.client.BookingClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+ 
 import java.util.*;
  
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
  
-/**
- * Unit test for InsuranceService
- */
-public class InsuranceServiceTest {
- 
-    @InjectMocks
-    private InsuranceService insuranceService;
+class InsuranceServiceTest {
  
     @Mock
-    private InsuranceRepository insuranceRepository;
+    private InsuranceRepository repo;
  
     @Mock
     private UserClient userClient;
@@ -32,33 +28,55 @@ public class InsuranceServiceTest {
     @Mock
     private BookingClient bookingClient;
  
+    @InjectMocks
+    private InsuranceService service;
+ 
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
     }
  
     @Test
-    void testCreateInsuranceAndFetchPrice() {
+    void testCreateInsuranceSuccess() {
         InsuranceRequestDTO dto = new InsuranceRequestDTO();
         dto.setUserId(1L);
-        dto.setCoverageType("BASIC");
+        dto.setCoverageType("STANDARD");
  
-        when(userClient.getUserById(1L)).thenReturn((UserDTO) Map.of("id", 1));
-        when(insuranceRepository.findByUserIdAndBookingIdIsNull(1L)).thenReturn(Collections.emptyList());
+        when(userClient.getUserById(1L)).thenReturn(new UserDTO());
+        when(repo.findByUserIdAndBookingIdIsNull(1L)).thenReturn(Collections.emptyList());
  
         Insurance mock = new Insurance();
-        mock.setUserId(1L);
-        mock.setCoverageType(CoverageType.BASIC);
-        mock.setPrice(500.0);
-        mock.setClaimableAmount(1000.0);
         mock.setInsuranceId(1);
+        mock.setCoverageType(CoverageType.STANDARD);
+        when(repo.save(any())).thenReturn(mock);
  
-        when(insuranceRepository.save(any(Insurance.class))).thenReturn(mock);
+        Insurance insurance = service.createInsurance(dto);
  
-        Insurance insurance = insuranceService.createInsurance(dto);
+        assertEquals(1, insurance.getInsuranceId());
+        assertEquals(CoverageType.STANDARD, insurance.getCoverageType());
+    }
  
-        assertEquals(CoverageType.BASIC, insurance.getCoverageType());
-        assertEquals(1L, insurance.getUserId());
+    @Test
+    void testCreateInsuranceWithInvalidUser() {
+        InsuranceRequestDTO dto = new InsuranceRequestDTO();
+        dto.setUserId(999L);
+        dto.setCoverageType("STANDARD");
+ 
+        when(userClient.getUserById(999L)).thenReturn(null);
+ 
+        assertThrows(InvalidInputException.class, () -> service.createInsurance(dto));
+    }
+ 
+    @Test
+    void testGetInsuranceByUser() {
+        Insurance insurance = new Insurance();
+        insurance.setUserId(1L);
+        when(repo.findByUserId(1L)).thenReturn(List.of(insurance));
+ 
+        List<Insurance> result = service.getUserInsurance(1L);
+ 
+        assertFalse(result.isEmpty());
+        assertEquals(1L, result.get(0).getUserId());
     }
 }
  

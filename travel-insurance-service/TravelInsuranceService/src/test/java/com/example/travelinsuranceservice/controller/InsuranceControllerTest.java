@@ -1,44 +1,63 @@
 package com.example.travelinsuranceservice.controller;
  
+import com.example.travelinsuranceservice.dto.InsuranceRequestDTO;
 import com.example.travelinsuranceservice.model.CoverageType;
 import com.example.travelinsuranceservice.model.Insurance;
 import com.example.travelinsuranceservice.service.InsuranceService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.*;
+import org.springframework.http.ResponseEntity;
  
 import java.util.List;
  
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
  
-/**
- * Test class for InsuranceController
- */
-@WebMvcTest(controllers = InsuranceController.class)
-public class InsuranceControllerTest {
+class InsuranceControllerTest {
  
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private InsuranceService service;
  
-    @MockBean
-    private InsuranceService insuranceService;
+    @InjectMocks
+    private InsuranceController controller;
  
-    @Test
-    void testGetInsuranceByUserId() throws Exception {
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+ 
+    @SuppressWarnings("deprecation")
+	@Test
+    void testCreateInsurance() {
+        InsuranceRequestDTO dto = new InsuranceRequestDTO();
+        dto.setUserId(1L);
+        dto.setCoverageType("PREMIUM");
+ 
         Insurance insurance = new Insurance();
         insurance.setInsuranceId(1);
-        insurance.setUserId(101L);
-        insurance.setCoverageType(CoverageType.BASIC);
+        insurance.setCoverageType(CoverageType.PREMIUM);
  
-        when(insuranceService.getUserInsurance(101L)).thenReturn(List.of(insurance));
+        when(service.createInsurance(dto)).thenReturn(insurance);
  
-        mockMvc.perform(get("/api/insurance/user/101"))
-                .andExpect(status().isOk());
+        ResponseEntity<Insurance> response = controller.createInsurance(dto);
+ 
+        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(CoverageType.PREMIUM, response.getBody().getCoverageType());
+    }
+ 
+    @SuppressWarnings("deprecation")
+	@Test
+    void testGetInsuranceByUser() {
+        Insurance insurance = new Insurance();
+        insurance.setUserId(1L);
+ 
+        when(service.getUserInsurance(1L)).thenReturn(List.of(insurance));
+ 
+        ResponseEntity<List<Insurance>> response = controller.getByUser(1L);
+ 
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1L, response.getBody().get(0).getUserId());
     }
 }
  
