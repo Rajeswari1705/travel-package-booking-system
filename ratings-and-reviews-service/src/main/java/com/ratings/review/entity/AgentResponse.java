@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;  // Add this import, often good for JPA
 @Data
 @AllArgsConstructor // Generates constructor with all fields
 @NoArgsConstructor  // Generates a no-argument constructor
-
+@Entity
 @Table(name = "agent_responses")
 public class AgentResponse {
  
