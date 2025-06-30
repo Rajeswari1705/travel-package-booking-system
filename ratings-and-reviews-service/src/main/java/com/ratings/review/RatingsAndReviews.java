@@ -9,11 +9,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Main class for the Ratings and Reviews microservice.
- * <p>
  * This service is responsible for handling user ratings and reviews.
  * It is a Spring Boot application that registers itself with Eureka for service discovery
  * and uses Feign clients to communicate with other microservices.
- * </p>
  */
 @EnableFeignClients 
 @SpringBootApplication // Marks this class as a Spring Boot application
