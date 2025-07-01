@@ -2,10 +2,16 @@ package com.ratings.review.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.Data;
+import lombok.AllArgsConstructor; // Add this import
+import lombok.NoArgsConstructor;  // Add this import, often good for JPA
 
 /**
  * Entity representing a review for a travel package.
  */
+@Data
+@AllArgsConstructor // Generates constructor with all fields
+@NoArgsConstructor  // Generates a no-argument constructor
 @Entity
 @Table(name = "review")
 public class Review {
@@ -27,22 +33,5 @@ public class Review {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    // Getters and Setters
-    public Long getReviewId() { return reviewId; }
-    public void setReviewId(Long reviewId) { this.reviewId = reviewId; }
-
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-
-    public Long getPackageId() { return packageId; }
-    public void setPackageId(Long packageId) { this.packageId = packageId; }
-
-    public int getRating() { return rating; }
-    public void setRating(int rating) { this.rating = rating; }
-
-    public String getComment() { return comment; }
-    public void setComment(String comment) { this.comment = comment; }
-
-    public LocalDateTime getTimestamp() { return timestamp; }
-    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    
 }

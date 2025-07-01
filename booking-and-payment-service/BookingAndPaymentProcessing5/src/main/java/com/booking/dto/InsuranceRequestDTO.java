@@ -3,7 +3,7 @@ package com.booking.dto;
 import lombok.Data;
  
 /**
- * DTO to expose insurance coverage plans to Booking module.
+ * DTO to carry insurance-related data between the Booking module and the Insurance module.
  */
 @Data
 public class InsuranceRequestDTO {

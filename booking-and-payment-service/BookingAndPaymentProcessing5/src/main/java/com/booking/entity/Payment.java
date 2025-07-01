@@ -1,100 +1,63 @@
 package com.booking.entity;
 
+import lombok.Data;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
+/**
+ * Entity class representing a Payment.
+ * This class maps to the payment table in the database and contains details about a payment.
+ */
+@Data
 @Entity
 public class Payment {
+    /**The ID of the payment.*/
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
-	private Long userId;
+
+    /**The ID of the user who made the payment.*/
+    @NotNull(message = "User ID is required")
+    private Long userId;
+
+    /**The ID of the booking associated with the payment.*/
+    @NotNull(message = "Booking ID is required")
     private Long bookingId;
+
+    /**The amount of the payment.*/
+    @NotNull(message = "Amount is required")
     private double amount;
+
+    /**The status of the payment.*/
     private String status;
-    
+
+    /**The method of payment, which should be "Credit Card" or "Debit Card".*/
     @Column(nullable = false)
-    private String paymentMethod; // Should be "Credit Card" or "Debit Card"
- 
+    private String paymentMethod;
+
+    /**The currency of the payment.*/
+    @NotBlank(message = "Currency is required")
     private String currency;
- 
+
+    /**The card number used for the payment. This field is not stored in the database.*/
     @Transient
-    private String cardNumber;  // Not stored in DB
- 
+    @NotBlank(message = "Card Number is required")
+    private String cardNumber;
+
+    /**The CVV code of the card used for the payment. This field is not stored in the database.*/
     @Transient
-    private String cvv;			// Not stored in DB
- 
-    @Transient
-    private String atmPin;		// Not stored in DB
+    @NotBlank(message = "CVV is required")
+    private String cvv;
+
+    /**The ATM PIN of the card used for the payment. This field is not stored in the database.*/
     
     @Transient
-    private String expiryDate;	// Not stored in DB
-    
-    // Getters and Setters
-    
-	public Long getUserId() {
-		return userId;
-	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-	public Long getBookingId() {
-		return bookingId;
-	}
-	public void setBookingId(Long bookingId) {
-		this.bookingId = bookingId;
-	}
-	public double getAmount() {
-		return amount;
-	}
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	public String getPaymentMethod() {
-		return paymentMethod;
-	}
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
-	}
-	public String getCurrency() {
-		return currency;
-	}
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-	public String getCardNumber() {
-		return cardNumber;
-	}
-	public void setCardNumber(String cardNumber) {
-		this.cardNumber = cardNumber;
-	}
-	public String getCvv() {
-		return cvv;
-	}
-	public void setCvv(String cvv) {
-		this.cvv = cvv;
-	}
-	public String getAtmPin() {
-		return atmPin;
-	}
-	public void setAtmPin(String atmPin) {
-		this.atmPin = atmPin;
-	}
-	public Long getPaymentId() {
-		return paymentId;
-	}
-	public void setPaymentId(Long paymentId) {
-		this.paymentId = paymentId;
-	}
-	public String getExpiryDate() {
-		return expiryDate;
-	}
-	public void setExpiryDate(String expiryDate) {
-		this.expiryDate = expiryDate;
-	}
+    @NotBlank(message = "ATM PIN is required")
+    private String atmPin;
+
+    /**The expiry date of the card used for the payment. This field is not stored in the database.*/
+    @Transient
+    @NotBlank(message = "Expiry date is required")
+    private String expiryDate;
 }

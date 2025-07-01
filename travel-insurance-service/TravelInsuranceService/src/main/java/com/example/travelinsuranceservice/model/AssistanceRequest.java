@@ -26,7 +26,7 @@ public class AssistanceRequest {
     @NotNull(message = "Issue description cannot be empty")
     private String issueDescription; // Reason for assistance (e.g. Lost passport)
  
-    private String status = "Pending"; // Default status at creation
+    private String status = "Active"; // Default status at creation
  
     private String resolutionTime = "24 hours"; // Always fixed
  

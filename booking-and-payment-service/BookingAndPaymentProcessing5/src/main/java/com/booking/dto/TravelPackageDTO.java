@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Data;
-
+/**
+ * DTO for transferring complete travel package data across services.
+ */
 @Data
 public class TravelPackageDTO {
 	private Long packageId;
