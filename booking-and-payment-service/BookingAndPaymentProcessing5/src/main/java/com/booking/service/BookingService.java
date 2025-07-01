@@ -50,27 +50,44 @@ public class BookingService {
 
         logger.info("Creating booking for userId: " + userId + " and packageId: " + packageId);
 
-        // Validate User
-        UserDTO user = userClient.getCustomerById(userId);
-        if (user == null || !"CUSTOMER".equalsIgnoreCase(user.getRole())) {
-            throw new RuntimeException("User is not a valid CUSTOMER.");
+        // 1. Validate User
+        UserDTO user;
+        try {
+            user = userClient.getCustomerById(userId);
+            if (user == null || !"CUSTOMER".equalsIgnoreCase(user.getRole())) {
+                throw new RuntimeException("User is not a valid CUSTOMER.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("Failed to fetch user details: " + ex.getMessage());
         }
 
-        // Validate Package
-        TravelPackageDTO travelPackage = travelPackageClient.getPackageById(packageId);
-        if (travelPackage == null) {
-            throw new IllegalArgumentException("Invalid travel package ID.");
+        // 2. Validate Package
+        TravelPackageDTO travelPackage;
+        try {
+            travelPackage = travelPackageClient.getPackageById(packageId);
+            if (travelPackage == null) {
+                throw new IllegalArgumentException("Invalid travel package ID.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("Failed to fetch package details: " + ex.getMessage());
         }
 
-        // Optional: Validate Insurance if selected
+        // 3. Validate Insurance (optional)
         if (insuranceId != null && insuranceId > 0) {
-            boolean exists = travelInsuranceClient.validateInsurance(insuranceId);
-            if (!exists) {
-                throw new IllegalArgumentException("Selected Insurance ID is invalid.");
+            try {
+                boolean exists = travelInsuranceClient.validateInsurance(insuranceId);
+                if (!exists) {
+                    throw new IllegalArgumentException("Selected Insurance ID is invalid.");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                throw new RuntimeException("Failed to validate insurance: " + ex.getMessage());
             }
         }
 
-        // Create and save booking
+        // 4. Create and save booking
         Booking booking = new Booking();
         booking.setUserId(userId);
         booking.setPackageId(packageId);
@@ -78,9 +95,10 @@ public class BookingService {
         booking.setTripStartDate(travelPackage.getTripStartDate());
         booking.setTripEndDate(travelPackage.getTripEndDate());
         booking.setStatus("PENDING");
+
         Booking savedBooking = bookingRepo.save(booking);
 
-        // Build response DTO
+        // 5. Build response DTO
         BookingDTO dto = new BookingDTO();
         dto.setBookingId(savedBooking.getBookingId());
         dto.setUserId(userId);
@@ -94,7 +112,6 @@ public class BookingService {
         logger.info("Booking created successfully with bookingId: " + savedBooking.getBookingId());
         return dto;
     }
-
     /**
      * Retrieve all bookings.
      * 

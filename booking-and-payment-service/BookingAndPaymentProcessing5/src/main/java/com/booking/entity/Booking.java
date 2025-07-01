@@ -3,7 +3,8 @@ package com.booking.entity;
 import java.time.LocalDate;
 import lombok.Data;
 import jakarta.persistence.*;
-
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 /**
  * Entity class representing a Booking.
  * This class maps to the booking table in the database and contains details about a booking.
@@ -17,9 +18,11 @@ public class Booking {
     private Long bookingId;
 
     /** The ID of the user who made the booking.*/
+    @NotNull
     private Long userId;
 
     /**The ID of the travel package associated with the booking.*/
+    @NotNull
     private Long packageId;
 
     /**The start date of the trip.*/

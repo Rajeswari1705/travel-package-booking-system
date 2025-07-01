@@ -1,6 +1,7 @@
 package com.booking.controller;
 
 import com.booking.dto.BookingDTO;
+import jakarta.validation.Valid;
 import com.booking.entity.Booking;
 import com.booking.service.BookingService;
 import com.booking.response.ApiResponse;
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
  * 
  * This controller provides endpoints for creating, retrieving, updating, and deleting bookings.
  */
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
@@ -42,16 +43,19 @@ public class BookingController {
      * @return ResponseEntity containing the created BookingDTO and HTTP status.
      */
     @PostMapping
-    public ResponseEntity<BookingDTO> createBooking(@RequestBody Booking booking) {
+    public ResponseEntity<?> createBooking(@Valid @RequestBody Booking booking) {
         try {
             BookingDTO bookingDTO = service.createBooking(booking);
             return new ResponseEntity<>(bookingDTO, HttpStatus.CREATED);
         } catch (RuntimeException ex) {
+            ex.printStackTrace(); // shows full error in backend logs
             logger.severe("Error creating booking: " + ex.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
+            // return a proper error JSON message to frontend
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                 .body(new ApiResponse(false, "Booking failed: " + ex.getMessage(), null));
         }
     }
-
     /**
      * Retrieve all bookings.
      * 

@@ -3,6 +3,9 @@ package com.booking.controller;
 import com.booking.dto.PaymentResponseDTO;
 import com.booking.entity.Payment;
 import com.booking.service.PaymentService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +35,7 @@ public class PaymentController {
      */
     @PostMapping
     public PaymentResponseDTO process(
-            @RequestBody Payment payment,
+    		@Valid @RequestBody Payment payment,
             @RequestParam(required = false) String couponCode) {
 
         Payment savedPayment = paymentService.processPayment(payment, couponCode);
@@ -56,9 +59,9 @@ public class PaymentController {
      * @param couponCode The optional coupon code for discount.
      * @return A map containing the total payable amount.
      */
-    @GetMapping("/expected-total")
+    @GetMapping("/expected-total/{bookingId}")
     public Map<String, Double> getExpectedTotal(
-            @RequestParam Long bookingId,
+            @PathVariable Long bookingId,
             @RequestParam(required = false) String couponCode) {
 
         double total = paymentService.calculateExpectedTotal(bookingId, couponCode);
