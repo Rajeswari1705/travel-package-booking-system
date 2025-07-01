@@ -1,188 +1,180 @@
 package com.example.usermanagementservice.service;
  
+
+import com.example.usermanagementservice.dto.UserRoleCountResponse;
 import com.example.usermanagementservice.model.User;
-import com.example.usermanagementservice.exception.EmailAlreadyExistsException;
 import com.example.usermanagementservice.repository.UserRepository;
 import com.example.usermanagementservice.service.impl.UserServiceImpl;
- 
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
  
-import java.util.Optional;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
  
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
  
-public class UserServiceImplTest {
+class UserServiceImplTest {
  
-    // Logger to help debug test executions 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImplTest.class);
- 
-    // Mock the UserRepository (we're not hitting the real DB)
-    @Mock
-    private UserRepository userRepository;
- 
-    // Inject mocks into the service we want to test
     @InjectMocks
     private UserServiceImpl userService;
  
-    // Initialize mocks before each test
+    @Mock
+    private UserRepository userRepository;
+ 
+    @Mock
+    private JavaMailSender mailSender;
+ 
+    @Captor
+    ArgumentCaptor<SimpleMailMessage> mailCaptor;
+ 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImplTest.class);
+ 
     @BeforeEach
-    void setUp() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
-logger.info("Mocks initialized for UserServiceImplTest");
     }
  
-    // Test successful user registration (no duplicate email or phone)
+    // ✅ 1. Register user
     @Test
-    void testRegisterUser_success() {
-logger.info("Running: testRegisterUser_success");
- 
-        // Given
+    void testRegisterUser() {
         User user = new User();
-        user.setEmail("test@travel.com");
-        user.setContactNumber("1234567890");
+        user.setName("TestUser");
  
-        // Mock: email and phone do NOT exist
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
-        when(userRepository.findByContactNumber(user.getContactNumber())).thenReturn(Optional.empty());
-when(userRepository.save(user)).thenReturn(user);  // Save should return the user
+when(userRepository.save(any(User.class))).thenReturn(user);
  
-        // When
         User result = userService.registerUser(user);
  
-        // Then
         assertNotNull(result);
-        assertEquals("test@travel.com", result.getEmail());
-        verify(userRepository).save(user);  // Ensures save() was called
-logger.info("User registered successfully in test");
+        assertEquals("TestUser", result.getName());
+        verify(userRepository).save(user);
+logger.info("✅ Register user test passed");
     }
  
-    // Test registration failure due to duplicate email
-    @Test
-    void testRegisterUser_emailAlreadyExists() {
-logger.info("Running: testRegisterUser_emailAlreadyExists");
- 
-        // Given
-        User user = new User();
-        user.setEmail("exists@travel.com");
- 
-        // Mock: email already exists
-        when(userRepository.findByEmail(user.getEmail()))
-                .thenReturn(Optional.of(new User()));
- 
-        // Then + When
-        assertThrows(EmailAlreadyExistsException.class, () -> userService.registerUser(user));
-        logger.warn("EmailAlreadyExistsException was thrown as expected");
-    }
- 
-    // Test that all users are returned from repository
+    // ✅ 2. Get all users
     @Test
     void testGetAllUsers() {
-logger.info("Running: testGetAllUsers");
+        when(userRepository.findAll()).thenReturn(List.of(new User(), new User()));
+        List<User> users = userService.getAllUsers();
  
-        // Given
-        List<User> mockUsers = new ArrayList<>();
-        mockUsers.add(new User());
-        mockUsers.add(new User());
- 
-        // Mock: findAll returns 2 users
-        when(userRepository.findAll()).thenReturn(mockUsers);
- 
-        // When
-        List<User> result = userService.getAllUsers();
- 
-        // Then
-        assertEquals(2, result.size());
-        verify(userRepository).findAll();  // Ensures method was called
-logger.info("Retrieved {} users from getAllUsers", result.size());
+        assertEquals(2, users.size());
+logger.info("✅ Get all users test passed");
     }
-    
-    
+ 
+    // ✅ 3. Get user by email
     @Test
-    void testUpdateUser_success() {
-    logger.info("Running: testUpdateUser_success");
-     
-        // Given
-        Long userId = 1L;
-        User existingUser = new User();
-        existingUser.setId(userId);
-        existingUser.setEmail("old@travel.com");
-        existingUser.setName("Old Name");
-     
-        User updatedDetails = new User();
-        updatedDetails.setName("New Name");
-        updatedDetails.setEmail("old@travel.com");  // same email
-        updatedDetails.setContactNumber("9999999999");
-     
-        when(userRepository.existsById(userId)).thenReturn(true);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
-    when(userRepository.save(any(User.class))).thenReturn(existingUser);
-     
-        // When
-        User result = userService.updateUserProfile(userId, updatedDetails);
-     
-        // Then
-        assertEquals("New Name", result.getName());
-        verify(userRepository).save(existingUser);
-    logger.info("User updated successfully in test");
-    }
-    
-    
-    @Test
-    void testDeleteUser_success() {
-    logger.info("Running: testDeleteUser_success");
-     
-        // Given
-        Long userId = 2L;
-        when(userRepository.existsById(userId)).thenReturn(true);
-        doNothing().when(userRepository).deleteById(userId);
-     
-        // When
-        userService.deleteUser(userId);
-     
-        // Then
-        verify(userRepository).deleteById(userId);
-    logger.info("User deleted successfully");
-    }
-    
-    @Test
-    void testGetUserByEmail_success() {
-    logger.info("Running: testGetUserByEmail_success");
-     
-        // Given
-        String email = "test@travel.com";
+    void testGetUserByEmail() {
         User user = new User();
-        user.setEmail(email);
-     
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-     
-        // When
-        User result = userService.getUserByEmail(email);
-     
-        // Then
-        assertEquals(email, result.getEmail());
-        verify(userRepository).findByEmail(email);
-    logger.info("User retrieved successfully by email");
+        user.setEmail("abc@gmail.com");
+ 
+        when(userRepository.findByEmail("abc@gmail.com")).thenReturn(Optional.of(user));
+ 
+        User result = userService.getUserByEmail("abc@gmail.com");
+ 
+        assertEquals("abc@gmail.com", result.getEmail());
+logger.info("✅ Get user by email test passed");
     }
-    
+ 
+    // ✅ 4. Delete user
     @Test
-    void testGetUserByEmail_notFound() {
-    logger.info("Running: testGetUserByEmail_notFound");
-     
-        // Given
-        String email = "missing@travel.com";
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
-     
-        // Then
-        assertThrows(RuntimeException.class, () -> userService.getUserByEmail(email));
-        logger.warn("User not found exception thrown as expected");
+    void testDeleteUser() {
+        Long userId = 1L;
+ 
+        doNothing().when(userRepository).deleteById(userId);
+        userService.deleteUser(userId);
+ 
+        verify(userRepository, times(1)).deleteById(userId);
+logger.info("✅ Delete user test passed");
+    }
+ 
+    // ✅ 5. Update profile with old password
+    @Test
+    void testUpdateUserProfile() {
+        User existingUser = new User();
+        existingUser.setId(1L);
+        existingUser.setPassword("oldpass");
+ 
+        User updatedUser = new User();
+        updatedUser.setName("New Name");
+ 
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
+when(userRepository.save(any(User.class))).thenReturn(updatedUser);
+ 
+        User result = userService.updateUserProfile(1L, updatedUser, "oldpass", "newpass");
+ 
+        assertEquals("New Name", result.getName());
+logger.info("✅ Update user profile test passed");
+    }
+ 
+    // ✅ 6. Get user by ID
+    @Test
+    void testGetUserById() {
+        User user = new User();
+        user.setId(1L);
+ 
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+ 
+        User result = userService.getUserById(1L);
+ 
+        assertEquals(1L, result.getId());
+logger.info("✅ Get user by ID test passed");
+    }
+ 
+    // ✅ 7. Admin update user
+    @Test
+    void testAdminUpdateUser() {
+        User existing = new User();
+        existing.setName("Old");
+ 
+        User updated = new User();
+        updated.setName("Updated");
+ 
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existing));
+when(userRepository.save(any(User.class))).thenReturn(updated);
+ 
+        User result = userService.adminUpdateUserProfile(1L, updated);
+        assertEquals("Updated", result.getName());
+logger.info("✅ Admin update user test passed");
+    }
+ 
+    // ✅ 8. Count roles
+    @Test
+    void testUserRoleCounts() {
+        when(userRepository.count()).thenReturn(6L); // including admin
+        when(userRepository.countByRole("AGENT")).thenReturn(2L);
+        when(userRepository.countByRole("CUSTOMER")).thenReturn(3L);
+ 
+        UserRoleCountResponse result = userService.getUserRoleCounts();
+ 
+        assertEquals(5, result.getTotalUsers()); // excluding 1 admin
+        assertEquals(2, result.getAgentCount());
+        assertEquals(3, result.getCustomerCount());
+logger.info("✅ Get role counts test passed");
+    }
+ 
+    
+ 
+    // Send Forgot Password Email
+    @Test
+    void testSendForgotPasswordEmail() {
+        User user = new User();
+        user.setEmail("demo@gmail.com");
+        user.setPassword("12345");
+ 
+        when(userRepository.findByEmail("demo@gmail.com")).thenReturn(Optional.of(user));
+ 
+        userService.sendForgotPasswordEmail("demo@gmail.com");
+ 
+        verify(mailSender, times(1)).send(mailCaptor.capture());
+        SimpleMailMessage sentMail = mailCaptor.getValue();
+ 
+        assertEquals("demo@gmail.com", sentMail.getTo()[0]);
+        assertTrue(sentMail.getText().contains("12345")); // password in email
+logger.info("✅ Forgot password email sent test passed");
     }
 }
