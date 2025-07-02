@@ -40,9 +40,12 @@ public class UserController {
     
     @Autowired
     private JwtService jwtService;
- 
-    
-    // Helper method to extract role from JWT token in Authorization header
+
+    /**
+     *Helper method to extract role from JWT token in Authorization header 
+     * @param request
+     * @return jwt token
+     */
     private String extractRoleFromHeader(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -186,30 +189,7 @@ public class UserController {
         // 6. Return the updated user (or custom response)
         return ResponseEntity.ok(user);
     }
-   
-    
-    
-    
-    
-   /* @PutMapping("/myprofile")
-    public ResponseEntity<?> updateMyProfile(@RequestBody User updatedUser) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User existingUser = userService.getUserByEmail(email);
-     
-        // Add role-protection logic here
-        if (!"ADMIN".equalsIgnoreCase(existingUser.getRole()) &&
-            "ADMIN".equalsIgnoreCase(updatedUser.getRole())) {
-            throw new RoleChangeNotAllowedException("You cannot assign yourself ADMIN role.");
-        }
-     
-        User user = userService.updateUserProfile(existingUser.getId(), updatedUser);
-        return ResponseEntity.ok(user);
-    }*/
-    
-    
-    
-    
-     
+
      //delete their own profile
     @DeleteMapping("/myprofile")
     public ResponseEntity<?> deleteMyProfile() {
@@ -254,12 +234,6 @@ public class UserController {
 		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
 		                .body(Collections.singletonMap("message", "User not found with ID: " + id));
 		    }
-		 
-		    // ✅ Check if user is an CUSTOMER
-//		    if (!"CUSTOMER".equalsIgnoreCase(user.getRole())) {
-//		        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-//		                .body(Collections.singletonMap("message", "User with ID " + id + " is not an CUSTOMER"));
-//		    }
 			
 			UserDTO userDTO = userService.convertToDTO(user);
 			return ResponseEntity.ok(userDTO);
@@ -269,10 +243,6 @@ public class UserController {
     
 
     //To fetch all the packages under a travel agent using his id
-
-
-    //To fetch all the packages under a travel agent
-
 	@GetMapping("/packages/{id}")
     public ResponseEntity<?> getAllPackagesOfAgent(@PathVariable Long id) {
         List<TravelPackageDTO> packages = userService.fetchAllPackagesByAgent(id); 
@@ -311,12 +281,6 @@ public class UserController {
 	    }
 	 
 	    List<BookingDTO> bookings = userService.getBookingsByUserId(id);
-	 
-	    /*if (bookings.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                .body(Collections.singletonMap("message", "No bookings found for this user"));
-	    }*/
-	 
 	    return ResponseEntity.ok(bookings);
 	}
 
