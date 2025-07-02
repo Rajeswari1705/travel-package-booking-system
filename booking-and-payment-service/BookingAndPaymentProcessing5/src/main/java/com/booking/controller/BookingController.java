@@ -6,7 +6,7 @@ import com.booking.entity.Booking;
 import com.booking.service.BookingService;
 import com.booking.response.ApiResponse;
 import com.booking.dto.TravelPackageDTO;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * 
  * This controller provides endpoints for creating, retrieving, updating, and deleting bookings.
  */
-//@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
@@ -112,11 +112,17 @@ public class BookingController {
     @GetMapping("/internal/bookings/user/{userId}")
     public ResponseEntity<List<Booking>> getBookingsByUserId(@PathVariable Long userId) {
         List<Booking> bookings = service.getBookingsByUserId(userId);
-        if (bookings.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(bookings);
+        // If the list is empty, return 200 OK with an empty list, not 404
+        return ResponseEntity.ok(bookings); // <--- CHANGE THIS LINE
     }
+//    @GetMapping("/internal/bookings/user/{userId}")
+//    public ResponseEntity<List<Booking>> getBookingsByUserId(@PathVariable Long userId) {
+//        List<Booking> bookings = service.getBookingsByUserId(userId);
+//        if (bookings.isEmpty()) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.ok(bookings);
+//    }
     /**
      * Check if a user has completed a package.
      * 
