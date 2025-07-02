@@ -14,5 +14,6 @@ public class PackageDTO {
 	private int maxCapacity;
 	private LocalDate tripStartDate;
 	private LocalDate tripEndDate;
+	private String imageUrl;
 
 }
