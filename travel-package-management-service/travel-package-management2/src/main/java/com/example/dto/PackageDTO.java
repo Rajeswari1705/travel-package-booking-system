@@ -14,10 +14,11 @@ public class PackageDTO {
 	private int maxCapacity;
 	private LocalDate tripStartDate;
 	private LocalDate tripEndDate;
+	private String imageUrl;
 	
 	
 	public PackageDTO(Long packageId, String title, String description, int duration, double price, int maxCapacity,
-			LocalDate tripStartDate, LocalDate tripEndDate) {
+			LocalDate tripStartDate, LocalDate tripEndDate,String imageUrl) {
 		super();
 		this.packageId = packageId;
 		this.title = title;
@@ -27,7 +28,9 @@ public class PackageDTO {
 		this.maxCapacity = maxCapacity;
 		this.tripStartDate = tripStartDate;
 		this.tripEndDate = tripEndDate;
+		this.imageUrl = imageUrl;
 	}
+	
 
 	
 	

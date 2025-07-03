@@ -234,12 +234,6 @@ public class UserController {
 		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
 		                .body(Collections.singletonMap("message", "User not found with ID: " + id));
 		    }
-		 
-		    // ✅ Check if user is an CUSTOMER
-//		    if (!"CUSTOMER".equalsIgnoreCase(user.getRole())) {
-//		        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-//		                .body(Collections.singletonMap("message", "User with ID " + id + " is not an CUSTOMER"));
-//		    }
 			
 			UserDTO userDTO = userService.convertToDTO(user);
 			return ResponseEntity.ok(userDTO);
@@ -287,12 +281,6 @@ public class UserController {
 	    }
 	 
 	    List<BookingDTO> bookings = userService.getBookingsByUserId(id);
-	 
-	    /*if (bookings.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                .body(Collections.singletonMap("message", "No bookings found for this user"));
-	    }*/
-	 
 	    return ResponseEntity.ok(bookings);
 	}
 
