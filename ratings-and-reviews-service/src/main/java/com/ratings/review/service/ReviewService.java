@@ -47,7 +47,7 @@ public class ReviewService {
             throw new ResourceNotFoundException("Only customers can post reviews.");
         }
 
-        boolean completed = bookingClient.hasCompletedBooking(review.getUserId(), review.getPackageId().toString());
+        boolean completed = bookingClient.hasCompletedBooking(review.getUserId(), review.getPackageId());
         if (!completed) {
             logger.warn("User ID {} has not completed booking for package ID {}", review.getUserId(), review.getPackageId());
             throw new ResourceNotFoundException("Journey not completed for the given package.");

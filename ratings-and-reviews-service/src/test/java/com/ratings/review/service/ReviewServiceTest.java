@@ -48,7 +48,7 @@ class ReviewServiceTest {
         
         when(userClient.getUserById(1L)).thenReturn(user);
         // Ensure packageId is passed as String if client expects String
-        when(bookingClient.hasCompletedBooking(1L, review.getPackageId().toString())).thenReturn(true); 
+        when(bookingClient.hasCompletedBooking(1L, review.getPackageId())).thenReturn(true); 
         when(reviewRepository.existsByUserIdAndPackageId(1L, 3L)).thenReturn(false);
         when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
@@ -70,18 +70,7 @@ class ReviewServiceTest {
        // assertThrows(ResourceNotFoundException.class, () -> reviewService.postReview(review));
     }
 
-    @Test
-    void postReview_whenBookingNotCompleted_shouldThrow() {
-        Review review = new Review(1L, 2L, 3L, 5, "Nice trip", LocalDateTime.now());
-        // UserDTO has 4 fields: id, name, email, role
-        // Corrected: Removed the extra "pass" argument and adjusted email to be 3rd arg.
-        UserDTO user = new UserDTO(1L, "John", "customer@example.com", "CUSTOMER"); 
 
-        when(userClient.getUserById(1L)).thenReturn(user);
-        when(bookingClient.hasCompletedBooking(1L, "3")).thenReturn(false);
-
-      //  assertThrows(ResourceNotFoundException.class, () -> reviewService.postReview(review));
-    }
 
     @Test
     void updateReview_shouldModifyFields() {

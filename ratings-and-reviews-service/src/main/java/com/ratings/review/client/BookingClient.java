@@ -20,5 +20,5 @@ public interface BookingClient {
      */
     @GetMapping("/api/bookings/user/{userId}/package/{packageId}/completed") // Maps to the endpoint in the target service
     boolean hasCompletedBooking(@PathVariable("userId") Long userId,
-                                @PathVariable("packageId") String packageId);
+                                @PathVariable("packageId") Long packageId);
 }

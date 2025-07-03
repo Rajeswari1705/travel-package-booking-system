@@ -1,5 +1,7 @@
 package com.booking.service;
-
+import com.booking.repository.PaymentRepository; 
+import java.util.Optional; 
+import com.booking.entity.Payment;
 import com.booking.client.TravelPackageClient;
 import com.booking.client.TravelInsuranceClient;
 import com.booking.client.UserClient;
@@ -22,6 +24,8 @@ import java.util.logging.Logger;
  */
 @Service
 public class BookingService {
+	@Autowired 
+	private PaymentRepository paymentRepo;
 
     @Autowired
     private BookingRepository bookingRepo;
@@ -187,16 +191,7 @@ public class BookingService {
      * @param packageId The ID of the package.
      * @return boolean indicating whether the user has completed the package.
      */
-    public boolean hasUserCompletedPackage(Long userId, String packageId) {
-        List<Booking> bookings = bookingRepo.findByUserId(userId);
-        LocalDate today = LocalDate.now();
-        return bookings.stream()
-            .anyMatch(b ->
-                String.valueOf(b.getPackageId()).equals(packageId) &&
-                "CONFIRMED".equalsIgnoreCase(b.getStatus()) &&
-                !b.getTripEndDate().isAfter(today) // includes today
-            );
-    }
+    
 
     /**
      * Retrieve all travel packages.
@@ -215,5 +210,53 @@ public class BookingService {
      */
     public TravelPackageDTO getPackageById(Long packageId) {
         return travelPackageClient.getPackageById(packageId);
+    }
+    
+// For reviews and ratings module
+    public boolean hasUserCompletedPackage(Long userId, Long packageId) { 
+        // Changed to use string concatenation for java.util.logging.Logger
+        logger.info("Checking review eligibility (hasUserCompletedPackage) for userId: " + userId + " and packageId: " + packageId);
+
+        // Fetch ALL bookings for the user first
+        List<Booking> allUserBookings = bookingRepo.findByUserId(userId);
+
+        if (allUserBookings.isEmpty()) {
+            // Changed to use string concatenation for java.util.logging.Logger
+            logger.info("No bookings found for userId: " + userId);
+            return false;
+        }
+
+        LocalDate today = LocalDate.now();
+
+        // Now, filter this list in memory by packageId and then apply other checks
+        for (Booking booking : allUserBookings) {
+            if (booking.getPackageId().equals(packageId) && // <--- Manual filtering here
+                "CONFIRMED".equalsIgnoreCase(booking.getStatus()) &&
+                !booking.getTripEndDate().isAfter(today)) { // Check if trip end date is past or today
+
+                if (booking.getPaymentId() != null) {
+                    Optional<Payment> paymentOpt = paymentRepo.findById(booking.getPaymentId());
+
+                    if (paymentOpt.isPresent()) {
+                        Payment payment = paymentOpt.get();
+                        if ("PAID".equalsIgnoreCase(payment.getStatus()) || "COMPLETED".equalsIgnoreCase(payment.getStatus())) {
+                            // Changed to use string concatenation for java.util.logging.Logger
+                            logger.info("User " + userId + " is eligible for review for package " + packageId +
+                                        ". Booking ID: " + booking.getBookingId() + ", Payment ID: " + payment.getPaymentId());
+                            return true; // Found an eligible booking, so return true immediately
+                        }
+                    } else {
+                        // Changed to use string concatenation for java.util.logging.Logger and 'warning' method
+                        logger.warning("Booking " + booking.getBookingId() + " is CONFIRMED but no payment found for paymentId " + booking.getPaymentId());
+                    }
+                } else {
+                    // Changed to use string concatenation for java.util.logging.Logger and 'warning' method
+                    logger.warning("Booking " + booking.getBookingId() + " is CONFIRMED but has no paymentId. Payment status check skipped.");
+                }
+            }
+        }
+        // Changed to use string concatenation for java.util.logging.Logger
+        logger.info("User " + userId + " is not eligible for review for package " + packageId + ". No booking found meeting all criteria (confirmed, paid, journey completed).");
+        return false;
     }
 }

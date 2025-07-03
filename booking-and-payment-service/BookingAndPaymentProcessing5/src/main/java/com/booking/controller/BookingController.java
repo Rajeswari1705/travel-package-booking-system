@@ -125,7 +125,7 @@ public class BookingController {
      * @return boolean indicating whether the user has completed the package.
      */
     @GetMapping("/user/{userId}/package/{packageId}/completed")
-    public boolean hasUserCompletedPackage(@PathVariable Long userId, @PathVariable String packageId) {
+    public boolean hasUserCompletedPackage(@PathVariable Long userId, @PathVariable Long packageId) {
         return service.hasUserCompletedPackage(userId, packageId);
     }
 

@@ -33,4 +33,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
      * @return A list of bookings associated with the package ID.
      */
     List<Booking> findByPackageId(Long packageId);
+    
+    List<Booking> findByUserIdAndPackageId(Long userId, Long packageId);
 }
